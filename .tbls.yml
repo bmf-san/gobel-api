@@ -1,0 +1,5 @@
+dsn: mysql://root:password@127.0.0.1:3306/gobel
+docPath: doc/database
+format:
+  adjust: true
+  

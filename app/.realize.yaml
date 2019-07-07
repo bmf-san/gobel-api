@@ -1,0 +1,23 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+- name: gobel-api
+  path: .
+  commands:
+    build:
+      status: true
+      method: go build -o /gobel-api
+    run:
+      status: true
+      method: /gobel-api
+  watcher:
+    extensions:
+    - go
+    paths:
+    - /
+    ignored_paths:
+    - .git
+    - .realize
+    - vendor
