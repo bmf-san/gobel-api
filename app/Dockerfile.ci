@@ -1,0 +1,18 @@
+FROM golang:1.13.0-alpine
+
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache libc-dev gcc git openssh openssl bash && \
+    go get -u golang.org/x/lint/golint
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+RUN go build -o gobel-api .
+
+EXPOSE 8080

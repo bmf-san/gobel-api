@@ -1,0 +1,37 @@
+version: "3"
+services:
+  app:
+    container_name: "gobel-api"
+    env_file: ".env"
+    build:
+        context: "./app"
+        dockerfile: "Dockerfile"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app:/go/src/github.com/bmf-san/gobel-api/app
+    networks:
+      - gobel_link
+    depends_on:
+      - mysql
+  mysql:
+    container_name: "gobel-mysql"
+    env_file: ".env"
+    build:
+        context: "./mysql"
+        dockerfile: "Dockerfile"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/gobel-mysql/data:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mysql/gobel-mysql/initdb.d:/docker-entrypoint-initdb.d
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - gobel_link
+networks:
+    gobel_link:
+        external: true

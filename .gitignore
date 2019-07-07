@@ -1,0 +1,14 @@
+# app
+/app/gobel-api
+/app/.env
+.DS_STORE
+/app/log/*
+!/app/log/.gitkeep
+
+# docker
+/mysql/gobel-mysql/data
+!/mysql/gobel-mysql/data/.gitkeep
+
+# editor
+.vscode/
+launch.json
