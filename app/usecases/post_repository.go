@@ -9,6 +9,8 @@ type PostRepository interface {
 	CountAllPublish() (int, error)
 	CountAll() (int, error)
 	FindAllPublish(page int, limit int) (domain.Posts, error)
+	FindAllPublishByCategory(page int, limit int, name string) (domain.Posts, error)
+	FindAllPublishByTag(page int, limit int, name string) (domain.Posts, error)
 	FindAll(page int, limit int) (domain.Posts, error)
 	FindByTitle(title string) (domain.Post, error)
 	FindByID(id int) (domain.Post, error)

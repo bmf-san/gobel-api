@@ -13,6 +13,6 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o gobel-api .
+RUN GOOS=linux GOARCH=amd64 go build -o app
 
 EXPOSE 8080

@@ -43,4 +43,4 @@ tbls: ## Update database documents.
 	tbls doc -f
 
 build: ## Run go build
-	cd app && GOOS=linux GOARCH=amd64 go build -o gobel-api
+	cd app && GOOS=linux GOARCH=amd64 go build -o app
