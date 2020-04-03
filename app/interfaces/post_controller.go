@@ -32,6 +32,18 @@ func (pc *PostController) Index(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// IndexByCategory displays a listing of the resource.
+func (pc *PostController) IndexByCategory(w http.ResponseWriter, r *http.Request) {
+	pc.PostInteractor.HandleIndexByCategory(w, r)
+	return
+}
+
+// IndexByTag displays a listing of the resource.
+func (pc *PostController) IndexByTag(w http.ResponseWriter, r *http.Request) {
+	pc.PostInteractor.HandleIndexByTag(w, r)
+	return
+}
+
 // IndexPrivate displays a listing of the resource.
 func (pc *PostController) IndexPrivate(w http.ResponseWriter, r *http.Request) {
 	pc.PostInteractor.HandleIndexPrivate(w, r)

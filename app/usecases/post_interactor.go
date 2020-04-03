@@ -86,6 +86,144 @@ func (pi *PostInteractor) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// HandleIndexByCategory returns a listing of the resource.
+func (pi *PostInteractor) HandleIndexByCategory(w http.ResponseWriter, r *http.Request) {
+	pi.Logger.LogAccess(r)
+
+	const defaultPage = 1
+	const defaultLimit = 10
+
+	count, err := pi.PostRepository.CountAllPublish()
+	if err != nil {
+		pi.Logger.LogError(err)
+		pi.JSONResponse.Error500(w)
+		return
+	}
+
+	paramPage := r.URL.Query().Get("page")
+	var page int
+	if paramPage == "" {
+		page = defaultPage
+	} else {
+		page, err = strconv.Atoi(paramPage)
+		if err != nil {
+			pi.Logger.LogError(err)
+			pi.JSONResponse.Error500(w)
+			return
+		}
+	}
+
+	paramLimit := r.URL.Query().Get("limit")
+	var limit int
+	if paramLimit == "" {
+		limit = defaultLimit
+	} else {
+		limit, err = strconv.Atoi(paramLimit)
+		if err != nil {
+			pi.Logger.LogError(err)
+			pi.JSONResponse.Error500(w)
+			return
+		}
+	}
+
+	name := goblin.GetParam(r.Context(), "name")
+
+	var posts domain.Posts
+	posts, err = pi.PostRepository.FindAllPublishByCategory(page, limit, name)
+	if err != nil {
+		pi.Logger.LogError(err)
+		pi.JSONResponse.Error500(w)
+		return
+	}
+
+	var pr PostResponse
+	var res []byte
+	res, err = json.Marshal(pr.MakeResponseHandleIndex(posts))
+	if err != nil {
+		pi.Logger.LogError(err)
+		pi.JSONResponse.Error500(w)
+		return
+	}
+
+	pageCount := math.Ceil(float64(count) / float64(limit))
+
+	w.Header().Set("Pagination-Count", strconv.Itoa(count))
+	w.Header().Set("Pagination-Pagecount", fmt.Sprint(pageCount))
+	w.Header().Set("Pagination-Page", strconv.Itoa(page))
+	w.Header().Set("Pagination-Limit", strconv.Itoa(limit))
+	pi.JSONResponse.Success200(w, res)
+	return
+}
+
+// HandleIndexByTag returns a listing of the resource.
+func (pi *PostInteractor) HandleIndexByTag(w http.ResponseWriter, r *http.Request) {
+	pi.Logger.LogAccess(r)
+
+	const defaultPage = 1
+	const defaultLimit = 10
+
+	count, err := pi.PostRepository.CountAllPublish()
+	if err != nil {
+		pi.Logger.LogError(err)
+		pi.JSONResponse.Error500(w)
+		return
+	}
+
+	paramPage := r.URL.Query().Get("page")
+	var page int
+	if paramPage == "" {
+		page = defaultPage
+	} else {
+		page, err = strconv.Atoi(paramPage)
+		if err != nil {
+			pi.Logger.LogError(err)
+			pi.JSONResponse.Error500(w)
+			return
+		}
+	}
+
+	paramLimit := r.URL.Query().Get("limit")
+	var limit int
+	if paramLimit == "" {
+		limit = defaultLimit
+	} else {
+		limit, err = strconv.Atoi(paramLimit)
+		if err != nil {
+			pi.Logger.LogError(err)
+			pi.JSONResponse.Error500(w)
+			return
+		}
+	}
+
+	name := goblin.GetParam(r.Context(), "name")
+
+	var posts domain.Posts
+	posts, err = pi.PostRepository.FindAllPublishByTag(page, limit, name)
+	if err != nil {
+		pi.Logger.LogError(err)
+		pi.JSONResponse.Error500(w)
+		return
+	}
+
+	var pr PostResponse
+	var res []byte
+	res, err = json.Marshal(pr.MakeResponseHandleIndex(posts))
+	if err != nil {
+		pi.Logger.LogError(err)
+		pi.JSONResponse.Error500(w)
+		return
+	}
+
+	pageCount := math.Ceil(float64(count) / float64(limit))
+
+	w.Header().Set("Pagination-Count", strconv.Itoa(count))
+	w.Header().Set("Pagination-Pagecount", fmt.Sprint(pageCount))
+	w.Header().Set("Pagination-Page", strconv.Itoa(page))
+	w.Header().Set("Pagination-Limit", strconv.Itoa(limit))
+	pi.JSONResponse.Success200(w, res)
+	return
+}
+
 // HandleIndexPrivate returns a listing of the resource.
 func (pi *PostInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Request) {
 	pi.Logger.LogAccess(r)

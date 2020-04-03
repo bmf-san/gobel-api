@@ -6,8 +6,10 @@
 !/app/log/.gitkeep
 
 # docker
-/mysql/gobel-mysql/data
-!/mysql/gobel-mysql/data/.gitkeep
+/mysql/data
+!/mysql/data/.gitkeep
+/mysql/log
+!/mysql/log/.gitkeep
 
 # editor
 .vscode/
