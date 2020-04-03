@@ -267,6 +267,456 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (posts domain.Post
 	return posts, nil
 }
 
+// FindAllPublishByCategory returns all entities.
+func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name string) (posts domain.Posts, err error) {
+	rows, err := pr.Conn.Query(`
+		SELECT
+			*
+		FROM
+			view_posts
+		WHERE
+			status = "publish"
+		AND category_name = ?
+		ORDER BY id
+		LIMIT ?, ?
+	`, name, page*limit-limit, limit)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var (
+			postID            int
+			adminID           int
+			categoryID        int
+			postTitle         string
+			postMDBody        string
+			postHTMLBody      string
+			postStatus        string
+			postCreatedAt     time.Time
+			postUpdatedAt     time.Time
+			adminName         string
+			adminEmail        string
+			adminPassword     string
+			adminCreatedAt    time.Time
+			adminUpdatedAt    time.Time
+			categoryName      string
+			categoryCreatedAt time.Time
+			categoryUpdatedAt time.Time
+		)
+		if err = rows.Scan(
+			&postID,
+			&adminID,
+			&categoryID,
+			&postTitle,
+			&postMDBody,
+			&postHTMLBody,
+			&postStatus,
+			&postCreatedAt,
+			&postUpdatedAt,
+			&adminName,
+			&adminEmail,
+			&adminPassword,
+			&adminCreatedAt,
+			&adminUpdatedAt,
+			&categoryName,
+			&categoryCreatedAt,
+			&categoryUpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		post := domain.Post{
+			ID: postID,
+			Admin: domain.Admin{
+				ID:        adminID,
+				Name:      adminName,
+				Email:     adminEmail,
+				Password:  adminPassword,
+				CreatedAt: adminCreatedAt,
+				UpdatedAt: adminUpdatedAt,
+			},
+			Category: domain.Category{
+				ID:        categoryID,
+				Name:      categoryName,
+				CreatedAt: categoryCreatedAt,
+				UpdatedAt: categoryUpdatedAt,
+			},
+			Title:     postTitle,
+			MDBody:    postMDBody,
+			HTMLBody:  postHTMLBody,
+			Status:    postStatus,
+			CreatedAt: postCreatedAt,
+			UpdatedAt: postUpdatedAt,
+		}
+		posts = append(posts, post)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	postIDs := []int{}
+	for _, p := range posts {
+		postIDs = append(postIDs, p.ID)
+	}
+
+	queryTag := `
+		SELECT
+			tag_post.post_id AS tag_post_post_id,
+			tags.id AS tag_id,
+			tags.name AS tag_name,
+			tags.created_at AS tag_created_at,
+			tags.updated_at AS tag_updated_at
+		FROM
+			tags
+		LEFT JOIN
+			tag_post
+		ON
+			tags.id = tag_post.tag_id
+		WHERE
+			tag_post.post_id
+		IN
+			(%s)
+	`
+
+	var stmt string
+	if len(postIDs) == 0 {
+		stmt = fmt.Sprintf(queryTag, `""`)
+	} else {
+		stmt = fmt.Sprintf(queryTag, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
+	}
+
+	rows, err = pr.Conn.Query(stmt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var (
+			tagPostPostID int
+			tagID         int
+			tagName       string
+			tagCreatedAt  time.Time
+			tagUpdatedAt  time.Time
+		)
+		if err = rows.Scan(&tagPostPostID, &tagID, &tagName, &tagCreatedAt, &tagUpdatedAt); err != nil {
+			return nil, err
+		}
+
+		for p := range posts {
+			if posts[p].ID == tagPostPostID {
+				posts[p].Tags = append(posts[p].Tags, domain.Tag{
+					ID:        tagID,
+					Name:      tagName,
+					CreatedAt: tagCreatedAt,
+					UpdatedAt: tagUpdatedAt,
+				})
+			}
+
+		}
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	queryComment := `
+		SELECT
+			*
+		FROM
+			comments
+		WHERE
+			status = "publish"
+		IN
+			(%s)
+	`
+
+	if len(postIDs) == 0 {
+		stmt = fmt.Sprintf(queryComment, `""`)
+	} else {
+		stmt = fmt.Sprintf(queryComment, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
+	}
+
+	rows, err = pr.Conn.Query(stmt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var (
+			commentID        int
+			commentPostID    int
+			commentBody      string
+			commentStatus    string
+			commentCreatedAt time.Time
+			commentUpdatedAt time.Time
+		)
+		if err = rows.Scan(&commentID, &commentPostID, &commentBody, &commentStatus, &commentCreatedAt, &commentUpdatedAt); err != nil {
+			return nil, err
+		}
+
+		for p := range posts {
+			if posts[p].ID == commentPostID {
+				posts[p].Comments = append(posts[p].Comments, domain.Comment{
+					ID:        commentID,
+					PostID:    commentPostID,
+					Body:      commentBody,
+					Status:    commentStatus,
+					CreatedAt: commentCreatedAt,
+					UpdatedAt: commentUpdatedAt,
+				})
+			}
+
+		}
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
+// FindAllPublishByTag returns all entities.
+func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) (posts domain.Posts, err error) {
+	rows, err := pr.Conn.Query(`
+	SELECT
+		*
+	FROM
+		view_posts
+	WHERE
+		id
+	IN (
+		SELECT
+    		post_id
+		FROM
+        	tags
+		LEFT JOIN
+        	tag_post
+		ON
+        	tags.id = tag_post.tag_id
+		WHERE
+			tags.name = ?
+		)
+	ORDER BY id
+	LIMIT ?, ?
+	`, name, page*limit-limit, limit)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var (
+			postID            int
+			adminID           int
+			categoryID        int
+			postTitle         string
+			postMDBody        string
+			postHTMLBody      string
+			postStatus        string
+			postCreatedAt     time.Time
+			postUpdatedAt     time.Time
+			adminName         string
+			adminEmail        string
+			adminPassword     string
+			adminCreatedAt    time.Time
+			adminUpdatedAt    time.Time
+			categoryName      string
+			categoryCreatedAt time.Time
+			categoryUpdatedAt time.Time
+		)
+		if err = rows.Scan(
+			&postID,
+			&adminID,
+			&categoryID,
+			&postTitle,
+			&postMDBody,
+			&postHTMLBody,
+			&postStatus,
+			&postCreatedAt,
+			&postUpdatedAt,
+			&adminName,
+			&adminEmail,
+			&adminPassword,
+			&adminCreatedAt,
+			&adminUpdatedAt,
+			&categoryName,
+			&categoryCreatedAt,
+			&categoryUpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		post := domain.Post{
+			ID: postID,
+			Admin: domain.Admin{
+				ID:        adminID,
+				Name:      adminName,
+				Email:     adminEmail,
+				Password:  adminPassword,
+				CreatedAt: adminCreatedAt,
+				UpdatedAt: adminUpdatedAt,
+			},
+			Category: domain.Category{
+				ID:        categoryID,
+				Name:      categoryName,
+				CreatedAt: categoryCreatedAt,
+				UpdatedAt: categoryUpdatedAt,
+			},
+			Title:     postTitle,
+			MDBody:    postMDBody,
+			HTMLBody:  postHTMLBody,
+			Status:    postStatus,
+			CreatedAt: postCreatedAt,
+			UpdatedAt: postUpdatedAt,
+		}
+		posts = append(posts, post)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	postIDs := []int{}
+	for _, p := range posts {
+		postIDs = append(postIDs, p.ID)
+	}
+
+	queryTag := `
+		SELECT
+			tag_post.post_id AS tag_post_post_id,
+			tags.id AS tag_id,
+			tags.name AS tag_name,
+			tags.created_at AS tag_created_at,
+			tags.updated_at AS tag_updated_at
+		FROM
+			tags
+		LEFT JOIN
+			tag_post
+		ON
+			tags.id = tag_post.tag_id
+		WHERE
+			tag_post.post_id
+		IN
+			(%s)
+	`
+
+	var stmt string
+	if len(postIDs) == 0 {
+		stmt = fmt.Sprintf(queryTag, `""`)
+	} else {
+		stmt = fmt.Sprintf(queryTag, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
+	}
+
+	rows, err = pr.Conn.Query(stmt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var (
+			tagPostPostID int
+			tagID         int
+			tagName       string
+			tagCreatedAt  time.Time
+			tagUpdatedAt  time.Time
+		)
+		if err = rows.Scan(&tagPostPostID, &tagID, &tagName, &tagCreatedAt, &tagUpdatedAt); err != nil {
+			return nil, err
+		}
+
+		// TODO: これじゃだめ
+		for p := range posts {
+			if posts[p].ID == tagPostPostID {
+				posts[p].Tags = append(posts[p].Tags, domain.Tag{
+					ID:        tagID,
+					Name:      tagName,
+					CreatedAt: tagCreatedAt,
+					UpdatedAt: tagUpdatedAt,
+				})
+			}
+
+		}
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	queryComment := `
+		SELECT
+			*
+		FROM
+			comments
+		WHERE
+			status = "publish"
+		IN
+			(%s)
+	`
+
+	if len(postIDs) == 0 {
+		stmt = fmt.Sprintf(queryComment, `""`)
+	} else {
+		stmt = fmt.Sprintf(queryComment, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
+	}
+
+	rows, err = pr.Conn.Query(stmt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var (
+			commentID        int
+			commentPostID    int
+			commentBody      string
+			commentStatus    string
+			commentCreatedAt time.Time
+			commentUpdatedAt time.Time
+		)
+		if err = rows.Scan(&commentID, &commentPostID, &commentBody, &commentStatus, &commentCreatedAt, &commentUpdatedAt); err != nil {
+			return nil, err
+		}
+
+		for p := range posts {
+			if posts[p].ID == commentPostID {
+				posts[p].Comments = append(posts[p].Comments, domain.Comment{
+					ID:        commentID,
+					PostID:    commentPostID,
+					Body:      commentBody,
+					Status:    commentStatus,
+					CreatedAt: commentCreatedAt,
+					UpdatedAt: commentUpdatedAt,
+				})
+			}
+
+		}
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
 // FindAll returns all entities.
 func (pr *PostRepository) FindAll(page int, limit int) (posts domain.Posts, err error) {
 	rows, err := pr.Conn.Query(`

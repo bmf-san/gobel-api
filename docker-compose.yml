@@ -23,9 +23,10 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./mysql/gobel-mysql/data:/var/lib/mysql
+      - ./mysql/data:/var/lib/mysql
       - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./mysql/gobel-mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./mysql/log:/var/log/mysql
     cap_add:
       - SYS_ADMIN
     security_opt:

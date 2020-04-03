@@ -24,6 +24,8 @@ func Dispatch(conn *sql.DB, logger usecases.Logger) {
 	publicMws := middleware.NewMiddlewares(middleware.CORS)
 
 	r.GET("/posts", publicMws.Then(postController.Index))
+	r.GET("/posts/categories/:name", publicMws.Then(postController.IndexByCategory))
+	r.GET("/posts/tags/:name", publicMws.Then(postController.IndexByTag))
 	r.GET("/posts/:title", publicMws.Then(postController.Show))
 	r.POST("/posts/:title/comments", publicMws.Then(commentController.Store))
 

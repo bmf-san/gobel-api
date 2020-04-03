@@ -180,16 +180,18 @@ Content-Type: application/json
 # Public API
 Public API is open api that does not required authentication.
 
-| Method |        Endpoint        |             Description              |
-| :----- | :--------------------- | :----------------------------------- |
-| POST   | /authenticate          | Get a json web token by credentials. |
-| GET    | /posts                 | Get all publish posts.               |
-| GET    | /posts/:title          | Get the specified post by title.     |
-| POST   | /posts/:title/comments | Store a newly comment.               |
-| GET    | /categories            | Get all categories.                  |
-| GET    | /categories/:name      | Get the specified category by name.  |
-| GET    | /tags                  | Get all tags.                        |
-| GET    | /tags/:name            | Get the specified tag by name.       |
+| Method |        Endpoint         |             Description              |
+| :----- | :---------------------- | :----------------------------------- |
+| POST   | /authenticate           | Get a json web token by credentials. |
+| GET    | /posts                  | Get all publish posts.               |
+| GET    | /posts/categories/:name | Get all publish posts by cagtegory. |
+| GET    | /posts/tags/:name       | Get all publish posts by tag.       |
+| GET    | /posts/:title           | Get the specified post by title.     |
+| POST   | /posts/:title/comments  | Store a newly comment.               |
+| GET    | /categories             | Get all categories.                  |
+| GET    | /categories/:name       | Get the specified category by name.  |
+| GET    | /tags                   | Get all tags.                        |
+| GET    | /tags/:name             | Get the specified tag by name.       |
 
 // TODO: search api
 
@@ -225,6 +227,23 @@ Public API is open api that does not required authentication.
 | page  | integer | optional | A page number of posts.  |
 | limit | integer | optional | A limit number of posts. |
 
+### Get all publish posts by category
+#### Endpoint
+`GET /posts/categories/:name`
+
+#### Path Parameters
+| Name |  Type  | Required |      Description      |
+| :--- | :----- | :------- | :-------------------- |
+| name | string | required | A name of a category. |
+
+### Get all publish posts by tag
+#### Endpoint
+`GET /posts/tags/:name`
+
+#### Path Parameters
+| Name |  Type  | Required |   Description    |
+| :--- | :----- | :------- | :--------------- |
+| name | string | required | A name of a tag. |
 
 ### Get the specified post by title
 #### Endpoint
@@ -251,6 +270,7 @@ Public API is open api that does not required authentication.
 | :---- | :----- | :------- | :----------------- |
 | title | string | required | A title of a post. |
 
+
 ### Get all categories
 #### Endpoint
 `GET /categories`
@@ -260,7 +280,6 @@ Public API is open api that does not required authentication.
 | :---- | :------ | :------- | :--------------------------- |
 | page  | integer | optional | A page number of categories. |
 | limit | integer | optional | A limit number of posts.     |
-
 
 ### Get the specified category by name
 #### Endpoint
