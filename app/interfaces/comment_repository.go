@@ -10,12 +10,12 @@ import (
 
 // A CommentRepository is a repository for a comment.[]
 type CommentRepository struct {
-	Conn *sql.DB
+	ConnMySQL *sql.DB
 }
 
 // CountAll count all entities.
 func (cr *CommentRepository) CountAll() (count int, err error) {
-	row := cr.Conn.QueryRow(`
+	row := cr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
@@ -31,7 +31,7 @@ func (cr *CommentRepository) CountAll() (count int, err error) {
 
 // FindAll returns all entities.
 func (cr *CommentRepository) FindAll(page int, limit int) (comments domain.Comments, err error) {
-	rows, err := cr.Conn.Query(`
+	rows, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -84,7 +84,7 @@ func (cr *CommentRepository) FindAll(page int, limit int) (comments domain.Comme
 
 // FindByID returns the entity identified by the given id.
 func (cr *CommentRepository) FindByID(id int) (comment domain.Comment, err error) {
-	row, err := cr.Conn.Query(`
+	row, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -131,7 +131,7 @@ func (cr *CommentRepository) FindByID(id int) (comment domain.Comment, err error
 
 // Save saves the given entity.
 func (cr *CommentRepository) Save(req usecases.RequestComment) (err error) {
-	tx, err := cr.Conn.Begin()
+	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
 
@@ -155,7 +155,7 @@ func (cr *CommentRepository) Save(req usecases.RequestComment) (err error) {
 
 // SaveStatusByID save the given entity identified by the given id
 func (cr *CommentRepository) SaveStatusByID(req usecases.RequestCommentStatus, id int) (err error) {
-	tx, err := cr.Conn.Begin()
+	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
 

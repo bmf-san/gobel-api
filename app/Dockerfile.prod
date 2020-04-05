@@ -5,7 +5,7 @@ RUN apk update && \
     apk add --no-cache libc-dev gcc git openssh openssl bash && \
     go get -u golang.org/x/lint/golint
 
-WORKDIR /go/src/gobel-api
+WORKDIR /go/src/gobel-api/app
 
 COPY . .
 

@@ -1,6 +1,10 @@
 package domain
 
-import "time"
+import (
+	"time"
+
+	"golang.org/x/crypto/bcrypt"
+)
 
 // A Admins represents the plural of admin.
 type Admins []Admin
@@ -13,4 +17,13 @@ type Admin struct {
 	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// VerifyPassword verfies hashed password and requested password.
+func (a *Admin) VerifyPassword(hashedPassword []byte, reqPassword []byte) error {
+	if err := bcrypt.CompareHashAndPassword(hashedPassword, reqPassword); err != nil {
+		return err
+	}
+
+	return nil
 }

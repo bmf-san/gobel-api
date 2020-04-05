@@ -14,14 +14,14 @@ type CommentController struct {
 }
 
 // NewCommentController creates a CommentController.
-func NewCommentController(conn *sql.DB, logger usecases.Logger) *CommentController {
+func NewCommentController(connMySQL *sql.DB, logger usecases.Logger) *CommentController {
 	return &CommentController{
 		CommentInteractor: usecases.CommentInteractor{
 			CommentRepository: &CommentRepository{
-				Conn: conn,
+				ConnMySQL: connMySQL,
 			},
 			PostRepository: &PostRepository{
-				Conn: conn,
+				ConnMySQL: connMySQL,
 			},
 			JSONResponse: &JSONResponse{},
 			Logger:       logger,

@@ -14,11 +14,11 @@ type CategoryController struct {
 }
 
 // NewCategoryController creates a CategoryController.
-func NewCategoryController(conn *sql.DB, logger usecases.Logger) *CategoryController {
+func NewCategoryController(connMySQL *sql.DB, logger usecases.Logger) *CategoryController {
 	return &CategoryController{
 		CategoryInteractor: usecases.CategoryInteractor{
 			CategoryRepository: &CategoryRepository{
-				Conn: conn,
+				ConnMySQL: connMySQL,
 			},
 			JSONResponse: &JSONResponse{},
 			Logger:       logger,
