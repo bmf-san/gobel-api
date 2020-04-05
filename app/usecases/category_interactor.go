@@ -21,15 +21,13 @@ type CategoryInteractor struct {
 
 // HandleIndex returns a listing of the resource.
 func (ci *CategoryInteractor) HandleIndex(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	const defaultPage = 1
 	const defaultLimit = 10
 
 	count, err := ci.CategoryRepository.CountAll()
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -40,8 +38,8 @@ func (ci *CategoryInteractor) HandleIndex(w http.ResponseWriter, r *http.Request
 	} else {
 		page, err = strconv.Atoi(paramPage)
 		if err != nil {
-			ci.Logger.LogError(err)
-			ci.JSONResponse.Error500(w)
+			ci.Logger.Error(err.Error())
+			ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -53,8 +51,8 @@ func (ci *CategoryInteractor) HandleIndex(w http.ResponseWriter, r *http.Request
 	} else {
 		limit, err = strconv.Atoi(paramLimit)
 		if err != nil {
-			ci.Logger.LogError(err)
-			ci.JSONResponse.Error500(w)
+			ci.Logger.Error(err.Error())
+			ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -62,17 +60,16 @@ func (ci *CategoryInteractor) HandleIndex(w http.ResponseWriter, r *http.Request
 	var categories domain.Categories
 	categories, err = ci.CategoryRepository.FindAll(page, limit)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var cr CategoryResponse
-	var res []byte
-	res, err = json.Marshal(cr.MakeResponseHandleIndex(categories))
+	code, msg, err := cr.MakeResponseHandleIndex(categories)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -82,21 +79,19 @@ func (ci *CategoryInteractor) HandleIndex(w http.ResponseWriter, r *http.Request
 	w.Header().Set("Pagination-Pagecount", fmt.Sprint(pageCount))
 	w.Header().Set("Pagination-Page", strconv.Itoa(page))
 	w.Header().Set("Pagination-Limit", strconv.Itoa(limit))
-	ci.JSONResponse.Success200(w, res)
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleIndexPrivate returns a listing of the resource.
 func (ci *CategoryInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	const defaultPage = 1
 	const defaultLimit = 10
 
 	count, err := ci.CategoryRepository.CountAll()
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -107,8 +102,8 @@ func (ci *CategoryInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.
 	} else {
 		page, err = strconv.Atoi(paramPage)
 		if err != nil {
-			ci.Logger.LogError(err)
-			ci.JSONResponse.Error500(w)
+			ci.Logger.Error(err.Error())
+			ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -120,8 +115,8 @@ func (ci *CategoryInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.
 	} else {
 		limit, err = strconv.Atoi(paramLimit)
 		if err != nil {
-			ci.Logger.LogError(err)
-			ci.JSONResponse.Error500(w)
+			ci.Logger.Error(err.Error())
+			ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -129,17 +124,16 @@ func (ci *CategoryInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.
 	var categories domain.Categories
 	categories, err = ci.CategoryRepository.FindAll(page, limit)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var cr CategoryResponse
-	var res []byte
-	res, err = json.Marshal(cr.MakeResponseHandleIndexPrivate(categories))
+	code, msg, err := cr.MakeResponseHandleIndexPrivate(categories)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -149,77 +143,69 @@ func (ci *CategoryInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.
 	w.Header().Set("Pagination-Pagecount", fmt.Sprint(pageCount))
 	w.Header().Set("Pagination-Page", strconv.Itoa(page))
 	w.Header().Set("Pagination-Limit", strconv.Itoa(limit))
-	ci.JSONResponse.Success200(w, res)
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleShow display the specified resource.
 func (ci *CategoryInteractor) HandleShow(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	name := goblin.GetParam(r.Context(), "name")
 
 	var category domain.Category
 	category, err := ci.CategoryRepository.FindByName(name)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var cr CategoryResponse
-	var res []byte
-	res, err = json.Marshal(cr.MakeResponseHandleShow(category))
+	code, msg, err := cr.MakeResponseHandleShow(category)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.Success200(w, res)
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleShowPrivate display the specified resource.
 func (ci *CategoryInteractor) HandleShowPrivate(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var category domain.Category
 	category, err = ci.CategoryRepository.FindByID(id)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var cr CategoryResponse
-	var res []byte
-	res, err = json.Marshal(cr.MakeResponseHandleShowPrivate(category))
+	code, msg, err := cr.MakeResponseHandleShowPrivate(category)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.Success200(w, res)
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleStorePrivate stores a newly created resource in storage.
 func (ci *CategoryInteractor) HandleStorePrivate(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -227,30 +213,28 @@ func (ci *CategoryInteractor) HandleStorePrivate(w http.ResponseWriter, r *http.
 
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	err = ci.CategoryRepository.Save(req)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.Success201(w, []byte("The item was created successfully"))
+	ci.JSONResponse.HTTPStatus(w, http.StatusCreated, nil)
 	return
 }
 
 // HandleUpdatePrivate updates the specified resource in storage.
 func (ci *CategoryInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -258,51 +242,49 @@ func (ci *CategoryInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http
 
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	err = ci.CategoryRepository.SaveByID(req, id)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.Success200(w, []byte("The item was updated successfully"))
+	ci.JSONResponse.HTTPStatus(w, http.StatusOK, nil)
 	return
 }
 
 // HandleDestroyPrivate removes the specified resource from storage.
 func (ci *CategoryInteractor) HandleDestroyPrivate(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 	count, err := ci.CategoryRepository.DeleteByID(id)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	if count == 0 {
-		ci.JSONResponse.Error404(w)
+		ci.JSONResponse.HTTPStatus(w, http.StatusNotFound, nil)
 		return
 	}
 
-	ci.JSONResponse.Success200(w, []byte("The item was deleted successfully"))
+	ci.JSONResponse.HTTPStatus(w, http.StatusOK, nil)
 	return
 }

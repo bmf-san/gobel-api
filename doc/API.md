@@ -1,6 +1,144 @@
 # API
 Refered to [cryptlex/rest-api-response-format](https://github.com/cryptlex/rest-api-response-format).
 
+- [API](#api)
+  - [Root Endpoint](#root-endpoint)
+  - [Response Format](#response-format)
+    - [Success](#success)
+      - [GET](#get)
+      - [POST](#post)
+      - [PATCH](#patch)
+      - [DELETE](#delete)
+    - [Error](#error)
+      - [Common](#common)
+      - [GET](#get-1)
+      - [POST](#post-1)
+      - [PATCH](#patch-1)
+      - [DELETE](#delete-1)
+      - [Unauthorized](#unauthorized)
+      - [Forbidden](#forbidden)
+- [Public API](#public-api)
+  - [Authentication](#authentication)
+    - [Get an access token and refresh by credentials](#get-an-access-token-and-refresh-by-credentials)
+      - [Endpoint](#endpoint)
+      - [Request bodies](#request-bodies)
+  - [Post](#post-2)
+    - [Get all publish posts](#get-all-publish-posts)
+      - [Endpoint](#endpoint-1)
+      - [Header](#header)
+      - [Query Parameters](#query-parameters)
+    - [Get all publish posts by category](#get-all-publish-posts-by-category)
+      - [Endpoint](#endpoint-2)
+      - [Path Parameters](#path-parameters)
+    - [Get all publish posts by tag](#get-all-publish-posts-by-tag)
+      - [Endpoint](#endpoint-3)
+      - [Path Parameters](#path-parameters-1)
+    - [Get the specified post by title](#get-the-specified-post-by-title)
+      - [Endpoint](#endpoint-4)
+      - [Path Parameters](#path-parameters-2)
+    - [Store a newly comment](#store-a-newly-comment)
+      - [Endpoint](#endpoint-5)
+      - [Request bodies](#request-bodies-1)
+      - [Path Parameters](#path-parameters-3)
+    - [Get all categories](#get-all-categories)
+      - [Endpoint](#endpoint-6)
+      - [Query Parameters](#query-parameters-1)
+    - [Get the specified category by name](#get-the-specified-category-by-name)
+      - [Endpoint](#endpoint-7)
+      - [Path Parameters](#path-parameters-4)
+    - [Get all tags](#get-all-tags)
+      - [Endpoint](#endpoint-8)
+      - [Query Parameters](#query-parameters-2)
+    - [Get the specified tag by name](#get-the-specified-tag-by-name)
+      - [Endpoint](#endpoint-9)
+      - [Path Parameters](#path-parameters-5)
+- [Private API](#private-api)
+  - [Authentication](#authentication-1)
+    - [Disable an access token](#disable-an-access-token)
+      - [Endpoint](#endpoint-10)
+      - [Header](#header-1)
+    - [Refresh an acess token and refresh token](#refresh-an-acess-token-and-refresh-token)
+      - [Endpoint](#endpoint-11)
+      - [Header](#header-2)
+    - [Get the specified admin by access token](#get-the-specified-admin-by-access-token)
+      - [Endpoint](#endpoint-12)
+      - [Header](#header-3)
+    - [Get all posts](#get-all-posts)
+      - [Endpoint](#endpoint-13)
+      - [Header](#header-4)
+      - [Query Parameters](#query-parameters-3)
+    - [Get the specified post by id](#get-the-specified-post-by-id)
+      - [Endpoint](#endpoint-14)
+      - [Path Parameters](#path-parameters-6)
+    - [Store a newly comment](#store-a-newly-comment-1)
+      - [Endpoint](#endpoint-15)
+      - [Request bodies](#request-bodies-2)
+    - [Store a newly post](#store-a-newly-post)
+      - [Endpoint](#endpoint-16)
+      - [Header](#header-5)
+      - [Request bodies](#request-bodies-3)
+    - [Update the specified post](#update-the-specified-post)
+      - [Endpoint](#endpoint-17)
+      - [Header](#header-6)
+      - [Query Parameters](#query-parameters-4)
+      - [Request bodies](#request-bodies-4)
+    - [Remove the specified post](#remove-the-specified-post)
+      - [Endpoint](#endpoint-18)
+      - [Header](#header-7)
+      - [Query Parameters](#query-parameters-5)
+    - [Get all comments](#get-all-comments)
+      - [Endpoint](#endpoint-19)
+      - [Header](#header-8)
+      - [Query Parameters](#query-parameters-6)
+    - [Get the specified comment by id](#get-the-specified-comment-by-id)
+      - [Endpoint](#endpoint-20)
+      - [Path Parameters](#path-parameters-7)
+  - [Update the specified comment status](#update-the-specified-comment-status)
+      - [Endpoint](#endpoint-21)
+      - [Header](#header-9)
+      - [Query Parameters](#query-parameters-7)
+      - [Request bodies](#request-bodies-5)
+    - [Get all categories](#get-all-categories-1)
+      - [Endpoint](#endpoint-22)
+      - [Header](#header-10)
+      - [Query Parameters](#query-parameters-8)
+    - [Get the specified category by id](#get-the-specified-category-by-id)
+      - [Endpoint](#endpoint-23)
+      - [Path Parameters](#path-parameters-8)
+    - [Get all tags](#get-all-tags-1)
+      - [Endpoint](#endpoint-24)
+      - [Header](#header-11)
+      - [Query Parameters](#query-parameters-9)
+    - [Get the specified tag by id](#get-the-specified-tag-by-id)
+      - [Endpoint](#endpoint-25)
+      - [Path Parameters](#path-parameters-9)
+    - [Store a newly category](#store-a-newly-category)
+      - [Endpoint](#endpoint-26)
+      - [Header](#header-12)
+      - [Request bodies](#request-bodies-6)
+    - [Update the specified category](#update-the-specified-category)
+      - [Endpoint](#endpoint-27)
+      - [Header](#header-13)
+      - [Query Parameters](#query-parameters-10)
+      - [Request bodies](#request-bodies-7)
+    - [Remove the specified category](#remove-the-specified-category)
+      - [Endpoint](#endpoint-28)
+      - [Header](#header-14)
+      - [Query Parameters](#query-parameters-11)
+    - [Store a newly tag](#store-a-newly-tag)
+      - [Endpoint](#endpoint-29)
+      - [Header](#header-15)
+      - [Request bodies](#request-bodies-8)
+    - [Update the specified tag](#update-the-specified-tag)
+      - [Endpoint](#endpoint-30)
+      - [Header](#header-16)
+      - [Query Parameters](#query-parameters-12)
+      - [Request bodies](#request-bodies-9)
+    - [Remove the specified tag](#remove-the-specified-tag)
+      - [Endpoint](#endpoint-31)
+      - [Header](#header-17)
+      - [Query Parameters](#query-parameters-13)
+
 ## Root Endpoint
 `API_DOMAIN/api`
 
@@ -180,25 +318,23 @@ Content-Type: application/json
 # Public API
 Public API is open api that does not required authentication.
 
-| Method |        Endpoint         |             Description              |
-| :----- | :---------------------- | :----------------------------------- |
-| POST   | /authenticate           | Get a json web token by credentials. |
-| GET    | /posts                  | Get all publish posts.               |
-| GET    | /posts/categories/:name | Get all publish posts by cagtegory. |
-| GET    | /posts/tags/:name       | Get all publish posts by tag.       |
-| GET    | /posts/:title           | Get the specified post by title.     |
-| POST   | /posts/:title/comments  | Store a newly comment.               |
-| GET    | /categories             | Get all categories.                  |
-| GET    | /categories/:name       | Get the specified category by name.  |
-| GET    | /tags                   | Get all tags.                        |
-| GET    | /tags/:name             | Get the specified tag by name.       |
-
-// TODO: search api
+| Method |        Endpoint         |                       Description                       |
+| :----- | :---------------------- | :------------------------------------------------------ |
+| POST   | /signin                 | Get an access token and a refresh token by credentials. |
+| GET    | /posts                  | Get all publish posts.                                  |
+| GET    | /posts/categories/:name | Get all publish posts by cagtegory.                     |
+| GET    | /posts/tags/:name       | Get all publish posts by tag.                           |
+| GET    | /posts/:title           | Get the specified post by title.                        |
+| POST   | /posts/:title/comments  | Store a newly comment.                                  |
+| GET    | /categories             | Get all categories.                                     |
+| GET    | /categories/:name       | Get the specified category by name.                     |
+| GET    | /tags                   | Get all tags.                                           |
+| GET    | /tags/:name             | Get the specified tag by name.                          |
 
 ## Authentication
-### Get a json web token by credentials
+### Get an access token and refresh by credentials
 #### Endpoint
-`POST /authenticate`
+`POST /signin`
 
 #### Request bodies
 ```json
@@ -313,38 +449,70 @@ Public API is open api that does not required authentication.
 
 Private API is closed api that does required authentication.
 
-| Method |       Endpoint       |             Description              |
-| :----- | :------------------- | :----------------------------------- |
-| GET    | /posts               | Get all posts.                       |
-| GET    | /posts/:id           | Get the specified post by id.        |
-| POST   | /posts               | Store a newly post.                  |
-| PATCH  | /posts/:id           | Update the specified post.           |
-| DELETE | /posts/:id           | Remove the specified post.           |
-| GET    | /comments            | Get all comments.                    |
-| GET    | /comments/:id        | Get the specified comment by id.     |
-| PATCH  | /comments/:id/status | Update the specified comment status. |
-| GET    | /categories          | Get all categories.                  |
-| GET    | /categories/:id      | Get the specified category by id.    |
-| POST   | /categories          | Store a newly categories.            |
-| PATCH  | /categories/:id      | Update the specified category.       |
-| DELETE | /categories/:id      | Remove the specified category.       |
-| GET    | /tags                | Get all tags.                        |
-| GET    | /tags/:id            | Get the specified tag by id.         |
-| POST   | /tags                | Store a newly tag.                   |
-| PATCH  | /tags/:id            | Update the specified tag.            |
-| DELETE | /tags/:id            | Remove the specified tag.            |
+| Method |           Endpoint            |                Description                 |
+| :----- | :---------------------------- | :----------------------------------------- |
+| POST   | /private/signout              | Disable an access token.                   |
+| POST   | /private/refresh              | Refresh an access token and refresh token. |
+| GET    | /private/me                   | Get the specified admin by access token.   |
+| GET    | /private/posts                | Get all posts.                             |
+| GET    | /private/posts/:id            | Get the specified post by id.              |
+| POST   | /private/posts                | Store a newly post.                        |
+| PATCH  | /private/posts/:id            | Update the specified post.                 |
+| DELETE | /private//posts/:id           | Remove the specified post.                 |
+| GET    | /private//comments            | Get all comments.                          |
+| GET    | /private//comments/:id        | Get the specified comment by id.           |
+| PATCH  | /private//comments/:id/status | Update the specified comment status.       |
+| GET    | /private//categories          | Get all categories.                        |
+| GET    | /private//categories/:id      | Get the specified category by id.          |
+| POST   | /private//categories          | Store a newly categories.                  |
+| PATCH  | /private//categories/:id      | Update the specified category.             |
+| DELETE | /private//categories/:id      | Remove the specified category.             |
+| GET    | /private//tags                | Get all tags.                              |
+| GET    | /private//tags/:id            | Get the specified tag by id.               |
+| POST   | /private//tags                | Store a newly tag.                         |
+| PATCH  | /private//tags/:id            | Update the specified tag.                  |
+| DELETE | /private//tags/:id            | Remove the specified tag.                  |
+
+## Authentication
+### Disable an access token
+#### Endpoint
+`POST /private/signout`
+
+#### Header
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+
+### Refresh an acess token and refresh token
+#### Endpoint
+`POST /private/refresh`
+
+#### Header
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | A refresh token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+
+### Get the specified admin by access token
+#### Endpoint
+`GET /private/me`
+
+#### Header
+|     Name      |  Description   |                   Example                   |
+| :------------ | :------------- | :------------------------------------------ |
+| Authorization | A access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 ### Get all posts
 #### Endpoint
-`GET /posts`
+`GET /private/posts`
 
 #### Header
-|         Name         |        Description         | Example |
-| :------------------- | :------------------------- | :------ |
-| Pagination-Count     | A count of records         | 100     |
-| Pagination-PageCount | A count of page            | 10      |
-| Pagination-Page      | A current page number      | 5       |
-| Pagination-Limit     | A limit of number per page | 10      |
+|         Name         |        Description         |                   Example                   |
+| :------------------- | :------------------------- | :------------------------------------------ |
+| Authorization        | An access token            | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+| Pagination-Count     | A count of records         | 100                                         |
+| Pagination-PageCount | A count of page            | 10                                          |
+| Pagination-Page      | A current page number      | 5                                           |
+| Pagination-Limit     | A limit of number per page | 10                                          |
 
 #### Query Parameters
 | Name  |  Type   | Required |       Description        |
@@ -354,7 +522,7 @@ Private API is closed api that does required authentication.
 
 ### Get the specified post by id
 #### Endpoint
-`GET /posts/:id`
+`GET /private/posts/:id`
 
 #### Path Parameters
 | Name | Type | Required |   Description    |
@@ -363,7 +531,7 @@ Private API is closed api that does required authentication.
 
 ### Store a newly comment
 #### Endpoint
-`POST /comment`
+`POST /private/comment`
 
 #### Request bodies
 ```json
@@ -374,12 +542,12 @@ Private API is closed api that does required authentication.
 ```
 ### Store a newly post
 #### Endpoint
-`POST /posts`
+`POST /private/posts`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Request bodies
 ```json
@@ -404,12 +572,12 @@ Private API is closed api that does required authentication.
 
 ### Update the specified post
 #### Endpoint
-`PATCH /posts/:id`
+`PATCH /private/posts/:id`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Query Parameters
 | Name | Type | Required |   Description    |
@@ -439,12 +607,12 @@ Private API is closed api that does required authentication.
 
 ### Remove the specified post
 #### Endpoint
-`DELETE /posts/:id`
+`DELETE /private/posts/:id`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Query Parameters
 | Name | Type | Required |   Description    |
@@ -453,7 +621,7 @@ Private API is closed api that does required authentication.
 
 ### Get all comments
 #### Endpoint
-`GET /comments`
+`GET /private/comments`
 
 #### Header
 |         Name         |        Description         | Example |
@@ -471,7 +639,7 @@ Private API is closed api that does required authentication.
 
 ### Get the specified comment by id
 #### Endpoint
-`GET /comments/:id`
+`GET /private/comments/:id`
 
 #### Path Parameters
 | Name | Type | Required |     Description     |
@@ -480,12 +648,12 @@ Private API is closed api that does required authentication.
 
 ## Update the specified comment status
 #### Endpoint
-`PATCH /comments/:id/status`
+`PATCH /private/comments/:id/status`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Query Parameters
 | Name |  Type   | Required |     Description     |
@@ -501,7 +669,7 @@ Private API is closed api that does required authentication.
 
 ### Get all categories
 #### Endpoint
-`GET /categories`
+`GET /private/categories`
 
 #### Header
 |         Name         |        Description         | Example |
@@ -519,7 +687,7 @@ Private API is closed api that does required authentication.
 
 ### Get the specified category by id
 #### Endpoint
-`GET /categories/:id`
+`GET /private/categories/:id`
 
 #### Path Parameters
 | Name | Type | Required |     Description      |
@@ -528,7 +696,7 @@ Private API is closed api that does required authentication.
 
 ### Get all tags
 #### Endpoint
-`GET /tags`
+`GET /private/tags`
 
 #### Header
 |         Name         |        Description         | Example |
@@ -546,7 +714,7 @@ Private API is closed api that does required authentication.
 
 ### Get the specified tag by id
 #### Endpoint
-`GET /tags/:id`
+`GET /private/tags/:id`
 
 #### Path Parameters
 | Name | Type | Required |   Description   |
@@ -555,12 +723,12 @@ Private API is closed api that does required authentication.
 
 ### Store a newly category
 #### Endpoint
-`POST /categories`
+`POST /private/categories`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Request bodies
 ```json
@@ -571,12 +739,12 @@ Private API is closed api that does required authentication.
 
 ### Update the specified category
 #### Endpoint
-`PATCH /categories/:id`
+`PATCH /private/categories/:id`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Query Parameters
 | Name | Type | Required |     Description      |
@@ -592,12 +760,12 @@ Private API is closed api that does required authentication.
 
 ### Remove the specified category
 #### Endpoint
-`PATCH /categories/:id`
+`PATCH /private/categories/:id`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Query Parameters
 | Name | Type | Required |     Description      |
@@ -606,12 +774,12 @@ Private API is closed api that does required authentication.
 
 ### Store a newly tag
 #### Endpoint
-`POST /tags`
+`POST /private/tags`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Request bodies
 ```json
@@ -622,12 +790,12 @@ Private API is closed api that does required authentication.
 
 ### Update the specified tag
 #### Endpoint
-`PATCH /tags/:id`
+`PATCH /private/tags/:id`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Query Parameters
 | Name | Type | Required |   Description   |
@@ -643,12 +811,12 @@ Private API is closed api that does required authentication.
 
 ### Remove the specified tag
 #### Endpoint
-`DELETE /tags/:id`
+`DELETE /private/tags/:id`
 
 #### Header
-|     Name      |            Description            |        Example        |
-| :------------ | :-------------------------------- | :-------------------- |
-| Authorization | An bearer token for authorization | Bearer abcd.efgh.ijkl |
+|     Name      |   Description   |                   Example                   |
+| :------------ | :-------------- | :------------------------------------------ |
+| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
 
 #### Query Parameters
 | Name | Type | Required |   Description   |

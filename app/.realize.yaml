@@ -1,6 +1,6 @@
 settings:
   legacy:
-    force: false
+    force: true
     interval: 0s
 schema:
 - name: gobel-api

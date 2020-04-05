@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 services:
   app:
     container_name: "gobel-api"
@@ -15,7 +15,7 @@ services:
     depends_on:
       - mysql
   mysql:
-    container_name: "gobel-mysql"
+    container_name: "gobel-api-mysql"
     env_file: ".env"
     build:
         context: "./mysql"
@@ -31,6 +31,41 @@ services:
       - SYS_ADMIN
     security_opt:
       - seccomp:unconfined
+    networks:
+      - gobel_link
+  nginx:
+    container_name: "gobel-api-nginx"
+    build:
+        context: "./nginx"
+        dockerfile: "Dockerfile"
+    ports:
+      - "80:80"
+    networks:
+      - gobel_link
+    depends_on:
+      - app
+  redis:
+    container_name: "gobel-api-redis"
+    env_file: ".env"
+    build:
+        context: "./redis"
+        dockerfile: "Dockerfile"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/data:/var/lib/redis
+    networks:
+      - gobel_link
+  redis-insight:
+    container_name: "gobel-api-redis-insight"
+    env_file: ".env"
+    build:
+        context: "./redis-insight"
+        dockerfile: "Dockerfile"
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./redis-insight/data:/var/lib/redis-insight
     networks:
       - gobel_link
 networks:

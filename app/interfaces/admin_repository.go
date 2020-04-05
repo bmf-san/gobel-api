@@ -5,15 +5,58 @@ import (
 
 	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/go-redis/redis/v7"
 )
 
 // An AdminRepository is a repository for an authentication.
 type AdminRepository struct {
-	Conn *sql.DB
+	ConnMySQL *sql.DB
+	ConnRedis *redis.Client
 }
 
-// FindByJWTAuth returns the entity identified by the given email.
-func (ar *AdminRepository) FindByJWTAuth(req usecases.RequestJWTAuthHandleJWTAuth) (admin domain.Admin, err error) {
+// FindByID returns the entity identified by the given id.
+func (ar *AdminRepository) FindByID(adminID int) (domain.Admin, error) {
+	const query = `
+		SELECT
+			id,
+			name,
+			email,
+			password
+		FROM
+			admins
+		WHERE
+			id = ?
+	`
+	row, err := ar.ConnMySQL.Query(query, adminID)
+
+	defer row.Close()
+
+	var admin domain.Admin
+
+	if err != nil {
+		return admin, nil
+	}
+
+	var id int
+	var name string
+	var password string
+	var email string
+	row.Next()
+
+	if err = row.Scan(&id, &name, &email, &password); err != nil {
+		return admin, err
+	}
+
+	return domain.Admin{
+		ID:       id,
+		Name:     name,
+		Email:    email,
+		Password: password,
+	}, nil
+}
+
+// FindByCredentials saves login session by the credential.
+func (ar *AdminRepository) FindByCredentials(req usecases.RequestCredential) (domain.Admin, error) {
 	const query = `
 		SELECT
 			id,
@@ -25,12 +68,14 @@ func (ar *AdminRepository) FindByJWTAuth(req usecases.RequestJWTAuthHandleJWTAut
 		WHERE
 			email = ?
 	`
-	row, err := ar.Conn.Query(query, req.Email)
+	row, err := ar.ConnMySQL.Query(query, req.Email)
 
 	defer row.Close()
 
+	var admin domain.Admin
+
 	if err != nil {
-		return
+		return admin, nil
 	}
 
 	var id int
@@ -38,13 +83,15 @@ func (ar *AdminRepository) FindByJWTAuth(req usecases.RequestJWTAuthHandleJWTAut
 	var password string
 	var email string
 	row.Next()
-	if err = row.Scan(&id, &name, &email, &password); err != nil {
-		return
-	}
-	admin.ID = id
-	admin.Name = name
-	admin.Email = email
-	admin.Password = password
 
-	return
+	if err = row.Scan(&id, &name, &email, &password); err != nil {
+		return admin, err
+	}
+
+	return domain.Admin{
+		ID:       id,
+		Name:     name,
+		Email:    email,
+		Password: password,
+	}, nil
 }

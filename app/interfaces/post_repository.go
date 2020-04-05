@@ -12,12 +12,12 @@ import (
 
 // A PostRepository is a repository for a post.
 type PostRepository struct {
-	Conn *sql.DB
+	ConnMySQL *sql.DB
 }
 
 // CountAllPublish count all publish entities.
 func (pr *PostRepository) CountAllPublish() (count int, err error) {
-	row := pr.Conn.QueryRow(`
+	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
@@ -35,7 +35,7 @@ func (pr *PostRepository) CountAllPublish() (count int, err error) {
 
 // CountAll count all entities.
 func (pr *PostRepository) CountAll() (count int, err error) {
-	row := pr.Conn.QueryRow(`
+	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
@@ -51,7 +51,7 @@ func (pr *PostRepository) CountAll() (count int, err error) {
 
 // FindAllPublish returns all entities.
 func (pr *PostRepository) FindAllPublish(page int, limit int) (posts domain.Posts, err error) {
-	rows, err := pr.Conn.Query(`
+	rows, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -170,7 +170,7 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (posts domain.Post
 		stmt = fmt.Sprintf(queryTag, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
 	}
 
-	rows, err = pr.Conn.Query(stmt)
+	rows, err = pr.ConnMySQL.Query(stmt)
 
 	if err != nil {
 		return nil, err
@@ -207,24 +207,26 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (posts domain.Post
 		return nil, err
 	}
 
-	queryComment := `
+	rows, err = pr.ConnMySQL.Query(`
 		SELECT
-			*
+    		comments.id,
+    		comments.post_id,
+    		comments.body,
+    		comments.status,
+    		comments.created_at,
+    		comments.updated_at
 		FROM
-			comments
+    		comments
+    		JOIN
+        		posts
+    		ON  posts.id = comments.post_id
 		WHERE
-			status = "publish"
-		IN
-			(%s)
-	`
-
-	if len(postIDs) == 0 {
-		stmt = fmt.Sprintf(queryComment, `""`)
-	} else {
-		stmt = fmt.Sprintf(queryComment, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
-	}
-
-	rows, err = pr.Conn.Query(stmt)
+    		posts.status = "publish"
+		AND comments.status = "publish"
+		ORDER BY
+    		posts.id
+		LIMIT ?, ?
+	`, page*limit-limit, limit)
 
 	if err != nil {
 		return nil, err
@@ -267,9 +269,9 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (posts domain.Post
 	return posts, nil
 }
 
-// FindAllPublishByCategory returns all entities.
+// FindAllPublishByCategory returns all entities by category.
 func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name string) (posts domain.Posts, err error) {
-	rows, err := pr.Conn.Query(`
+	rows, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -389,7 +391,7 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 		stmt = fmt.Sprintf(queryTag, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
 	}
 
-	rows, err = pr.Conn.Query(stmt)
+	rows, err = pr.ConnMySQL.Query(stmt)
 
 	if err != nil {
 		return nil, err
@@ -426,24 +428,27 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 		return nil, err
 	}
 
-	queryComment := `
+	rows, err = pr.ConnMySQL.Query(`
 		SELECT
-			*
+    		comments.id,
+    		comments.post_id,
+    		comments.body,
+    		comments.status,
+    		comments.created_at,
+    		comments.updated_at
 		FROM
-			comments
+    		comments
+    		JOIN
+        		view_posts
+    		ON  view_posts.id = comments.post_id
 		WHERE
-			status = "publish"
-		IN
-			(%s)
-	`
-
-	if len(postIDs) == 0 {
-		stmt = fmt.Sprintf(queryComment, `""`)
-	} else {
-		stmt = fmt.Sprintf(queryComment, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
-	}
-
-	rows, err = pr.Conn.Query(stmt)
+    		view_posts.status = "publish"
+		AND comments.status = "publish"
+		AND view_posts.category_name = ?
+		ORDER BY
+    		view_posts.id
+		LIMIT ?, ?
+	`, name, page*limit-limit, limit)
 
 	if err != nil {
 		return nil, err
@@ -475,7 +480,6 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 					UpdatedAt: commentUpdatedAt,
 				})
 			}
-
 		}
 	}
 
@@ -486,9 +490,9 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 	return posts, nil
 }
 
-// FindAllPublishByTag returns all entities.
+// FindAllPublishByTag returns all entities by tag.
 func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) (posts domain.Posts, err error) {
-	rows, err := pr.Conn.Query(`
+	rows, err := pr.ConnMySQL.Query(`
 	SELECT
 		*
 	FROM
@@ -619,7 +623,7 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 		stmt = fmt.Sprintf(queryTag, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
 	}
 
-	rows, err = pr.Conn.Query(stmt)
+	rows, err = pr.ConnMySQL.Query(stmt)
 
 	if err != nil {
 		return nil, err
@@ -639,7 +643,6 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 			return nil, err
 		}
 
-		// TODO: これじゃだめ
 		for p := range posts {
 			if posts[p].ID == tagPostPostID {
 				posts[p].Tags = append(posts[p].Tags, domain.Tag{
@@ -649,7 +652,6 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 					UpdatedAt: tagUpdatedAt,
 				})
 			}
-
 		}
 	}
 
@@ -657,24 +659,37 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 		return nil, err
 	}
 
-	queryComment := `
+	rows, err = pr.ConnMySQL.Query(`
 		SELECT
-			*
+			comments.id,
+    		comments.post_id,
+    		comments.body,
+    		comments.status,
+    		comments.created_at,
+    		comments.updated_at
 		FROM
 			comments
+			JOIN
+				posts
+			ON  posts.id = comments.post_id
 		WHERE
-			status = "publish"
-		IN
-			(%s)
-	`
-
-	if len(postIDs) == 0 {
-		stmt = fmt.Sprintf(queryComment, `""`)
-	} else {
-		stmt = fmt.Sprintf(queryComment, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
-	}
-
-	rows, err = pr.Conn.Query(stmt)
+			posts.id IN(
+				SELECT
+					tag_post.post_id
+				FROM
+					tags
+					LEFT JOIN
+						tag_post
+					ON  tags.id = tag_post.tag_id
+				WHERE
+					tags.name = ?
+			)
+		AND posts.status = "publish"
+		AND comments.status = "publish"
+		ORDER BY
+			posts.id
+		LIMIT ?, ?
+	`, name, page*limit-limit, limit)
 
 	if err != nil {
 		return nil, err
@@ -719,7 +734,7 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 
 // FindAll returns all entities.
 func (pr *PostRepository) FindAll(page int, limit int) (posts domain.Posts, err error) {
-	rows, err := pr.Conn.Query(`
+	rows, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -835,7 +850,7 @@ func (pr *PostRepository) FindAll(page int, limit int) (posts domain.Posts, err 
 		stmt = fmt.Sprintf(queryTag, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
 	}
 
-	rows, err = pr.Conn.Query(stmt)
+	rows, err = pr.ConnMySQL.Query(stmt)
 
 	if err != nil {
 		return nil, err
@@ -872,24 +887,23 @@ func (pr *PostRepository) FindAll(page int, limit int) (posts domain.Posts, err 
 		return nil, err
 	}
 
-	queryComment := `
+	rows, err = pr.ConnMySQL.Query(`
 		SELECT
-			*
+    		comments.id,
+    		comments.post_id,
+    		comments.body,
+    		comments.status,
+    		comments.created_at,
+    		comments.updated_at
 		FROM
-			comments
-		WHERE
-			status = "publish"
-		IN
-			(%s)
-	`
-
-	if len(postIDs) == 0 {
-		stmt = fmt.Sprintf(queryComment, `""`)
-	} else {
-		stmt = fmt.Sprintf(queryComment, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
-	}
-
-	rows, err = pr.Conn.Query(stmt)
+    		comments
+    		JOIN
+        		posts
+    		ON  posts.id = comments.post_id
+		ORDER BY
+    		posts.id
+		LIMIT ?, ?
+	`, page*limit-limit, limit)
 
 	if err != nil {
 		return nil, err
@@ -934,7 +948,7 @@ func (pr *PostRepository) FindAll(page int, limit int) (posts domain.Posts, err 
 
 // FindByTitle returns the entity identified by the given title.
 func (pr *PostRepository) FindByTitle(title string) (post domain.Post, err error) {
-	row, err := pr.Conn.Query(`
+	row, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -1014,7 +1028,7 @@ func (pr *PostRepository) FindByTitle(title string) (post domain.Post, err error
 		UpdatedAt: postUpdatedAt,
 	}
 
-	rows, err := pr.Conn.Query(`
+	rows, err := pr.ConnMySQL.Query(`
 		SELECT
 			tag_post.post_id AS tag_post_post_id,
 			tags.id AS tag_id,
@@ -1063,7 +1077,7 @@ func (pr *PostRepository) FindByTitle(title string) (post domain.Post, err error
 		return post, err
 	}
 
-	rows, err = pr.Conn.Query(`
+	rows, err = pr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -1114,7 +1128,7 @@ func (pr *PostRepository) FindByTitle(title string) (post domain.Post, err error
 
 // FindByID returns the entity identified by the given id.
 func (pr *PostRepository) FindByID(id int) (post domain.Post, err error) {
-	row, err := pr.Conn.Query(`
+	row, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -1194,7 +1208,7 @@ func (pr *PostRepository) FindByID(id int) (post domain.Post, err error) {
 		UpdatedAt: postUpdatedAt,
 	}
 
-	rows, err := pr.Conn.Query(`
+	rows, err := pr.ConnMySQL.Query(`
 		SELECT
 			tag_post.post_id AS tag_post_post_id,
 			tags.id AS tag_id,
@@ -1243,7 +1257,7 @@ func (pr *PostRepository) FindByID(id int) (post domain.Post, err error) {
 		return post, err
 	}
 
-	rows, err = pr.Conn.Query(`
+	rows, err = pr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -1294,7 +1308,7 @@ func (pr *PostRepository) FindByID(id int) (post domain.Post, err error) {
 
 // Save saves the given entity.
 func (pr *PostRepository) Save(req usecases.RequestPost) (err error) {
-	tx, err := pr.Conn.Begin()
+	tx, err := pr.ConnMySQL.Begin()
 
 	now := time.Now()
 
@@ -1346,7 +1360,7 @@ func (pr *PostRepository) Save(req usecases.RequestPost) (err error) {
 
 // SaveByID save the given entity identified by the given id.
 func (pr *PostRepository) SaveByID(req usecases.RequestPost, id int) (err error) {
-	tx, err := pr.Conn.Begin()
+	tx, err := pr.ConnMySQL.Begin()
 
 	now := time.Now()
 
@@ -1406,9 +1420,9 @@ func (pr *PostRepository) SaveByID(req usecases.RequestPost, id int) (err error)
 
 // DeleteByID deletes the entity identified by the given id.
 func (pr *PostRepository) DeleteByID(id int) (count int, err error) {
-	tx, err := pr.Conn.Begin()
+	tx, err := pr.ConnMySQL.Begin()
 
-	row := pr.Conn.QueryRow(`
+	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM

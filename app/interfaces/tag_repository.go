@@ -10,12 +10,12 @@ import (
 
 // A TagRepository is a repository for a post.
 type TagRepository struct {
-	Conn *sql.DB
+	ConnMySQL *sql.DB
 }
 
 // CountAll count all entities.
 func (tr *TagRepository) CountAll() (count int, err error) {
-	row := tr.Conn.QueryRow(`
+	row := tr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
@@ -31,7 +31,7 @@ func (tr *TagRepository) CountAll() (count int, err error) {
 
 // FindAll returns all entities.
 func (tr *TagRepository) FindAll(page int, limit int) (tags domain.Tags, err error) {
-	rows, err := tr.Conn.Query(`
+	rows, err := tr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -78,7 +78,7 @@ func (tr *TagRepository) FindAll(page int, limit int) (tags domain.Tags, err err
 
 // FindByID returns the entity identified by the given id.
 func (tr *TagRepository) FindByID(id int) (tag domain.Tag, err error) {
-	row, err := tr.Conn.Query(`
+	row, err := tr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -119,7 +119,7 @@ func (tr *TagRepository) FindByID(id int) (tag domain.Tag, err error) {
 
 // FindByName returns the entity identified by the given name.
 func (tr *TagRepository) FindByName(name string) (tag domain.Tag, err error) {
-	row, err := tr.Conn.Query(`
+	row, err := tr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -160,7 +160,7 @@ func (tr *TagRepository) FindByName(name string) (tag domain.Tag, err error) {
 
 // Save saves the given entity.
 func (tr *TagRepository) Save(req usecases.RequestTag) (err error) {
-	tx, err := tr.Conn.Begin()
+	tx, err := tr.ConnMySQL.Begin()
 
 	now := time.Now()
 
@@ -184,7 +184,7 @@ func (tr *TagRepository) Save(req usecases.RequestTag) (err error) {
 
 // SaveByID save the given entity identified by the given id.
 func (tr *TagRepository) SaveByID(req usecases.RequestTag, id int) (err error) {
-	tx, err := tr.Conn.Begin()
+	tx, err := tr.ConnMySQL.Begin()
 
 	now := time.Now()
 
@@ -209,9 +209,9 @@ func (tr *TagRepository) SaveByID(req usecases.RequestTag, id int) (err error) {
 
 // DeleteByID deletes the entity identified by the given id.
 func (tr *TagRepository) DeleteByID(id int) (count int, err error) {
-	tx, err := tr.Conn.Begin()
+	tx, err := tr.ConnMySQL.Begin()
 
-	row := tr.Conn.QueryRow(`
+	row := tr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM

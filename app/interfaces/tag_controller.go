@@ -14,11 +14,11 @@ type TagController struct {
 }
 
 // NewTagController creates a TagController.
-func NewTagController(conn *sql.DB, logger usecases.Logger) *TagController {
+func NewTagController(connMySQL *sql.DB, logger usecases.Logger) *TagController {
 	return &TagController{
 		TagInteractor: usecases.TagInteractor{
 			TagRepository: &TagRepository{
-				Conn: conn,
+				ConnMySQL: connMySQL,
 			},
 			JSONResponse: &JSONResponse{},
 			Logger:       logger,

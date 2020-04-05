@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"encoding/json"
+	"net/http"
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
@@ -10,8 +12,8 @@ import (
 type PostResponse struct{}
 
 // MakeResponseHandleIndex makes a response.
-func (r *PostResponse) MakeResponseHandleIndex(posts domain.Posts) ResponsePosts {
-	var res []ResponsePost
+func (r *PostResponse) MakeResponseHandleIndex(posts domain.Posts) (int, []byte, error) {
+	var srp []ResponsePost
 	for _, p := range posts {
 		responseAdmin := ResponseAdmin{
 			ID:   p.Admin.ID,
@@ -51,15 +53,20 @@ func (r *PostResponse) MakeResponseHandleIndex(posts domain.Posts) ResponsePosts
 			CreatedAt: p.CreatedAt,
 			UpdatedAt: p.UpdatedAt,
 		}
-		res = append(res, rp)
+		srp = append(srp, rp)
 	}
 
-	return res
+	res, err := json.Marshal(srp)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleIndexPrivate makes a response.
-func (r *PostResponse) MakeResponseHandleIndexPrivate(posts domain.Posts) PrivateResponsePosts {
-	var res []PrivateResponsePost
+func (r *PostResponse) MakeResponseHandleIndexPrivate(posts domain.Posts) (int, []byte, error) {
+	var srp []PrivateResponsePost
 	for _, p := range posts {
 		responseAdmin := PrivateResponseAdmin{
 			ID:   p.Admin.ID,
@@ -99,14 +106,19 @@ func (r *PostResponse) MakeResponseHandleIndexPrivate(posts domain.Posts) Privat
 			CreatedAt: p.CreatedAt,
 			UpdatedAt: p.UpdatedAt,
 		}
-		res = append(res, rp)
+		srp = append(srp, rp)
 	}
 
-	return res
+	res, err := json.Marshal(srp)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleShow makes a response.
-func (r *PostResponse) MakeResponseHandleShow(p domain.Post) ResponsePost {
+func (r *PostResponse) MakeResponseHandleShow(p domain.Post) (int, []byte, error) {
 	responseAdmin := ResponseAdmin{
 		ID:   p.Admin.ID,
 		Name: p.Admin.Name,
@@ -146,11 +158,16 @@ func (r *PostResponse) MakeResponseHandleShow(p domain.Post) ResponsePost {
 		UpdatedAt: p.UpdatedAt,
 	}
 
-	return rp
+	res, err := json.Marshal(rp)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleShowPrivate makes a response.
-func (r *PostResponse) MakeResponseHandleShowPrivate(p domain.Post) PrivateResponsePost {
+func (r *PostResponse) MakeResponseHandleShowPrivate(p domain.Post) (int, []byte, error) {
 	responseAdmin := PrivateResponseAdmin{
 		ID:   p.Admin.ID,
 		Name: p.Admin.Name,
@@ -190,7 +207,12 @@ func (r *PostResponse) MakeResponseHandleShowPrivate(p domain.Post) PrivateRespo
 		UpdatedAt: p.UpdatedAt,
 	}
 
-	return rp
+	res, err := json.Marshal(rp)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
 }
 
 // A ResponsePost represents the singular of post for response.

@@ -14,22 +14,22 @@ import (
 
 // A PostInteractor is an interactor for a post.
 type PostInteractor struct {
-	PostRepository PostRepository
-	JSONResponse   JSONResponse
-	Logger         Logger
+	AdminRepository AdminRepository
+	PostRepository  PostRepository
+	JWTRepository   JWTRepository
+	JSONResponse    JSONResponse
+	Logger          Logger
 }
 
 // HandleIndex returns a listing of the resource.
 func (pi *PostInteractor) HandleIndex(w http.ResponseWriter, r *http.Request) {
-	pi.Logger.LogAccess(r)
-
 	const defaultPage = 1
 	const defaultLimit = 10
 
 	count, err := pi.PostRepository.CountAllPublish()
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -40,8 +40,8 @@ func (pi *PostInteractor) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	} else {
 		page, err = strconv.Atoi(paramPage)
 		if err != nil {
-			pi.Logger.LogError(err)
-			pi.JSONResponse.Error500(w)
+			pi.Logger.Error(err.Error())
+			pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -53,8 +53,8 @@ func (pi *PostInteractor) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	} else {
 		limit, err = strconv.Atoi(paramLimit)
 		if err != nil {
-			pi.Logger.LogError(err)
-			pi.JSONResponse.Error500(w)
+			pi.Logger.Error(err.Error())
+			pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -62,17 +62,16 @@ func (pi *PostInteractor) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	var posts domain.Posts
 	posts, err = pi.PostRepository.FindAllPublish(page, limit)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var pr PostResponse
-	var res []byte
-	res, err = json.Marshal(pr.MakeResponseHandleIndex(posts))
+	code, msg, err := pr.MakeResponseHandleIndex(posts)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -82,21 +81,19 @@ func (pi *PostInteractor) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Pagination-Pagecount", fmt.Sprint(pageCount))
 	w.Header().Set("Pagination-Page", strconv.Itoa(page))
 	w.Header().Set("Pagination-Limit", strconv.Itoa(limit))
-	pi.JSONResponse.Success200(w, res)
+	pi.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleIndexByCategory returns a listing of the resource.
 func (pi *PostInteractor) HandleIndexByCategory(w http.ResponseWriter, r *http.Request) {
-	pi.Logger.LogAccess(r)
-
 	const defaultPage = 1
 	const defaultLimit = 10
 
 	count, err := pi.PostRepository.CountAllPublish()
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -107,8 +104,8 @@ func (pi *PostInteractor) HandleIndexByCategory(w http.ResponseWriter, r *http.R
 	} else {
 		page, err = strconv.Atoi(paramPage)
 		if err != nil {
-			pi.Logger.LogError(err)
-			pi.JSONResponse.Error500(w)
+			pi.Logger.Error(err.Error())
+			pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -120,8 +117,8 @@ func (pi *PostInteractor) HandleIndexByCategory(w http.ResponseWriter, r *http.R
 	} else {
 		limit, err = strconv.Atoi(paramLimit)
 		if err != nil {
-			pi.Logger.LogError(err)
-			pi.JSONResponse.Error500(w)
+			pi.Logger.Error(err.Error())
+			pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -131,17 +128,16 @@ func (pi *PostInteractor) HandleIndexByCategory(w http.ResponseWriter, r *http.R
 	var posts domain.Posts
 	posts, err = pi.PostRepository.FindAllPublishByCategory(page, limit, name)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var pr PostResponse
-	var res []byte
-	res, err = json.Marshal(pr.MakeResponseHandleIndex(posts))
+	code, msg, err := pr.MakeResponseHandleIndex(posts)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -151,21 +147,19 @@ func (pi *PostInteractor) HandleIndexByCategory(w http.ResponseWriter, r *http.R
 	w.Header().Set("Pagination-Pagecount", fmt.Sprint(pageCount))
 	w.Header().Set("Pagination-Page", strconv.Itoa(page))
 	w.Header().Set("Pagination-Limit", strconv.Itoa(limit))
-	pi.JSONResponse.Success200(w, res)
+	pi.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleIndexByTag returns a listing of the resource.
 func (pi *PostInteractor) HandleIndexByTag(w http.ResponseWriter, r *http.Request) {
-	pi.Logger.LogAccess(r)
-
 	const defaultPage = 1
 	const defaultLimit = 10
 
 	count, err := pi.PostRepository.CountAllPublish()
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -176,8 +170,8 @@ func (pi *PostInteractor) HandleIndexByTag(w http.ResponseWriter, r *http.Reques
 	} else {
 		page, err = strconv.Atoi(paramPage)
 		if err != nil {
-			pi.Logger.LogError(err)
-			pi.JSONResponse.Error500(w)
+			pi.Logger.Error(err.Error())
+			pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -189,8 +183,8 @@ func (pi *PostInteractor) HandleIndexByTag(w http.ResponseWriter, r *http.Reques
 	} else {
 		limit, err = strconv.Atoi(paramLimit)
 		if err != nil {
-			pi.Logger.LogError(err)
-			pi.JSONResponse.Error500(w)
+			pi.Logger.Error(err.Error())
+			pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -200,17 +194,16 @@ func (pi *PostInteractor) HandleIndexByTag(w http.ResponseWriter, r *http.Reques
 	var posts domain.Posts
 	posts, err = pi.PostRepository.FindAllPublishByTag(page, limit, name)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var pr PostResponse
-	var res []byte
-	res, err = json.Marshal(pr.MakeResponseHandleIndex(posts))
+	code, msg, err := pr.MakeResponseHandleIndex(posts)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -220,21 +213,19 @@ func (pi *PostInteractor) HandleIndexByTag(w http.ResponseWriter, r *http.Reques
 	w.Header().Set("Pagination-Pagecount", fmt.Sprint(pageCount))
 	w.Header().Set("Pagination-Page", strconv.Itoa(page))
 	w.Header().Set("Pagination-Limit", strconv.Itoa(limit))
-	pi.JSONResponse.Success200(w, res)
+	pi.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleIndexPrivate returns a listing of the resource.
 func (pi *PostInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Request) {
-	pi.Logger.LogAccess(r)
-
 	const defaultPage = 1
 	const defaultLimit = 10
 
 	count, err := pi.PostRepository.CountAll()
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 
 	}
@@ -246,8 +237,8 @@ func (pi *PostInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Requ
 	} else {
 		page, err = strconv.Atoi(paramPage)
 		if err != nil {
-			pi.Logger.LogError(err)
-			pi.JSONResponse.Error500(w)
+			pi.Logger.Error(err.Error())
+			pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -259,8 +250,8 @@ func (pi *PostInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Requ
 	} else {
 		limit, err = strconv.Atoi(paramLimit)
 		if err != nil {
-			pi.Logger.LogError(err)
-			pi.JSONResponse.Error500(w)
+			pi.Logger.Error(err.Error())
+			pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -268,17 +259,16 @@ func (pi *PostInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Requ
 	var posts domain.Posts
 	posts, err = pi.PostRepository.FindAll(page, limit)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var pr PostResponse
-	var res []byte
-	res, err = json.Marshal(pr.MakeResponseHandleIndexPrivate(posts))
+	code, msg, err := pr.MakeResponseHandleIndexPrivate(posts)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -288,195 +278,183 @@ func (pi *PostInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("Pagination-Pagecount", fmt.Sprint(pageCount))
 	w.Header().Set("Pagination-Page", strconv.Itoa(page))
 	w.Header().Set("Pagination-Limit", strconv.Itoa(limit))
-	pi.JSONResponse.Success200(w, res)
+	pi.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleShow display the specified resource.
 func (pi *PostInteractor) HandleShow(w http.ResponseWriter, r *http.Request) {
-	pi.Logger.LogAccess(r)
-
 	title := goblin.GetParam(r.Context(), "title")
 
 	var post domain.Post
 	post, err := pi.PostRepository.FindByTitle(title)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var pr PostResponse
-	var res []byte
-	res, err = json.Marshal(pr.MakeResponseHandleShow(post))
+	code, msg, err := pr.MakeResponseHandleShow(post)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	pi.JSONResponse.Success200(w, res)
+	pi.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleShowPrivate display the specified resource.
 func (pi *PostInteractor) HandleShowPrivate(w http.ResponseWriter, r *http.Request) {
-	pi.Logger.LogAccess(r)
-
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var post domain.Post
 	post, err = pi.PostRepository.FindByID(id)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var pr PostResponse
-	var res []byte
-	res, err = json.Marshal(pr.MakeResponseHandleShowPrivate(post))
+	code, msg, err := pr.MakeResponseHandleShowPrivate(post)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	pi.JSONResponse.Success200(w, res)
+	pi.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleStorePrivate stores a newly created resource in storage.
 func (pi *PostInteractor) HandleStorePrivate(w http.ResponseWriter, r *http.Request) {
-	pi.Logger.LogAccess(r)
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	var req RequestPost
-
-	ja := &domain.JWTAuth{
-		Token: r.Header.Get("Authorization"),
-	}
-
-	claims, err := ja.Extract()
+	var j domain.JWT
+	var accessUUID string
+	accessUUID, err = j.GetAccessUUID(r.Header.Get("Authorization"))
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
-		return
-	}
-	adminID, ok := claims["id"].(float64)
-	if !ok {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	req.AdminID = int(adminID)
+	var adminID int
+	adminID, err = pi.JWTRepository.FindIDByAccessUUID(accessUUID)
+	if err != nil {
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	req := RequestPost{
+		AdminID: adminID,
+	}
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	err = pi.PostRepository.Save(req)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	pi.JSONResponse.Success201(w, []byte("The item was created successfully"))
+	pi.JSONResponse.HTTPStatus(w, http.StatusCreated, nil)
 	return
 }
 
 // HandleUpdatePrivate updates the specified resource in storage.
 func (pi *PostInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http.Request) {
-	pi.Logger.LogAccess(r)
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	var req RequestPost
-
-	ja := &domain.JWTAuth{
-		Token: r.Header.Get("Authorization"),
-	}
-
-	claims, err := ja.Extract()
+	var j domain.JWT
+	var accessUUID string
+	accessUUID, err = j.GetAccessUUID(r.Header.Get("Authorization"))
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
-		return
-	}
-	adminID, ok := claims["id"].(float64)
-	if !ok {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	req.AdminID = int(adminID)
+	var adminID int
+	adminID, err = pi.JWTRepository.FindIDByAccessUUID(accessUUID)
+	if err != nil {
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	req := RequestPost{
+		AdminID: adminID,
+	}
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 	err = pi.PostRepository.SaveByID(req, id)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	pi.JSONResponse.Success200(w, []byte("The item was updated successfully"))
+	pi.JSONResponse.HTTPStatus(w, http.StatusCreated, nil)
 	return
 }
 
 // HandleDestroyPrivate removes the specified resource from storage.
 func (pi *PostInteractor) HandleDestroyPrivate(w http.ResponseWriter, r *http.Request) {
-	pi.Logger.LogAccess(r)
-
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 	count, err := pi.PostRepository.DeleteByID(id)
 	if err != nil {
-		pi.Logger.LogError(err)
-		pi.JSONResponse.Error500(w)
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	if count == 0 {
-		pi.JSONResponse.Error404(w)
+		pi.JSONResponse.HTTPStatus(w, http.StatusNotFound, nil)
 		return
 	}
 
-	pi.JSONResponse.Success200(w, []byte("The item was deleted successfully"))
+	pi.JSONResponse.HTTPStatus(w, http.StatusOK, nil)
 	return
 }

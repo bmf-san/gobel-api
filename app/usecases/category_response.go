@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"encoding/json"
+	"net/http"
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
@@ -10,23 +12,28 @@ import (
 type CategoryResponse struct{}
 
 // MakeResponseHandleIndex makes a response.
-func (r *CategoryResponse) MakeResponseHandleIndex(categories domain.Categories) ResponseCategories {
-	var res []ResponseCategory
+func (r *CategoryResponse) MakeResponseHandleIndex(categories domain.Categories) (int, []byte, error) {
+	var cat []ResponseCategory
 	for _, c := range categories {
 		responseCategory := ResponseCategory{
 			ID:   c.ID,
 			Name: c.Name,
 		}
 
-		res = append(res, responseCategory)
+		cat = append(cat, responseCategory)
 	}
 
-	return res
+	res, err := json.Marshal(cat)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleIndexPrivate makes a response.
-func (r *CategoryResponse) MakeResponseHandleIndexPrivate(categories domain.Categories) PrivateResponseCategories {
-	var res []PrivateResponseCategory
+func (r *CategoryResponse) MakeResponseHandleIndexPrivate(categories domain.Categories) (int, []byte, error) {
+	var cat []PrivateResponseCategory
 	for _, c := range categories {
 		responseCategory := PrivateResponseCategory{
 			ID:        c.ID,
@@ -35,28 +42,43 @@ func (r *CategoryResponse) MakeResponseHandleIndexPrivate(categories domain.Cate
 			UpdatedAt: c.UpdatedAt,
 		}
 
-		res = append(res, responseCategory)
+		cat = append(cat, responseCategory)
 	}
 
-	return res
+	res, err := json.Marshal(cat)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleShow makes a response.
-func (r *CategoryResponse) MakeResponseHandleShow(c domain.Category) ResponseCategory {
-	return ResponseCategory{
+func (r *CategoryResponse) MakeResponseHandleShow(c domain.Category) (int, []byte, error) {
+	res, err := json.Marshal(ResponseCategory{
 		ID:   c.ID,
 		Name: c.Name,
+	})
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
 	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleShowPrivate makes a response.
-func (r *CategoryResponse) MakeResponseHandleShowPrivate(c domain.Category) PrivateResponseCategory {
-	return PrivateResponseCategory{
+func (r *CategoryResponse) MakeResponseHandleShowPrivate(c domain.Category) (int, []byte, error) {
+	res, err := json.Marshal(PrivateResponseCategory{
 		ID:        c.ID,
 		Name:      c.Name,
 		CreatedAt: c.CreatedAt,
 		UpdatedAt: c.UpdatedAt,
+	})
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
 	}
+
+	return http.StatusOK, res, nil
 }
 
 // A ResponseCategory represents the singular of category for response.

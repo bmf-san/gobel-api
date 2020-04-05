@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"encoding/json"
+	"net/http"
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
@@ -10,23 +12,28 @@ import (
 type TagResponse struct{}
 
 // MakeResponseHandleIndex makes a response.
-func (r *TagResponse) MakeResponseHandleIndex(tags domain.Tags) ResponseTags {
-	var res []ResponseTag
+func (r *TagResponse) MakeResponseHandleIndex(tags domain.Tags) (int, []byte, error) {
+	var rt []ResponseTag
 
 	for _, t := range tags {
 		responseTag := ResponseTag{
 			ID:   t.ID,
 			Name: t.Name,
 		}
-		res = append(res, responseTag)
+		rt = append(rt, responseTag)
 	}
 
-	return res
+	res, err := json.Marshal(rt)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleIndexPrivate makes a response.
-func (r *TagResponse) MakeResponseHandleIndexPrivate(tags domain.Tags) PrivateResponseTags {
-	var res []PrivateResponseTag
+func (r *TagResponse) MakeResponseHandleIndexPrivate(tags domain.Tags) (int, []byte, error) {
+	var rt []PrivateResponseTag
 
 	for _, t := range tags {
 		responseTag := PrivateResponseTag{
@@ -35,28 +42,45 @@ func (r *TagResponse) MakeResponseHandleIndexPrivate(tags domain.Tags) PrivateRe
 			CreatedAt: t.CreatedAt,
 			UpdatedAt: t.UpdatedAt,
 		}
-		res = append(res, responseTag)
+		rt = append(rt, responseTag)
 	}
 
-	return res
+	res, err := json.Marshal(rt)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleShow makes a response.
-func (r *TagResponse) MakeResponseHandleShow(c domain.Tag) ResponseTag {
-	return ResponseTag{
-		ID:   c.ID,
-		Name: c.Name,
+func (r *TagResponse) MakeResponseHandleShow(t domain.Tag) (int, []byte, error) {
+	res, err := json.Marshal(ResponseTag{
+		ID:   t.ID,
+		Name: t.Name,
+	})
+
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
 	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleShowPrivate makes a response.
-func (r *TagResponse) MakeResponseHandleShowPrivate(c domain.Tag) PrivateResponseTag {
-	return PrivateResponseTag{
-		ID:        c.ID,
-		Name:      c.Name,
-		CreatedAt: c.CreatedAt,
-		UpdatedAt: c.UpdatedAt,
+func (r *TagResponse) MakeResponseHandleShowPrivate(t domain.Tag) (int, []byte, error) {
+	res, err := json.Marshal(PrivateResponseTag{
+		ID:        t.ID,
+		Name:      t.Name,
+		CreatedAt: t.CreatedAt,
+		UpdatedAt: t.UpdatedAt,
+	})
+
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
 	}
+
+	return http.StatusOK, res, nil
 }
 
 // A ResponseTag represents the singular of tag for response.
