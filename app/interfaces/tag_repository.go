@@ -14,15 +14,15 @@ type TagRepository struct {
 }
 
 // CountAll count all entities.
-func (tr *TagRepository) CountAll() (count int, err error) {
+func (tr *TagRepository) CountAll() (int, error) {
 	row := tr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
 			tags
 	`)
-	err = row.Scan(&count)
-	if err != nil {
+	var count int
+	if err := row.Scan(&count); err != nil {
 		return 0, err
 	}
 
@@ -30,7 +30,8 @@ func (tr *TagRepository) CountAll() (count int, err error) {
 }
 
 // FindAll returns all entities.
-func (tr *TagRepository) FindAll(page int, limit int) (tags domain.Tags, err error) {
+func (tr *TagRepository) FindAll(page int, limit int) (domain.Tags, error) {
+	var tags domain.Tags
 	rows, err := tr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -77,7 +78,8 @@ func (tr *TagRepository) FindAll(page int, limit int) (tags domain.Tags, err err
 }
 
 // FindByID returns the entity identified by the given id.
-func (tr *TagRepository) FindByID(id int) (tag domain.Tag, err error) {
+func (tr *TagRepository) FindByID(id int) (domain.Tag, error) {
+	var tag domain.Tag
 	row, err := tr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -90,7 +92,7 @@ func (tr *TagRepository) FindByID(id int) (tag domain.Tag, err error) {
 	defer row.Close()
 
 	if err != nil {
-		return
+		return tag, err
 	}
 
 	row.Next()
@@ -106,7 +108,7 @@ func (tr *TagRepository) FindByID(id int) (tag domain.Tag, err error) {
 		&tagCreatedAt,
 		&tagUpdatedAt,
 	); err != nil {
-		return
+		return tag, err
 	}
 
 	return domain.Tag{
@@ -118,7 +120,8 @@ func (tr *TagRepository) FindByID(id int) (tag domain.Tag, err error) {
 }
 
 // FindByName returns the entity identified by the given name.
-func (tr *TagRepository) FindByName(name string) (tag domain.Tag, err error) {
+func (tr *TagRepository) FindByName(name string) (domain.Tag, error) {
+	var tag domain.Tag
 	row, err := tr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -131,7 +134,7 @@ func (tr *TagRepository) FindByName(name string) (tag domain.Tag, err error) {
 	defer row.Close()
 
 	if err != nil {
-		return
+		return tag, err
 	}
 
 	row.Next()
@@ -147,7 +150,7 @@ func (tr *TagRepository) FindByName(name string) (tag domain.Tag, err error) {
 		&tagCreatedAt,
 		&tagUpdatedAt,
 	); err != nil {
-		return
+		return tag, err
 	}
 
 	return domain.Tag{
@@ -159,12 +162,12 @@ func (tr *TagRepository) FindByName(name string) (tag domain.Tag, err error) {
 }
 
 // Save saves the given entity.
-func (tr *TagRepository) Save(req usecases.RequestTag) (err error) {
+func (tr *TagRepository) Save(req usecases.RequestTag) (int, error) {
 	tx, err := tr.ConnMySQL.Begin()
 
 	now := time.Now()
 
-	_, err = tx.Exec(`
+	rslt, err := tx.Exec(`
 		INSERT INTO
 			tags(name, created_at, updated_at)
 		VALUES
@@ -172,18 +175,24 @@ func (tr *TagRepository) Save(req usecases.RequestTag) (err error) {
 	`, req.Name, now, now)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
+	}
+
+	id, err := rslt.LastInsertId()
+	if err != nil {
+		_ = tx.Rollback()
+		return 0, err
 	}
 
 	if err = tx.Commit(); err != nil {
-		return nil
+		return 0, err
 	}
 
-	return nil
+	return int(id), nil
 }
 
 // SaveByID save the given entity identified by the given id.
-func (tr *TagRepository) SaveByID(req usecases.RequestTag, id int) (err error) {
+func (tr *TagRepository) SaveByID(req usecases.RequestTag, id int) error {
 	tx, err := tr.ConnMySQL.Begin()
 
 	now := time.Now()
@@ -197,18 +206,18 @@ func (tr *TagRepository) SaveByID(req usecases.RequestTag, id int) (err error) {
 	`, req.Name, now, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return err
 	}
 
 	if err = tx.Commit(); err != nil {
-		return nil
+		return err
 	}
 
 	return nil
 }
 
 // DeleteByID deletes the entity identified by the given id.
-func (tr *TagRepository) DeleteByID(id int) (count int, err error) {
+func (tr *TagRepository) DeleteByID(id int) (int, error) {
 	tx, err := tr.ConnMySQL.Begin()
 
 	row := tr.ConnMySQL.QueryRow(`
@@ -221,16 +230,12 @@ func (tr *TagRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 
 	if err != nil {
-		return
+		return 0, err
 	}
 
-	err = row.Scan(&count)
-	if err != nil {
-		return
-	}
-
-	if count == 0 {
-		return count, nil
+	var count int
+	if err = row.Scan(&count); err != nil {
+		return 0, err
 	}
 
 	_, err = tx.Exec(`
@@ -238,11 +243,11 @@ func (tr *TagRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	if err = tx.Commit(); err != nil {
-		return count, nil
+		return 0, err
 	}
 
 	return count, nil

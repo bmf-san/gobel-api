@@ -14,7 +14,7 @@ type PostRepository interface {
 	FindAll(page int, limit int) (domain.Posts, error)
 	FindByTitle(title string) (domain.Post, error)
 	FindByID(id int) (domain.Post, error)
-	Save(req RequestPost) error
+	Save(req RequestPost) (int, error)
 	SaveByID(req RequestPost, id int) error
 	DeleteByID(id int) (int, error)
 }

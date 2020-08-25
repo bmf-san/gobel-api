@@ -30,8 +30,8 @@ func (jr *JWTRepository) FindIDByAccessUUID(au string) (int, error) {
 }
 
 // FindIDByRefreshUUID returns the entity identified by the given refresh uuid.
-func (jr *JWTRepository) FindIDByRefreshUUID(au string) (int, error) {
-	idStr, err := jr.ConnRedis.Get(au).Result()
+func (jr *JWTRepository) FindIDByRefreshUUID(ru string) (int, error) {
+	idStr, err := jr.ConnRedis.Get(ru).Result()
 	if err != nil {
 		return 0, err
 	}

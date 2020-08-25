@@ -50,19 +50,31 @@ func (j *JWT) CreateRefreshToken(id int) (string, error) {
 	return j.RefreshToken, nil
 }
 
-// GetAccessUUID gets an access uuid from request Authorization header.
-func (j *JWT) GetAccessUUID(bearToken string) (string, error) {
-	token := j.ExtractToken(bearToken)
+// GetVerifiedAccessToken gets a verified token from a bearer token.
+func (j *JWT) GetVerifiedAccessToken(bearerToken string) (*jwt.Token, error) {
+	token := j.ExtractToken(bearerToken)
 
-	var err error
-	var verifiedToken *jwt.Token
-	verifiedToken, err = j.VerifyToken(token, os.Getenv("JWT_ACCESS_TOKEN_SECRET"))
+	verifiedToken, err := j.VerifyToken(token, os.Getenv("JWT_ACCESS_TOKEN_SECRET"))
 	if err != nil {
-		return "", nil
+		return nil, err
 	}
+	return verifiedToken, nil
+}
 
-	var accessUUID string
-	accessUUID, err = j.ExtractAccessUUID(verifiedToken)
+// GetVerifiedRefreshToken gets a verified token from a bearer token.
+func (j *JWT) GetVerifiedRefreshToken(bearerToken string) (*jwt.Token, error) {
+	token := j.ExtractToken(bearerToken)
+
+	verifiedToken, err := j.VerifyToken(token, os.Getenv("JWT_REFRESH_TOKEN_SECRET"))
+	if err != nil {
+		return nil, err
+	}
+	return verifiedToken, nil
+}
+
+// GetAccessUUID gets an access uuid from request Authorization header.
+func (j *JWT) GetAccessUUID(verifiedToken *jwt.Token) (string, error) {
+	accessUUID, err := j.ExtractAccessUUID(verifiedToken)
 	if err != nil {
 		return "", nil
 	}
@@ -71,18 +83,8 @@ func (j *JWT) GetAccessUUID(bearToken string) (string, error) {
 }
 
 // GetRefreshUUID gets an refresh uuid from request Authorization header.
-func (j *JWT) GetRefreshUUID(bearToken string) (string, error) {
-	token := j.ExtractToken(bearToken)
-
-	var err error
-	var verifiedToken *jwt.Token
-	verifiedToken, err = j.VerifyToken(token, os.Getenv("JWT_REFRESH_TOKEN_SECRET"))
-	if err != nil {
-		return "", nil
-	}
-
-	var refreshUUID string
-	refreshUUID, err = j.ExtractRefreshUUID(verifiedToken)
+func (j *JWT) GetRefreshUUID(verifiedToken *jwt.Token) (string, error) {
+	refreshUUID, err := j.ExtractRefreshUUID(verifiedToken)
 	if err != nil {
 		return "", nil
 	}

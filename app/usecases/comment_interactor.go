@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/goblin"
 )
 
@@ -58,8 +57,7 @@ func (ci *CommentInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.R
 		}
 	}
 
-	var comments domain.Comments
-	comments, err = ci.CommentRepository.FindAll(page, limit)
+	comments, err := ci.CommentRepository.FindAll(page, limit)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -93,8 +91,7 @@ func (ci *CommentInteractor) HandleShowPrivate(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	var comment domain.Comment
-	comment, err = ci.CommentRepository.FindByID(id)
+	comment, err := ci.CommentRepository.FindByID(id)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -123,9 +120,7 @@ func (ci *CommentInteractor) HandleStore(w http.ResponseWriter, r *http.Request)
 	}
 
 	var req RequestComment
-
-	err = json.Unmarshal(body, &req)
-	if err != nil {
+	if err = json.Unmarshal(body, &req); err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
@@ -133,8 +128,7 @@ func (ci *CommentInteractor) HandleStore(w http.ResponseWriter, r *http.Request)
 
 	title := goblin.GetParam(r.Context(), "title")
 
-	var post domain.Post
-	post, err = ci.PostRepository.FindByTitle(title)
+	post, err := ci.PostRepository.FindByTitle(title)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -142,14 +136,29 @@ func (ci *CommentInteractor) HandleStore(w http.ResponseWriter, r *http.Request)
 	}
 
 	req.PostID = post.ID
-	err = ci.CommentRepository.Save(req)
+	id, err := ci.CommentRepository.Save(req)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.HTTPStatus(w, http.StatusCreated, nil)
+	comment, err := ci.CommentRepository.FindByID(id)
+	if err != nil {
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	var cr CommentResponse
+	code, msg, err := cr.MakeResponseHandleStore(comment)
+	if err != nil {
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
@@ -163,7 +172,6 @@ func (ci *CommentInteractor) HandleUpdateStatusPrivate(w http.ResponseWriter, r 
 	}
 
 	var req RequestCommentStatus
-
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
 		ci.Logger.Error(err.Error())
@@ -171,20 +179,33 @@ func (ci *CommentInteractor) HandleUpdateStatusPrivate(w http.ResponseWriter, r 
 		return
 	}
 
-	err = json.Unmarshal(body, &req)
+	if err = json.Unmarshal(body, &req); err != nil {
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	if err = ci.CommentRepository.SaveStatusByID(req, id); err != nil {
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	comment, err := ci.CommentRepository.FindByID(id)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	err = ci.CommentRepository.SaveStatusByID(req, id)
+	var cr CommentResponse
+	code, msg, err := cr.MakeResponseHandleUpdateStatusPrivate(comment)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.HTTPStatus(w, http.StatusOK, nil)
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }

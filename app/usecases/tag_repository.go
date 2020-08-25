@@ -10,7 +10,7 @@ type TagRepository interface {
 	FindAll(page int, limit int) (domain.Tags, error)
 	FindByID(id int) (domain.Tag, error)
 	FindByName(name string) (domain.Tag, error)
-	Save(req RequestTag) error
+	Save(req RequestTag) (int, error)
 	SaveByID(req RequestTag, id int) error
 	DeleteByID(id int) (int, error)
 }

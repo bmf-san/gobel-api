@@ -81,6 +81,36 @@ func (r *CategoryResponse) MakeResponseHandleShowPrivate(c domain.Category) (int
 	return http.StatusOK, res, nil
 }
 
+// MakeResponseHandleStorePrivate makes a response.
+func (r *CategoryResponse) MakeResponseHandleStorePrivate(c domain.Category) (int, []byte, error) {
+	res, err := json.Marshal(PrivateResponseCategory{
+		ID:        c.ID,
+		Name:      c.Name,
+		CreatedAt: c.CreatedAt,
+		UpdatedAt: c.UpdatedAt,
+	})
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusCreated, res, nil
+}
+
+// MakeResponseHandleUpdatePrivate makes a response.
+func (r *CategoryResponse) MakeResponseHandleUpdatePrivate(c domain.Category) (int, []byte, error) {
+	res, err := json.Marshal(PrivateResponseCategory{
+		ID:        c.ID,
+		Name:      c.Name,
+		CreatedAt: c.CreatedAt,
+		UpdatedAt: c.UpdatedAt,
+	})
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
+}
+
 // A ResponseCategory represents the singular of category for response.
 type ResponseCategory struct {
 	ID   int    `json:"id"`

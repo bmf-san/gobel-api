@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/goblin"
 )
 
@@ -57,8 +56,7 @@ func (ci *CategoryInteractor) HandleIndex(w http.ResponseWriter, r *http.Request
 		}
 	}
 
-	var categories domain.Categories
-	categories, err = ci.CategoryRepository.FindAll(page, limit)
+	categories, err := ci.CategoryRepository.FindAll(page, limit)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -121,8 +119,7 @@ func (ci *CategoryInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.
 		}
 	}
 
-	var categories domain.Categories
-	categories, err = ci.CategoryRepository.FindAll(page, limit)
+	categories, err := ci.CategoryRepository.FindAll(page, limit)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -151,7 +148,6 @@ func (ci *CategoryInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.
 func (ci *CategoryInteractor) HandleShow(w http.ResponseWriter, r *http.Request) {
 	name := goblin.GetParam(r.Context(), "name")
 
-	var category domain.Category
 	category, err := ci.CategoryRepository.FindByName(name)
 	if err != nil {
 		ci.Logger.Error(err.Error())
@@ -180,8 +176,7 @@ func (ci *CategoryInteractor) HandleShowPrivate(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	var category domain.Category
-	category, err = ci.CategoryRepository.FindByID(id)
+	category, err := ci.CategoryRepository.FindByID(id)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -210,22 +205,35 @@ func (ci *CategoryInteractor) HandleStorePrivate(w http.ResponseWriter, r *http.
 	}
 
 	var req RequestCategory
+	if err = json.Unmarshal(body, &req); err != nil {
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
 
-	err = json.Unmarshal(body, &req)
+	id, err := ci.CategoryRepository.Save(req)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	err = ci.CategoryRepository.Save(req)
+	category, err := ci.CategoryRepository.FindByID(id)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.HTTPStatus(w, http.StatusCreated, nil)
+	var cr CategoryResponse
+	code, msg, err := cr.MakeResponseHandleStorePrivate(category)
+	if err != nil {
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
@@ -239,7 +247,6 @@ func (ci *CategoryInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http
 	}
 
 	var req RequestCategory
-
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
 		ci.Logger.Error(err.Error())
@@ -247,21 +254,34 @@ func (ci *CategoryInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http
 		return
 	}
 
-	err = json.Unmarshal(body, &req)
+	if err = json.Unmarshal(body, &req); err != nil {
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	if err = ci.CategoryRepository.SaveByID(req, id); err != nil {
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	category, err := ci.CategoryRepository.FindByID(id)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	err = ci.CategoryRepository.SaveByID(req, id)
+	var cr CategoryResponse
+	code, msg, err := cr.MakeResponseHandleUpdatePrivate(category)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.HTTPStatus(w, http.StatusOK, nil)
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 

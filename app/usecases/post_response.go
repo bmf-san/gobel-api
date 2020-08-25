@@ -215,6 +215,104 @@ func (r *PostResponse) MakeResponseHandleShowPrivate(p domain.Post) (int, []byte
 	return http.StatusOK, res, nil
 }
 
+// MakeResponseHandleStorePrivate makes a response.
+func (r *PostResponse) MakeResponseHandleStorePrivate(p domain.Post) (int, []byte, error) {
+	responseAdmin := PrivateResponseAdmin{
+		ID:   p.Admin.ID,
+		Name: p.Admin.Name,
+	}
+	responseCategory := PrivateResponseCategory{
+		ID:   p.Category.ID,
+		Name: p.Category.Name,
+	}
+	var responseTags PrivateResponseTags
+	for _, t := range p.Tags {
+		responseTag := PrivateResponseTag{
+			ID:   t.ID,
+			Name: t.Name,
+		}
+		responseTags = append(responseTags, responseTag)
+	}
+	var responseComments PrivateResponseComments
+	for _, c := range p.Comments {
+		responseComment := PrivateResponseComment{
+			ID:        c.ID,
+			Body:      c.Body,
+			CreatedAt: c.CreatedAt,
+		}
+		responseComments = append(responseComments, responseComment)
+	}
+	rp := PrivateResponsePost{
+		ID:        p.ID,
+		Admin:     responseAdmin,
+		Category:  responseCategory,
+		Tags:      responseTags,
+		Title:     p.Title,
+		MDBody:    p.MDBody,
+		HTMLBody:  p.HTMLBody,
+		Status:    p.Status,
+		Comments:  responseComments,
+		CreatedAt: p.CreatedAt,
+		UpdatedAt: p.UpdatedAt,
+	}
+
+	res, err := json.Marshal(rp)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusCreated, res, nil
+}
+
+// MakeResponseHandleUpdatePrivate makes a response.
+func (r *PostResponse) MakeResponseHandleUpdatePrivate(p domain.Post) (int, []byte, error) {
+	responseAdmin := PrivateResponseAdmin{
+		ID:   p.Admin.ID,
+		Name: p.Admin.Name,
+	}
+	responseCategory := PrivateResponseCategory{
+		ID:   p.Category.ID,
+		Name: p.Category.Name,
+	}
+	var responseTags PrivateResponseTags
+	for _, t := range p.Tags {
+		responseTag := PrivateResponseTag{
+			ID:   t.ID,
+			Name: t.Name,
+		}
+		responseTags = append(responseTags, responseTag)
+	}
+	var responseComments PrivateResponseComments
+	for _, c := range p.Comments {
+		responseComment := PrivateResponseComment{
+			ID:        c.ID,
+			Body:      c.Body,
+			CreatedAt: c.CreatedAt,
+		}
+		responseComments = append(responseComments, responseComment)
+	}
+	rp := PrivateResponsePost{
+		ID:        p.ID,
+		Admin:     responseAdmin,
+		Category:  responseCategory,
+		Tags:      responseTags,
+		Title:     p.Title,
+		MDBody:    p.MDBody,
+		HTMLBody:  p.HTMLBody,
+		Status:    p.Status,
+		Comments:  responseComments,
+		CreatedAt: p.CreatedAt,
+		UpdatedAt: p.UpdatedAt,
+	}
+
+	res, err := json.Marshal(rp)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
+}
+
 // A ResponsePost represents the singular of post for response.
 type ResponsePost struct {
 	ID        int               `json:"id"`

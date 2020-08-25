@@ -20,6 +20,16 @@ TRUNCATE tags;
 TRUNCATE tag_post;
 SET FOREIGN_KEY_CHECKS=1;
 
+/*
+ * Each query is supposed to generate 100 records of data.
+ * If you want to add more data, please do as follows.
+ * ex.
+ * FROM
+ *   tests AS t1,
+ *   tests AS t2,
+ *   tests AS t3,
+ *   and more...
+ */
 INSERT INTO admins(name, email, password)
 SELECT
   CONCAT(@rownum := @rownum + 1, 'admin'),
@@ -28,11 +38,8 @@ SELECT
 FROM
   tests AS t1,
   tests AS t2,
-  tests AS t3,
-  tests AS t4,
-  tests AS t5,
-  tests AS t6,
   (SELECT @rownum := 0) AS v;
+
 
 INSERT INTO categories(name)
 SELECT
@@ -40,10 +47,6 @@ SELECT
 FROM
   tests AS t1,
   tests AS t2,
-  tests AS t3,
-  tests AS t4,
-  tests AS t5,
-  tests AS t6,
   (SELECT @rownum := 0) AS v;
 
 INSERT INTO posts(admin_id, category_id, title, md_body, html_body)
@@ -56,10 +59,6 @@ SELECT
 FROM
   tests AS t1,
   tests AS t2,
-  tests AS t3,
-  tests AS t4,
-  tests AS t5,
-  tests AS t6,
   (SELECT @rownum := 0) AS v;
 
 INSERT INTO archived_posts(admin_id, category_id, title, md_body, html_body)
@@ -72,10 +71,6 @@ SELECT
 FROM
   tests AS t1,
   tests AS t2,
-  tests AS t3,
-  tests AS t4,
-  tests AS t5,
-  tests AS t6,
   (SELECT @rownum := 0) AS v;
 
 INSERT INTO comments(post_id, body)
@@ -85,10 +80,6 @@ SELECT
 FROM
   tests AS t1,
   tests AS t2,
-  tests AS t3,
-  tests AS t4,
-  tests AS t5,
-  tests AS t6,
   (SELECT @rownum := 0) AS v;
 
 INSERT INTO archived_comments(archived_post_id, body)
@@ -98,10 +89,6 @@ SELECT
 FROM
   tests AS t1,
   tests AS t2,
-  tests AS t3,
-  tests AS t4,
-  tests AS t5,
-  tests AS t6,
   (SELECT @rownum := 0) AS v;
 
 INSERT INTO tags(name)
@@ -110,10 +97,6 @@ SELECT
 FROM
   tests AS t1,
   tests AS t2,
-  tests AS t3,
-  tests AS t4,
-  tests AS t5,
-  tests AS t6,
   (SELECT @rownum := 0) AS v;
 
 INSERT INTO tag_post(tag_id, post_id)
@@ -123,10 +106,6 @@ SELECT
 FROM
   tests AS t1,
   tests AS t2,
-  tests AS t3,
-  tests AS t4,
-  tests AS t5,
-  tests AS t6,
   (SELECT @rownum := 0) AS v;
 
 DROP TABLE IF EXISTS tests;

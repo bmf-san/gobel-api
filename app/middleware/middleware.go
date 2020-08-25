@@ -9,7 +9,6 @@ import (
 	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces"
 	"github.com/bmf-san/gobel-api/app/usecases"
-	"github.com/go-redis/redis/v7"
 )
 
 // middelware represents the singular of middleware.
@@ -22,15 +21,17 @@ type Middlewares struct {
 
 // Asset represents the plural of middelware services.
 type Asset struct {
-	connRedis *redis.Client
-	logger    usecases.Logger
+	jwtRepository   interfaces.JWTRepository
+	adminRepository interfaces.AdminRepository
+	logger          usecases.Logger
 }
 
 // NewAsset creates a assets.
-func NewAsset(connRedis *redis.Client, logger usecases.Logger) Asset {
+func NewAsset(jwtRepository interfaces.JWTRepository, adminRepository interfaces.AdminRepository, logger usecases.Logger) Asset {
 	return Asset{
-		connRedis: connRedis,
-		logger:    logger,
+		jwtRepository:   jwtRepository,
+		adminRepository: adminRepository,
+		logger:          logger,
 	}
 }
 
@@ -55,10 +56,68 @@ func (a *Asset) Auth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var jr interfaces.JSONResponse
 		var j domain.JWT
-		token := j.ExtractToken(r.Header.Get("Authorization"))
 
-		var err error
-		_, err = j.VerifyToken(token, os.Getenv("JWT_ACCESS_TOKEN_SECRET"))
+		verifiedToken, err := j.GetVerifiedAccessToken(r.Header.Get("Authorization"))
+		if err != nil {
+			a.logger.Error(err.Error())
+			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			return
+		}
+
+		accessUUID, err := j.GetAccessUUID(verifiedToken)
+		if err != nil {
+			a.logger.Error(err.Error())
+			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			return
+		}
+
+		adminID, err := a.jwtRepository.FindIDByAccessUUID(accessUUID)
+		if err != nil {
+			a.logger.Error(err.Error())
+			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			return
+		}
+
+		_, err = a.adminRepository.FindByID(adminID)
+		if err != nil {
+			a.logger.Error(err.Error())
+			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	}
+}
+
+// Refresh is a middleware for refreshing a access token by refresh token.
+func (a *Asset) Refresh(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var jr interfaces.JSONResponse
+		var j domain.JWT
+
+		verifiedToken, err := j.GetVerifiedRefreshToken(r.Header.Get("Authorization"))
+
+		if err != nil {
+			a.logger.Error(err.Error())
+			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			return
+		}
+
+		refreshUUID, err := j.GetRefreshUUID(verifiedToken)
+		if err != nil {
+			a.logger.Error(err.Error())
+			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			return
+		}
+
+		adminID, err := a.jwtRepository.FindIDByRefreshUUID(refreshUUID)
+		if err != nil {
+			a.logger.Error(err.Error())
+			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			return
+		}
+
+		_, err = a.adminRepository.FindByID(adminID)
 		if err != nil {
 			a.logger.Error(err.Error())
 			jr.HTTPStatus(w, http.StatusUnauthorized, nil)

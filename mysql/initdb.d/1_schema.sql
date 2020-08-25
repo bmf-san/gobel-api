@@ -127,7 +127,7 @@ CREATE VIEW `view_posts` AS
     LEFT JOIN
         categories
     ON
-        categories.id = posts.category_id
+        categories.id = posts.category_id;
 
 ALTER TABLE posts ADD INDEX index_posts_status(status);
 ALTER TABLE posts ADD INDEX index_posts_category_id(category_id);

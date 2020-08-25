@@ -8,7 +8,7 @@ type CategoryRepository interface {
 	FindAll(page int, limit int) (domain.Categories, error)
 	FindByID(id int) (domain.Category, error)
 	FindByName(name string) (domain.Category, error)
-	Save(req RequestCategory) error
+	Save(req RequestCategory) (int, error)
 	SaveByID(req RequestCategory, id int) error
 	DeleteByID(id int) (int, error)
 }
