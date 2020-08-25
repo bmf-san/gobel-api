@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/go-redis/redis/v7"
 )
 
 // A PostController is a controller for a post.
@@ -14,11 +15,18 @@ type PostController struct {
 }
 
 // NewPostController creates a PostController.
-func NewPostController(conn *sql.DB, logger usecases.Logger) *PostController {
+func NewPostController(connMySQL *sql.DB, connRedis *redis.Client, logger usecases.Logger) *PostController {
 	return &PostController{
 		PostInteractor: usecases.PostInteractor{
+			AdminRepository: &AdminRepository{
+				ConnMySQL: connMySQL,
+				ConnRedis: connRedis,
+			},
 			PostRepository: &PostRepository{
-				Conn: conn,
+				ConnMySQL: connMySQL,
+			},
+			JWTRepository: &JWTRepository{
+				ConnRedis: connRedis,
 			},
 			JSONResponse: &JSONResponse{},
 			Logger:       logger,

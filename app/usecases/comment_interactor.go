@@ -22,15 +22,13 @@ type CommentInteractor struct {
 
 // HandleIndexPrivate returns a listing of the resource.
 func (ci *CommentInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	const defaultPage = 1
 	const defaultLimit = 10
 
 	count, err := ci.CommentRepository.CountAll()
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -41,8 +39,8 @@ func (ci *CommentInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.R
 	} else {
 		page, err = strconv.Atoi(paramPage)
 		if err != nil {
-			ci.Logger.LogError(err)
-			ci.JSONResponse.Error500(w)
+			ci.Logger.Error(err.Error())
+			ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -54,8 +52,8 @@ func (ci *CommentInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.R
 	} else {
 		limit, err = strconv.Atoi(paramLimit)
 		if err != nil {
-			ci.Logger.LogError(err)
-			ci.JSONResponse.Error500(w)
+			ci.Logger.Error(err.Error())
+			ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 			return
 		}
 	}
@@ -63,17 +61,16 @@ func (ci *CommentInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.R
 	var comments domain.Comments
 	comments, err = ci.CommentRepository.FindAll(page, limit)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var cr CommentResponse
-	var res []byte
-	res, err = json.Marshal(cr.MakeResponseHandleIndexPrivate(comments))
+	code, msg, err := cr.MakeResponseHandleIndexPrivate(comments)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -83,50 +80,45 @@ func (ci *CommentInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.R
 	w.Header().Set("Pagination-Pagecount", fmt.Sprint(pageCount))
 	w.Header().Set("Pagination-Page", strconv.Itoa(page))
 	w.Header().Set("Pagination-Limit", strconv.Itoa(limit))
-	ci.JSONResponse.Success200(w, res)
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleShowPrivate display the specified resource.
 func (ci *CommentInteractor) HandleShowPrivate(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var comment domain.Comment
 	comment, err = ci.CommentRepository.FindByID(id)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	var cr CommentResponse
-	var res []byte
-	res, err = json.Marshal(cr.MakeResponseHandleShowPrivate(comment))
+	code, msg, err := cr.MakeResponseHandleShowPrivate(comment)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.Success200(w, res)
+	ci.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
 // HandleStore stores a newly created resource in storage.
 func (ci *CommentInteractor) HandleStore(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -134,8 +126,8 @@ func (ci *CommentInteractor) HandleStore(w http.ResponseWriter, r *http.Request)
 
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -144,31 +136,29 @@ func (ci *CommentInteractor) HandleStore(w http.ResponseWriter, r *http.Request)
 	var post domain.Post
 	post, err = ci.PostRepository.FindByTitle(title)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	req.PostID = post.ID
 	err = ci.CommentRepository.Save(req)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.Success201(w, []byte("The item was created successfully"))
+	ci.JSONResponse.HTTPStatus(w, http.StatusCreated, nil)
 	return
 }
 
 // HandleUpdateStatusPrivate updates the specified resource in storage.
 func (ci *CommentInteractor) HandleUpdateStatusPrivate(w http.ResponseWriter, r *http.Request) {
-	ci.Logger.LogAccess(r)
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -176,25 +166,25 @@ func (ci *CommentInteractor) HandleUpdateStatusPrivate(w http.ResponseWriter, r 
 
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
 	err = ci.CommentRepository.SaveStatusByID(req, id)
 	if err != nil {
-		ci.Logger.LogError(err)
-		ci.JSONResponse.Error500(w)
+		ci.Logger.Error(err.Error())
+		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ci.JSONResponse.Success200(w, []byte("The item was updated successfully"))
+	ci.JSONResponse.HTTPStatus(w, http.StatusOK, nil)
 	return
 }

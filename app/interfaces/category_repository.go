@@ -10,12 +10,12 @@ import (
 
 // A CategoryRepository is a repository for a comment.[]
 type CategoryRepository struct {
-	Conn *sql.DB
+	ConnMySQL *sql.DB
 }
 
 // CountAll count all entities.
 func (cr *CategoryRepository) CountAll() (count int, err error) {
-	row := cr.Conn.QueryRow(`
+	row := cr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
@@ -31,7 +31,7 @@ func (cr *CategoryRepository) CountAll() (count int, err error) {
 
 // FindAll returns all entities.
 func (cr *CategoryRepository) FindAll(page int, limit int) (categories domain.Categories, err error) {
-	rows, err := cr.Conn.Query(`
+	rows, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -78,7 +78,7 @@ func (cr *CategoryRepository) FindAll(page int, limit int) (categories domain.Ca
 
 // FindByID returns the entity identified by the given id.
 func (cr *CategoryRepository) FindByID(id int) (category domain.Category, err error) {
-	row, err := cr.Conn.Query(`
+	row, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -119,7 +119,7 @@ func (cr *CategoryRepository) FindByID(id int) (category domain.Category, err er
 
 // FindByName returns the entity identified by the given id.
 func (cr *CategoryRepository) FindByName(name string) (category domain.Category, err error) {
-	row, err := cr.Conn.Query(`
+	row, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
 		FROM
@@ -160,7 +160,7 @@ func (cr *CategoryRepository) FindByName(name string) (category domain.Category,
 
 // Save saves the given entity.
 func (cr *CategoryRepository) Save(req usecases.RequestCategory) (err error) {
-	tx, err := cr.Conn.Begin()
+	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
 
@@ -184,7 +184,7 @@ func (cr *CategoryRepository) Save(req usecases.RequestCategory) (err error) {
 
 // SaveByID save the given entity identified by the given id.
 func (cr *CategoryRepository) SaveByID(req usecases.RequestCategory, id int) (err error) {
-	tx, err := cr.Conn.Begin()
+	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
 
@@ -209,9 +209,9 @@ func (cr *CategoryRepository) SaveByID(req usecases.RequestCategory, id int) (er
 
 // DeleteByID deletes the entity identified by the given id.
 func (cr *CategoryRepository) DeleteByID(id int) (count int, err error) {
-	tx, err := cr.Conn.Begin()
+	tx, err := cr.ConnMySQL.Begin()
 
-	row := cr.Conn.QueryRow(`
+	row := cr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM

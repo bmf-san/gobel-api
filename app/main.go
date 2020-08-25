@@ -21,10 +21,15 @@ func main() {
 	logger := infrastructure.NewLogger()
 	db := infrastructure.NewDB()
 
-	conn, err := db.GetConn()
+	connMySQL, err := db.GetConnMySQL()
 	if err != nil {
-		logger.LogError(err)
+		logger.Error(err.Error())
 	}
 
-	infrastructure.Dispatch(conn, logger)
+	connRedis, err := db.GetConnRedis()
+	if err != nil {
+		logger.Error(err.Error())
+	}
+
+	infrastructure.Dispatch(connMySQL, connRedis, logger)
 }

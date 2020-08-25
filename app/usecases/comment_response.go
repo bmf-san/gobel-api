@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"encoding/json"
+	"net/http"
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
@@ -10,8 +12,8 @@ import (
 type CommentResponse struct{}
 
 // MakeResponseHandleIndexPrivate makes a response.
-func (r *CommentResponse) MakeResponseHandleIndexPrivate(comments domain.Comments) PrivateResponseComments {
-	var res []PrivateResponseComment
+func (r *CommentResponse) MakeResponseHandleIndexPrivate(comments domain.Comments) (int, []byte, error) {
+	var cmt []PrivateResponseComment
 	for _, c := range comments {
 		rc := PrivateResponseComment{
 			ID:        c.ID,
@@ -20,21 +22,31 @@ func (r *CommentResponse) MakeResponseHandleIndexPrivate(comments domain.Comment
 			Status:    c.Status,
 			CreatedAt: c.CreatedAt,
 		}
-		res = append(res, rc)
+		cmt = append(cmt, rc)
 	}
 
-	return res
+	res, err := json.Marshal(cmt)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
 }
 
 // MakeResponseHandleShowPrivate makes a response.
-func (r *CommentResponse) MakeResponseHandleShowPrivate(c domain.Comment) PrivateResponseComment {
-	return PrivateResponseComment{
+func (r *CommentResponse) MakeResponseHandleShowPrivate(c domain.Comment) (int, []byte, error) {
+	res, err := json.Marshal(PrivateResponseComment{
 		ID:        c.ID,
 		PostID:    c.PostID,
 		Body:      c.Body,
 		Status:    c.Status,
 		CreatedAt: c.CreatedAt,
+	})
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
 	}
+
+	return http.StatusOK, res, nil
 }
 
 // A ResponseComment represents the singular of comment for response.
