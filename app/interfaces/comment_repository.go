@@ -14,14 +14,15 @@ type CommentRepository struct {
 }
 
 // CountAll count all entities.
-func (cr *CommentRepository) CountAll() (count int, err error) {
+func (cr *CommentRepository) CountAll() (int, error) {
 	row := cr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
 			comments
 	`)
-	err = row.Scan(&count)
+	var count int
+	err := row.Scan(&count)
 	if err != nil {
 		return 0, err
 	}
@@ -30,7 +31,7 @@ func (cr *CommentRepository) CountAll() (count int, err error) {
 }
 
 // FindAll returns all entities.
-func (cr *CommentRepository) FindAll(page int, limit int) (comments domain.Comments, err error) {
+func (cr *CommentRepository) FindAll(page int, limit int) (domain.Comments, error) {
 	rows, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -45,6 +46,7 @@ func (cr *CommentRepository) FindAll(page int, limit int) (comments domain.Comme
 
 	defer rows.Close()
 
+	var comments domain.Comments
 	for rows.Next() {
 		var (
 			commentID        int
@@ -83,7 +85,8 @@ func (cr *CommentRepository) FindAll(page int, limit int) (comments domain.Comme
 }
 
 // FindByID returns the entity identified by the given id.
-func (cr *CommentRepository) FindByID(id int) (comment domain.Comment, err error) {
+func (cr *CommentRepository) FindByID(id int) (domain.Comment, error) {
+	var comment domain.Comment
 	row, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -96,7 +99,7 @@ func (cr *CommentRepository) FindByID(id int) (comment domain.Comment, err error
 	defer row.Close()
 
 	if err != nil {
-		return
+		return comment, err
 	}
 
 	row.Next()
@@ -116,7 +119,7 @@ func (cr *CommentRepository) FindByID(id int) (comment domain.Comment, err error
 		&commentCreatedAt,
 		&commentUpdatedAt,
 	); err != nil {
-		return
+		return comment, err
 	}
 
 	return domain.Comment{
@@ -130,12 +133,12 @@ func (cr *CommentRepository) FindByID(id int) (comment domain.Comment, err error
 }
 
 // Save saves the given entity.
-func (cr *CommentRepository) Save(req usecases.RequestComment) (err error) {
+func (cr *CommentRepository) Save(req usecases.RequestComment) (int, error) {
 	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
 
-	_, err = tx.Exec(`
+	rslt, err := tx.Exec(`
 		INSERT INTO
 			comments(post_id, body, created_at, updated_at)
 		VALUES
@@ -143,18 +146,24 @@ func (cr *CommentRepository) Save(req usecases.RequestComment) (err error) {
 	`, req.PostID, req.Body, now, now)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
+	}
+
+	id, err := rslt.LastInsertId()
+	if err != nil {
+		_ = tx.Rollback()
+		return 0, err
 	}
 
 	if err = tx.Commit(); err != nil {
-		return nil
+		return 0, err
 	}
 
-	return nil
+	return int(id), nil
 }
 
 // SaveStatusByID save the given entity identified by the given id
-func (cr *CommentRepository) SaveStatusByID(req usecases.RequestCommentStatus, id int) (err error) {
+func (cr *CommentRepository) SaveStatusByID(req usecases.RequestCommentStatus, id int) error {
 	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
@@ -168,7 +177,7 @@ func (cr *CommentRepository) SaveStatusByID(req usecases.RequestCommentStatus, i
 	`, req.Status, now, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return err
 	}
 
 	if err = tx.Commit(); err != nil {

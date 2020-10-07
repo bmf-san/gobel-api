@@ -59,8 +59,7 @@ func (pi *PostInteractor) HandleIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	var posts domain.Posts
-	posts, err = pi.PostRepository.FindAllPublish(page, limit)
+	posts, err := pi.PostRepository.FindAllPublish(page, limit)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -125,8 +124,7 @@ func (pi *PostInteractor) HandleIndexByCategory(w http.ResponseWriter, r *http.R
 
 	name := goblin.GetParam(r.Context(), "name")
 
-	var posts domain.Posts
-	posts, err = pi.PostRepository.FindAllPublishByCategory(page, limit, name)
+	posts, err := pi.PostRepository.FindAllPublishByCategory(page, limit, name)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -191,8 +189,7 @@ func (pi *PostInteractor) HandleIndexByTag(w http.ResponseWriter, r *http.Reques
 
 	name := goblin.GetParam(r.Context(), "name")
 
-	var posts domain.Posts
-	posts, err = pi.PostRepository.FindAllPublishByTag(page, limit, name)
+	posts, err := pi.PostRepository.FindAllPublishByTag(page, limit, name)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -256,8 +253,7 @@ func (pi *PostInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Requ
 		}
 	}
 
-	var posts domain.Posts
-	posts, err = pi.PostRepository.FindAll(page, limit)
+	posts, err := pi.PostRepository.FindAll(page, limit)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -286,7 +282,6 @@ func (pi *PostInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Requ
 func (pi *PostInteractor) HandleShow(w http.ResponseWriter, r *http.Request) {
 	title := goblin.GetParam(r.Context(), "title")
 
-	var post domain.Post
 	post, err := pi.PostRepository.FindByTitle(title)
 	if err != nil {
 		pi.Logger.Error(err.Error())
@@ -315,8 +310,7 @@ func (pi *PostInteractor) HandleShowPrivate(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	var post domain.Post
-	post, err = pi.PostRepository.FindByID(id)
+	post, err := pi.PostRepository.FindByID(id)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -345,16 +339,21 @@ func (pi *PostInteractor) HandleStorePrivate(w http.ResponseWriter, r *http.Requ
 	}
 
 	var j domain.JWT
-	var accessUUID string
-	accessUUID, err = j.GetAccessUUID(r.Header.Get("Authorization"))
+	verifiedToken, err := j.GetVerifiedAccessToken(r.Header.Get("Authorization"))
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	var adminID int
-	adminID, err = pi.JWTRepository.FindIDByAccessUUID(accessUUID)
+	accessUUID, err := j.GetAccessUUID(verifiedToken)
+	if err != nil {
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	adminID, err := pi.JWTRepository.FindIDByAccessUUID(accessUUID)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -364,21 +363,35 @@ func (pi *PostInteractor) HandleStorePrivate(w http.ResponseWriter, r *http.Requ
 	req := RequestPost{
 		AdminID: adminID,
 	}
-	err = json.Unmarshal(body, &req)
+	if err = json.Unmarshal(body, &req); err != nil {
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	id, err := pi.PostRepository.Save(req)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	err = pi.PostRepository.Save(req)
+	post, err := pi.PostRepository.FindByID(id)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	pi.JSONResponse.HTTPStatus(w, http.StatusCreated, nil)
+	var pr PostResponse
+	code, msg, err := pr.MakeResponseHandleStorePrivate(post)
+	if err != nil {
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	pi.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
@@ -392,16 +405,21 @@ func (pi *PostInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http.Req
 	}
 
 	var j domain.JWT
-	var accessUUID string
-	accessUUID, err = j.GetAccessUUID(r.Header.Get("Authorization"))
+	verifiedToken, err := j.GetVerifiedAccessToken(r.Header.Get("Authorization"))
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	var adminID int
-	adminID, err = pi.JWTRepository.FindIDByAccessUUID(accessUUID)
+	accessUUID, err := j.GetAccessUUID(verifiedToken)
+	if err != nil {
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	adminID, err := pi.JWTRepository.FindIDByAccessUUID(accessUUID)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -411,8 +429,7 @@ func (pi *PostInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http.Req
 	req := RequestPost{
 		AdminID: adminID,
 	}
-	err = json.Unmarshal(body, &req)
-	if err != nil {
+	if err = json.Unmarshal(body, &req); err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
@@ -424,14 +441,28 @@ func (pi *PostInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http.Req
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
-	err = pi.PostRepository.SaveByID(req, id)
+	if err = pi.PostRepository.SaveByID(req, id); err != nil {
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	post, err := pi.PostRepository.FindByID(id)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	pi.JSONResponse.HTTPStatus(w, http.StatusCreated, nil)
+	var pr PostResponse
+	code, msg, err := pr.MakeResponseHandleUpdatePrivate(post)
+	if err != nil {
+		pi.Logger.Error(err.Error())
+		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	pi.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 

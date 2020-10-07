@@ -14,15 +14,15 @@ type CategoryRepository struct {
 }
 
 // CountAll count all entities.
-func (cr *CategoryRepository) CountAll() (count int, err error) {
+func (cr *CategoryRepository) CountAll() (int, error) {
 	row := cr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
 			categories
 	`)
-	err = row.Scan(&count)
-	if err != nil {
+	var count int
+	if err := row.Scan(&count); err != nil {
 		return 0, err
 	}
 
@@ -30,7 +30,7 @@ func (cr *CategoryRepository) CountAll() (count int, err error) {
 }
 
 // FindAll returns all entities.
-func (cr *CategoryRepository) FindAll(page int, limit int) (categories domain.Categories, err error) {
+func (cr *CategoryRepository) FindAll(page int, limit int) (domain.Categories, error) {
 	rows, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -45,6 +45,7 @@ func (cr *CategoryRepository) FindAll(page int, limit int) (categories domain.Ca
 
 	defer rows.Close()
 
+	var categories domain.Categories
 	for rows.Next() {
 		var (
 			categoryID        int
@@ -77,7 +78,8 @@ func (cr *CategoryRepository) FindAll(page int, limit int) (categories domain.Ca
 }
 
 // FindByID returns the entity identified by the given id.
-func (cr *CategoryRepository) FindByID(id int) (category domain.Category, err error) {
+func (cr *CategoryRepository) FindByID(id int) (domain.Category, error) {
+	var category domain.Category
 	row, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -90,7 +92,7 @@ func (cr *CategoryRepository) FindByID(id int) (category domain.Category, err er
 	defer row.Close()
 
 	if err != nil {
-		return
+		return category, err
 	}
 
 	row.Next()
@@ -106,7 +108,7 @@ func (cr *CategoryRepository) FindByID(id int) (category domain.Category, err er
 		&categoryCreatedAt,
 		&categoryUpdatedAt,
 	); err != nil {
-		return
+		return category, nil
 	}
 
 	return domain.Category{
@@ -118,7 +120,8 @@ func (cr *CategoryRepository) FindByID(id int) (category domain.Category, err er
 }
 
 // FindByName returns the entity identified by the given id.
-func (cr *CategoryRepository) FindByName(name string) (category domain.Category, err error) {
+func (cr *CategoryRepository) FindByName(name string) (domain.Category, error) {
+	var category domain.Category
 	row, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -131,7 +134,7 @@ func (cr *CategoryRepository) FindByName(name string) (category domain.Category,
 	defer row.Close()
 
 	if err != nil {
-		return
+		return category, nil
 	}
 
 	row.Next()
@@ -147,7 +150,7 @@ func (cr *CategoryRepository) FindByName(name string) (category domain.Category,
 		&categoryCreatedAt,
 		&categoryUpdatedAt,
 	); err != nil {
-		return
+		return category, nil
 	}
 
 	return domain.Category{
@@ -159,31 +162,33 @@ func (cr *CategoryRepository) FindByName(name string) (category domain.Category,
 }
 
 // Save saves the given entity.
-func (cr *CategoryRepository) Save(req usecases.RequestCategory) (err error) {
+func (cr *CategoryRepository) Save(req usecases.RequestCategory) (int, error) {
 	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
 
-	_, err = tx.Exec(`
+	rslt, err := tx.Exec(`
 		INSERT INTO
 			categories(name, created_at, updated_at)
 		VALUES
 			(?, ?, ?)
 	`, req.Name, now, now)
+
+	id, err := rslt.LastInsertId()
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	if err = tx.Commit(); err != nil {
-		return nil
+		return 0, err
 	}
 
-	return nil
+	return int(id), nil
 }
 
 // SaveByID save the given entity identified by the given id.
-func (cr *CategoryRepository) SaveByID(req usecases.RequestCategory, id int) (err error) {
+func (cr *CategoryRepository) SaveByID(req usecases.RequestCategory, id int) error {
 	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
@@ -195,20 +200,16 @@ func (cr *CategoryRepository) SaveByID(req usecases.RequestCategory, id int) (er
 			updated_at = ?
 		WHERE id = ?
 	`, req.Name, now, id)
-	if err != nil {
-		_ = tx.Rollback()
-		return
-	}
 
 	if err = tx.Commit(); err != nil {
-		return nil
+		return err
 	}
 
-	return nil
+	return err
 }
 
 // DeleteByID deletes the entity identified by the given id.
-func (cr *CategoryRepository) DeleteByID(id int) (count int, err error) {
+func (cr *CategoryRepository) DeleteByID(id int) (int, error) {
 	tx, err := cr.ConnMySQL.Begin()
 
 	row := cr.ConnMySQL.QueryRow(`
@@ -221,12 +222,13 @@ func (cr *CategoryRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 
 	if err != nil {
-		return
+		return 0, nil
 	}
 
+	var count int
 	err = row.Scan(&count)
 	if err != nil {
-		return
+		return 0, nil
 	}
 
 	if count == 0 {
@@ -238,11 +240,11 @@ func (cr *CategoryRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	if err = tx.Commit(); err != nil {
-		return count, nil
+		return 0, err
 	}
 
 	return count, nil

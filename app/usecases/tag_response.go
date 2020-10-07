@@ -83,6 +83,38 @@ func (r *TagResponse) MakeResponseHandleShowPrivate(t domain.Tag) (int, []byte, 
 	return http.StatusOK, res, nil
 }
 
+// MakeResponseHandleStorePrivate makes a response.
+func (r *TagResponse) MakeResponseHandleStorePrivate(t domain.Tag) (int, []byte, error) {
+	res, err := json.Marshal(PrivateResponseTag{
+		ID:        t.ID,
+		Name:      t.Name,
+		CreatedAt: t.CreatedAt,
+		UpdatedAt: t.UpdatedAt,
+	})
+
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusCreated, res, nil
+}
+
+// MakeResponseHandleUpdatePrivate makes a response.
+func (r *TagResponse) MakeResponseHandleUpdatePrivate(t domain.Tag) (int, []byte, error) {
+	res, err := json.Marshal(PrivateResponseTag{
+		ID:        t.ID,
+		Name:      t.Name,
+		CreatedAt: t.CreatedAt,
+		UpdatedAt: t.UpdatedAt,
+	})
+
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
+}
+
 // A ResponseTag represents the singular of tag for response.
 type ResponseTag struct {
 	ID   int    `json:"id"`

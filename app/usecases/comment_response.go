@@ -33,8 +33,40 @@ func (r *CommentResponse) MakeResponseHandleIndexPrivate(comments domain.Comment
 	return http.StatusOK, res, nil
 }
 
+// MakeResponseHandleStore makes a response.
+func (r *CommentResponse) MakeResponseHandleStore(c domain.Comment) (int, []byte, error) {
+	res, err := json.Marshal(PrivateResponseComment{
+		ID:        c.ID,
+		PostID:    c.PostID,
+		Body:      c.Body,
+		Status:    c.Status,
+		CreatedAt: c.CreatedAt,
+	})
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusCreated, res, nil
+}
+
 // MakeResponseHandleShowPrivate makes a response.
 func (r *CommentResponse) MakeResponseHandleShowPrivate(c domain.Comment) (int, []byte, error) {
+	res, err := json.Marshal(PrivateResponseComment{
+		ID:        c.ID,
+		PostID:    c.PostID,
+		Body:      c.Body,
+		Status:    c.Status,
+		CreatedAt: c.CreatedAt,
+	})
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusOK, res, nil
+}
+
+// MakeResponseHandleUpdateStatusPrivate makes a response.
+func (r *CommentResponse) MakeResponseHandleUpdateStatusPrivate(c domain.Comment) (int, []byte, error) {
 	res, err := json.Marshal(PrivateResponseComment{
 		ID:        c.ID,
 		PostID:    c.PostID,

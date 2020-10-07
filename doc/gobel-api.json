@@ -610,7 +610,7 @@
                     "items": []
                   },
                   "bodyType": "Text",
-                  "textBody": "{\n\t\"category_id\": 10,\n\t\"tags\": [\n\t\t{\n\t\t\t\"id\": 1001\n\t\t},\n\t\t{\n\t\t\t\"id\": 1002\n\t\t}\n\t],\n\t\"title\": \"update-post\",\n\t\"body\": \"update-body\",\n\t\"md_body\": \"#update-md-body\",\n\t\"html_body\": \"<html><body>update_html_body</body></html>\",\n\t\"status\": \"draft\"\n}"
+                  "textBody": "{\n\t\"category_id\": 10,\n\t\"tags\": [\n\t\t{\n\t\t\t\"id\": 1001\n\t\t},\n\t\t{\n\t\t\t\"id\": 1002\n\t\t}\n\t],\n\t\"title\": \"update-post\",\n\t\"md_body\": \"#update-md-body\",\n\t\"html_body\": \"<html><body>update_html_body</body></html>\",\n\t\"status\": \"draft\"\n}"
                 },
                 "uri": {
                   "query": {
@@ -731,7 +731,7 @@
                   },
                   "bodyType": "Text",
                   "textBodyEditorHeight": 341,
-                  "textBody": "{\n\t\"category_id\": 1,\n\t\"tags\": [\n\t\t{\n\t\t\t\"id\": 1\n\t\t},\n\t\t{\n\t\t\t\"id\": 2\n\t\t}\n\t],\n\t\"title\": \"jwt\",\n\t\"body\": \"foo-bar-body\",\n\t\"md_body\": \"#md-body\",\n\t\"html_body\": \"<html><body>html_body</body></html>\",\n\t\"status\": \"draft\"\n}"
+                  "textBody": "{\n\t\"category_id\": 1,\n\t\"tags\": [\n\t\t{\n\t\t\t\"id\": 1\n\t\t},\n\t\t{\n\t\t\t\"id\": 2\n\t\t}\n\t],\n\t\"title\": \"jwt\",\n\t\"md_body\": \"#md-body\",\n\t\"html_body\": \"<html><body>html_body</body></html>\",\n\t\"status\": \"draft\"\n}"
                 },
                 "uri": {
                   "query": {
@@ -795,7 +795,7 @@
                   {
                     "enabled": true,
                     "name": "Authorization",
-                    "value": "Bear ${refresh_token}"
+                    "value": "Bearer ${refresh_token}"
                   }
                 ]
               }
@@ -1165,7 +1165,7 @@
                       {
                         "enabled": true,
                         "name": "page",
-                        "value": "2"
+                        "value": "1"
                       },
                       {
                         "enabled": true,
@@ -1262,9 +1262,9 @@
               "entity": {
                 "type": "Request",
                 "method": {
-                  "custom": true,
                   "requestBody": true,
-                  "name": "G"
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
                 },
                 "body": {
                   "formBody": {
@@ -1272,7 +1272,8 @@
                     "encoding": "application/x-www-form-urlencoded",
                     "items": []
                   },
-                  "bodyType": "Text"
+                  "bodyType": "Text",
+                  "textBody": "{\n\t\"body\": \"foobar\"\n}"
                 },
                 "uri": {
                   "query": {
@@ -1284,7 +1285,7 @@
                     "version": "V11"
                   },
                   "host": "gobel-api.local",
-                  "path": "/posts/5title"
+                  "path": "/posts/1title/comments"
                 },
                 "id": "81e0fb30-ba83-464c-8439-8bb220552a19",
                 "name": "[POST] /posts/:title/comments",
@@ -1310,14 +1311,14 @@
         "b0c6a907-03bb-4d00-8e6a-ea2b459ddb94": {
           "createdAt": "2020-03-30T00:04:41.610+09:00",
           "name": "access_token",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjExNDZiNWU0LTQyOWUtNDNhMC1hZDdjLTg1N2EyNzZmMWNiOSIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTU5NjU1OTU4MywiaWQiOjJ9.EbY-cFbkh9AjUs5Rchz3msrcZMaLWlMmGPX0PIld0pc",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImU4NWNhNWQ2LWFmMjctNDA1NS04ZGE2LTI0ZjUyNzBiMjUwYyIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYwMTMxMDE2OCwiaWQiOjJ9.S7eW-3AV9cSA5c49cJEme7FfGOLDJ1puoaRNU87ROUk",
           "enabled": true,
           "private": false
         },
         "eb890324-1180-4fb1-ac95-6a094e81348a": {
           "createdAt": "2020-07-25T23:37:28.766+09:00",
           "name": "refresh_token",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTcxNjM0ODMsImlkIjoyLCJyZWZyZXNoX3V1aWQiOiI2ZDdiYzIzZi01ZTJlLTQ1ODktYmU4OS0yYTM2NjM5NmU4YjQifQ.WsxHAX7dbUuIR7QEny0SfS7QYRa8wIdU26hqxlQfILE",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDE5MTMxMDQsImlkIjoyLCJyZWZyZXNoX3V1aWQiOiI1NTk0OGY5My03ZmY0LTRkYjQtYjFkNi05NzczODhhZjY1M2EifQ.XmBzFvlbDZLY4sMeqK6FG5fLl1zvkbsHLDStmbB8yCM",
           "enabled": true,
           "private": false
         }

@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/goblin"
 )
 
@@ -57,8 +56,7 @@ func (ti *TagInteractor) HandleIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	var tags domain.Tags
-	tags, err = ti.TagRepository.FindAll(page, limit)
+	tags, err := ti.TagRepository.FindAll(page, limit)
 	if err != nil {
 		ti.Logger.Error(err.Error())
 		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -122,8 +120,7 @@ func (ti *TagInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Reque
 		}
 	}
 
-	var tags domain.Tags
-	tags, err = ti.TagRepository.FindAll(page, limit)
+	tags, err := ti.TagRepository.FindAll(page, limit)
 	if err != nil {
 		ti.Logger.Error(err.Error())
 		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -152,7 +149,6 @@ func (ti *TagInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Reque
 func (ti *TagInteractor) HandleShow(w http.ResponseWriter, r *http.Request) {
 	name := goblin.GetParam(r.Context(), "name")
 
-	var tag domain.Tag
 	tag, err := ti.TagRepository.FindByName(name)
 	if err != nil {
 		ti.Logger.Error(err.Error())
@@ -181,8 +177,7 @@ func (ti *TagInteractor) HandleShowPrivate(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	var tag domain.Tag
-	tag, err = ti.TagRepository.FindByID(id)
+	tag, err := ti.TagRepository.FindByID(id)
 	if err != nil {
 		ti.Logger.Error(err.Error())
 		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -211,22 +206,34 @@ func (ti *TagInteractor) HandleStorePrivate(w http.ResponseWriter, r *http.Reque
 	}
 
 	var req RequestTag
+	if err = json.Unmarshal(body, &req); err != nil {
+		ti.Logger.Error(err.Error())
+		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
 
-	err = json.Unmarshal(body, &req)
+	id, err := ti.TagRepository.Save(req)
+	if err != nil {
+		ti.Logger.Error(err.Error())
+		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+	tag, err := ti.TagRepository.FindByID(id)
 	if err != nil {
 		ti.Logger.Error(err.Error())
 		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	err = ti.TagRepository.Save(req)
+	var tr TagResponse
+	code, msg, err := tr.MakeResponseHandleStorePrivate(tag)
 	if err != nil {
 		ti.Logger.Error(err.Error())
 		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ti.JSONResponse.HTTPStatus(w, http.StatusCreated, nil)
+	ti.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 
@@ -240,7 +247,6 @@ func (ti *TagInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http.Requ
 	}
 
 	var req RequestTag
-
 	id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 	if err != nil {
 		ti.Logger.Error(err.Error())
@@ -248,21 +254,34 @@ func (ti *TagInteractor) HandleUpdatePrivate(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	err = json.Unmarshal(body, &req)
+	if err = json.Unmarshal(body, &req); err != nil {
+		ti.Logger.Error(err.Error())
+		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	if err = ti.TagRepository.SaveByID(req, id); err != nil {
+		ti.Logger.Error(err.Error())
+		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	tag, err := ti.TagRepository.FindByID(id)
 	if err != nil {
 		ti.Logger.Error(err.Error())
 		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	err = ti.TagRepository.SaveByID(req, id)
+	var tr TagResponse
+	code, msg, err := tr.MakeResponseHandleUpdatePrivate(tag)
 	if err != nil {
 		ti.Logger.Error(err.Error())
 		ti.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
 		return
 	}
 
-	ti.JSONResponse.HTTPStatus(w, http.StatusOK, nil)
+	ti.JSONResponse.HTTPStatus(w, code, msg)
 	return
 }
 

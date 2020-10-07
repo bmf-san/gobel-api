@@ -7,6 +7,6 @@ type CommentRepository interface {
 	CountAll() (int, error)
 	FindAll(page int, limit int) (domain.Comments, error)
 	FindByID(id int) (domain.Comment, error)
-	Save(req RequestComment) error
+	Save(req RequestComment) (int, error)
 	SaveStatusByID(req RequestCommentStatus, id int) error
 }

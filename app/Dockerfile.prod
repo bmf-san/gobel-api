@@ -5,7 +5,7 @@ RUN apk update && \
     apk add --no-cache libc-dev gcc git openssh openssl bash && \
     go get -u golang.org/x/lint/golint
 
-WORKDIR /go/src/gobel-api/app
+WORKDIR /go/src/gobel-api
 
 COPY . .
 
@@ -17,13 +17,6 @@ RUN go build -o app
 
 FROM alpine
 
-ENV DOCKERIZE_VERSION v0.6.0
-
-RUN apk add --no-cache openssl \
-    && wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-
 COPY --from=builder /go/src/gobel-api/app ./
 
-CMD ["app"]
+CMD ["./app"]

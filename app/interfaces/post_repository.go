@@ -16,7 +16,7 @@ type PostRepository struct {
 }
 
 // CountAllPublish count all publish entities.
-func (pr *PostRepository) CountAllPublish() (count int, err error) {
+func (pr *PostRepository) CountAllPublish() (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -25,8 +25,8 @@ func (pr *PostRepository) CountAllPublish() (count int, err error) {
 		WHERE
 			status = "publish"
 	`)
-	err = row.Scan(&count)
-	if err != nil {
+	var count int
+	if err := row.Scan(&count); err != nil {
 		return 0, err
 	}
 
@@ -34,15 +34,15 @@ func (pr *PostRepository) CountAllPublish() (count int, err error) {
 }
 
 // CountAll count all entities.
-func (pr *PostRepository) CountAll() (count int, err error) {
+func (pr *PostRepository) CountAll() (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
 			view_posts
 	`)
-	err = row.Scan(&count)
-	if err != nil {
+	var count int
+	if err := row.Scan(&count); err != nil {
 		return 0, err
 	}
 
@@ -50,7 +50,8 @@ func (pr *PostRepository) CountAll() (count int, err error) {
 }
 
 // FindAllPublish returns all entities.
-func (pr *PostRepository) FindAllPublish(page int, limit int) (posts domain.Posts, err error) {
+func (pr *PostRepository) FindAllPublish(page int, limit int) (domain.Posts, error) {
+	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -270,7 +271,8 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (posts domain.Post
 }
 
 // FindAllPublishByCategory returns all entities by category.
-func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name string) (posts domain.Posts, err error) {
+func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name string) (domain.Posts, error) {
+	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -491,7 +493,8 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 }
 
 // FindAllPublishByTag returns all entities by tag.
-func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) (posts domain.Posts, err error) {
+func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) (domain.Posts, error) {
+	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 	SELECT
 		*
@@ -733,7 +736,8 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 }
 
 // FindAll returns all entities.
-func (pr *PostRepository) FindAll(page int, limit int) (posts domain.Posts, err error) {
+func (pr *PostRepository) FindAll(page int, limit int) (domain.Posts, error) {
+	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -947,7 +951,8 @@ func (pr *PostRepository) FindAll(page int, limit int) (posts domain.Posts, err 
 }
 
 // FindByTitle returns the entity identified by the given title.
-func (pr *PostRepository) FindByTitle(title string) (post domain.Post, err error) {
+func (pr *PostRepository) FindByTitle(title string) (domain.Post, error) {
+	var post domain.Post
 	row, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -960,7 +965,7 @@ func (pr *PostRepository) FindByTitle(title string) (post domain.Post, err error
 	defer row.Close()
 
 	if err != nil {
-		return
+		return post, err
 	}
 
 	row.Next()
@@ -1002,7 +1007,7 @@ func (pr *PostRepository) FindByTitle(title string) (post domain.Post, err error
 		&categoryCreatedAt,
 		&categoryUpdatedAt,
 	); err != nil {
-		return
+		return post, nil
 	}
 	p := domain.Post{
 		ID: postID,
@@ -1127,7 +1132,8 @@ func (pr *PostRepository) FindByTitle(title string) (post domain.Post, err error
 }
 
 // FindByID returns the entity identified by the given id.
-func (pr *PostRepository) FindByID(id int) (post domain.Post, err error) {
+func (pr *PostRepository) FindByID(id int) (domain.Post, error) {
+	var post domain.Post
 	row, err := pr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -1140,7 +1146,7 @@ func (pr *PostRepository) FindByID(id int) (post domain.Post, err error) {
 	defer row.Close()
 
 	if err != nil {
-		return
+		return post, err
 	}
 
 	row.Next()
@@ -1182,7 +1188,7 @@ func (pr *PostRepository) FindByID(id int) (post domain.Post, err error) {
 		&categoryCreatedAt,
 		&categoryUpdatedAt,
 	); err != nil {
-		return
+		return post, err
 	}
 	p := domain.Post{
 		ID: postID,
@@ -1307,7 +1313,7 @@ func (pr *PostRepository) FindByID(id int) (post domain.Post, err error) {
 }
 
 // Save saves the given entity.
-func (pr *PostRepository) Save(req usecases.RequestPost) (err error) {
+func (pr *PostRepository) Save(req usecases.RequestPost) (int, error) {
 	tx, err := pr.ConnMySQL.Begin()
 
 	now := time.Now()
@@ -1320,13 +1326,13 @@ func (pr *PostRepository) Save(req usecases.RequestPost) (err error) {
 	`, req.AdminID, req.CategoryID, req.Title, req.MDBody, req.HTMLBody, req.Status, now, now)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	postID, err := res.LastInsertId()
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	vStrings := []string{}
@@ -1352,14 +1358,14 @@ func (pr *PostRepository) Save(req usecases.RequestPost) (err error) {
 	_, err = tx.Exec(stmt, vArgs...)
 
 	if err = tx.Commit(); err != nil {
-		return nil
+		return 0, err
 	}
 
-	return nil
+	return int(postID), nil
 }
 
 // SaveByID save the given entity identified by the given id.
-func (pr *PostRepository) SaveByID(req usecases.RequestPost, id int) (err error) {
+func (pr *PostRepository) SaveByID(req usecases.RequestPost, id int) error {
 	tx, err := pr.ConnMySQL.Begin()
 
 	now := time.Now()
@@ -1378,7 +1384,7 @@ func (pr *PostRepository) SaveByID(req usecases.RequestPost, id int) (err error)
 	`, req.AdminID, req.CategoryID, req.Title, req.MDBody, req.HTMLBody, req.Status, now, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return err
 	}
 
 	_, err = tx.Exec(`
@@ -1386,7 +1392,7 @@ func (pr *PostRepository) SaveByID(req usecases.RequestPost, id int) (err error)
 	`, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return err
 	}
 
 	vStrings := []string{}
@@ -1412,14 +1418,14 @@ func (pr *PostRepository) SaveByID(req usecases.RequestPost, id int) (err error)
 	_, err = tx.Exec(stmt, vArgs...)
 
 	if err = tx.Commit(); err != nil {
-		return nil
+		return err
 	}
 
 	return nil
 }
 
 // DeleteByID deletes the entity identified by the given id.
-func (pr *PostRepository) DeleteByID(id int) (count int, err error) {
+func (pr *PostRepository) DeleteByID(id int) (int, error) {
 	tx, err := pr.ConnMySQL.Begin()
 
 	row := pr.ConnMySQL.QueryRow(`
@@ -1432,16 +1438,13 @@ func (pr *PostRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 
 	if err != nil {
-		return
+		return 0, err
 	}
 
+	var count int
 	err = row.Scan(&count)
 	if err != nil {
-		return
-	}
-
-	if count == 0 {
-		return count, nil
+		return 0, err
 	}
 
 	_, err = tx.Exec(`
@@ -1456,7 +1459,7 @@ func (pr *PostRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, nil
 	}
 
 	_, err = tx.Exec(`
@@ -1471,7 +1474,7 @@ func (pr *PostRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	_, err = tx.Exec(`
@@ -1486,7 +1489,7 @@ func (pr *PostRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	_, err = tx.Exec(`
@@ -1494,7 +1497,7 @@ func (pr *PostRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	_, err = tx.Exec(`
@@ -1502,7 +1505,7 @@ func (pr *PostRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	_, err = tx.Exec(`
@@ -1510,11 +1513,11 @@ func (pr *PostRepository) DeleteByID(id int) (count int, err error) {
 	`, id)
 	if err != nil {
 		_ = tx.Rollback()
-		return
+		return 0, err
 	}
 
 	if err = tx.Commit(); err != nil {
-		return count, nil
+		return 0, err
 	}
 
 	return count, nil

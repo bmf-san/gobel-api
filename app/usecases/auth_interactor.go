@@ -66,9 +66,14 @@ func (ai *AuthInteractor) HandleSignIn(w http.ResponseWriter, r *http.Request) {
 // HandleSignOut deletes an access token in storage by access uuid.
 func (ai *AuthInteractor) HandleSignOut(w http.ResponseWriter, r *http.Request) {
 	var j domain.JWT
-	var accessUUID string
-	var err error
-	accessUUID, err = j.GetAccessUUID(r.Header.Get("Authorization"))
+	verifiedToken, err := j.GetVerifiedAccessToken(r.Header.Get("Authorization"))
+	if err != nil {
+		ai.Logger.Error(err.Error())
+		ai.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	accessUUID, err := j.GetAccessUUID(verifiedToken)
 	if err != nil {
 		ai.Logger.Error(err.Error())
 		ai.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -90,9 +95,14 @@ func (ai *AuthInteractor) HandleSignOut(w http.ResponseWriter, r *http.Request) 
 // HandleRefresh refreshes an access token by refresh token.
 func (ai *AuthInteractor) HandleRefresh(w http.ResponseWriter, r *http.Request) {
 	var j domain.JWT
-	var refreshUUID string
-	var err error
-	refreshUUID, err = j.GetRefreshUUID(r.Header.Get("Authorization"))
+	verifiedToken, err := j.GetVerifiedRefreshToken(r.Header.Get("Authorization"))
+	if err != nil {
+		ai.Logger.Error(err.Error())
+		ai.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	refreshUUID, err := j.GetRefreshUUID(verifiedToken)
 	if err != nil {
 		ai.Logger.Error(err.Error())
 		ai.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -134,9 +144,14 @@ func (ai *AuthInteractor) HandleRefresh(w http.ResponseWriter, r *http.Request) 
 // HandleShowMe display the specified resource.
 func (ai *AuthInteractor) HandleShowMe(w http.ResponseWriter, r *http.Request) {
 	var j domain.JWT
-	var accessUUID string
-	var err error
-	accessUUID, err = j.GetAccessUUID(r.Header.Get("Authorization"))
+	verifiedToken, err := j.GetVerifiedAccessToken(r.Header.Get("Authorization"))
+	if err != nil {
+		ai.Logger.Error(err.Error())
+		ai.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
+	}
+
+	accessUUID, err := j.GetAccessUUID(verifiedToken)
 	if err != nil {
 		ai.Logger.Error(err.Error())
 		ai.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)

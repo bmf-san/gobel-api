@@ -14,10 +14,19 @@ import (
 
 // Dispatch handle routing
 func Dispatch(connMySQL *sql.DB, connRedis *redis.Client, logger usecases.Logger) {
-	asset := middleware.NewAsset(connRedis, logger)
+	jwtRepository := interfaces.JWTRepository{
+		ConnRedis: connRedis,
+	}
+	adminRepository := interfaces.AdminRepository{
+		ConnMySQL: connMySQL,
+		ConnRedis: connRedis,
+	}
+
+	asset := middleware.NewAsset(jwtRepository, adminRepository, logger)
 
 	publicMws := middleware.NewMiddlewares(asset.CORS)
 	privateMws := middleware.NewMiddlewares(asset.CORS, asset.Auth)
+	refreshMws := middleware.NewMiddlewares(asset.CORS, asset.Refresh)
 
 	authController := interfaces.NewAuthController(connMySQL, connRedis, logger)
 	postController := interfaces.NewPostController(connMySQL, connRedis, logger)
@@ -44,7 +53,7 @@ func Dispatch(connMySQL *sql.DB, connRedis *redis.Client, logger usecases.Logger
 	r.OPTION("/private/signout", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		return
 	})))
-	r.POST("/private/refresh", privateMws.Then(authController.Refresh))
+	r.POST("/private/refresh", refreshMws.Then(authController.Refresh))
 	r.OPTION("/private/refresh", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		return
 	})))
