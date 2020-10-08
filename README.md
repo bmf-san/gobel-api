@@ -42,7 +42,7 @@ gobel-api is based on Clean Architecture.
 |----------------------|----------------|
 | Frameworks & Drivers | infrastructure |
 | Interface            | interfaces     |
-| Usecases             | usecases       |
+| Usecase              | usecase        |
 | Entities             | domain         |
 
 cf. [blog.cleancoder.com - The Clean Code Blog by Robert C. Martin (Uncle Bob)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)

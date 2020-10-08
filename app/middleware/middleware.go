@@ -8,7 +8,7 @@ import (
 
 	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces"
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // middelware represents the singular of middleware.
@@ -23,11 +23,11 @@ type Middlewares struct {
 type Asset struct {
 	jwtRepository   interfaces.JWTRepository
 	adminRepository interfaces.AdminRepository
-	logger          usecases.Logger
+	logger          usecase.Logger
 }
 
 // NewAsset creates a assets.
-func NewAsset(jwtRepository interfaces.JWTRepository, adminRepository interfaces.AdminRepository, logger usecases.Logger) Asset {
+func NewAsset(jwtRepository interfaces.JWTRepository, adminRepository interfaces.AdminRepository, logger usecase.Logger) Asset {
 	return Asset{
 		jwtRepository:   jwtRepository,
 		adminRepository: adminRepository,

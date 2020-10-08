@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // A CommentRepository is a repository for a comment.[]
@@ -133,7 +133,7 @@ func (cr *CommentRepository) FindByID(id int) (domain.Comment, error) {
 }
 
 // Save saves the given entity.
-func (cr *CommentRepository) Save(req usecases.RequestComment) (int, error) {
+func (cr *CommentRepository) Save(req usecase.RequestComment) (int, error) {
 	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
@@ -163,7 +163,7 @@ func (cr *CommentRepository) Save(req usecases.RequestComment) (int, error) {
 }
 
 // SaveStatusByID save the given entity identified by the given id
-func (cr *CommentRepository) SaveStatusByID(req usecases.RequestCommentStatus, id int) error {
+func (cr *CommentRepository) SaveStatusByID(req usecase.RequestCommentStatus, id int) error {
 	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()

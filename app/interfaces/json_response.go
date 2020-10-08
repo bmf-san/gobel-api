@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // A JSONResponse is a presenter for response.
@@ -16,7 +16,7 @@ func (ap *JSONResponse) HTTPStatus(w http.ResponseWriter, code int, msg []byte) 
 	w.WriteHeader(code)
 
 	if msg == nil {
-		msg, err := json.Marshal(usecases.ResponseHTTPStatus{
+		msg, err := json.Marshal(usecase.ResponseHTTPStatus{
 			Message: http.StatusText(code),
 		})
 		if err != nil {

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // A PostRepository is a repository for a post.
@@ -1313,7 +1313,7 @@ func (pr *PostRepository) FindByID(id int) (domain.Post, error) {
 }
 
 // Save saves the given entity.
-func (pr *PostRepository) Save(req usecases.RequestPost) (int, error) {
+func (pr *PostRepository) Save(req usecase.RequestPost) (int, error) {
 	tx, err := pr.ConnMySQL.Begin()
 
 	now := time.Now()
@@ -1365,7 +1365,7 @@ func (pr *PostRepository) Save(req usecases.RequestPost) (int, error) {
 }
 
 // SaveByID save the given entity identified by the given id.
-func (pr *PostRepository) SaveByID(req usecases.RequestPost, id int) error {
+func (pr *PostRepository) SaveByID(req usecase.RequestPost, id int) error {
 	tx, err := pr.ConnMySQL.Begin()
 
 	now := time.Now()

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // A TagRepository is a repository for a post.
@@ -162,7 +162,7 @@ func (tr *TagRepository) FindByName(name string) (domain.Tag, error) {
 }
 
 // Save saves the given entity.
-func (tr *TagRepository) Save(req usecases.RequestTag) (int, error) {
+func (tr *TagRepository) Save(req usecase.RequestTag) (int, error) {
 	tx, err := tr.ConnMySQL.Begin()
 
 	now := time.Now()
@@ -192,7 +192,7 @@ func (tr *TagRepository) Save(req usecases.RequestTag) (int, error) {
 }
 
 // SaveByID save the given entity identified by the given id.
-func (tr *TagRepository) SaveByID(req usecases.RequestTag, id int) error {
+func (tr *TagRepository) SaveByID(req usecase.RequestTag, id int) error {
 	tx, err := tr.ConnMySQL.Begin()
 
 	now := time.Now()

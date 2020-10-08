@@ -1,4 +1,4 @@
-package usecases
+package usecase
 
 // A RequestTag represents the singular of tag for store.
 type RequestTag struct {

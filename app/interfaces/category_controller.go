@@ -4,19 +4,19 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // A CategoryController is a controller for a comment.
 type CategoryController struct {
-	CategoryInteractor usecases.CategoryInteractor
-	Logger             usecases.Logger
+	CategoryInteractor usecase.CategoryInteractor
+	Logger             usecase.Logger
 }
 
 // NewCategoryController creates a CategoryController.
-func NewCategoryController(connMySQL *sql.DB, logger usecases.Logger) *CategoryController {
+func NewCategoryController(connMySQL *sql.DB, logger usecase.Logger) *CategoryController {
 	return &CategoryController{
-		CategoryInteractor: usecases.CategoryInteractor{
+		CategoryInteractor: usecase.CategoryInteractor{
 			CategoryRepository: &CategoryRepository{
 				ConnMySQL: connMySQL,
 			},

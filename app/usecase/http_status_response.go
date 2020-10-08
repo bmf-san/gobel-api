@@ -1,4 +1,4 @@
-package usecases
+package usecase
 
 // A ResponseHTTPStatus represents the singular of http status response.
 type ResponseHTTPStatus struct {

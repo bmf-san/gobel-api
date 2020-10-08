@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // A CategoryRepository is a repository for a comment.[]
@@ -162,7 +162,7 @@ func (cr *CategoryRepository) FindByName(name string) (domain.Category, error) {
 }
 
 // Save saves the given entity.
-func (cr *CategoryRepository) Save(req usecases.RequestCategory) (int, error) {
+func (cr *CategoryRepository) Save(req usecase.RequestCategory) (int, error) {
 	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
@@ -188,7 +188,7 @@ func (cr *CategoryRepository) Save(req usecases.RequestCategory) (int, error) {
 }
 
 // SaveByID save the given entity identified by the given id.
-func (cr *CategoryRepository) SaveByID(req usecases.RequestCategory, id int) error {
+func (cr *CategoryRepository) SaveByID(req usecase.RequestCategory, id int) error {
 	tx, err := cr.ConnMySQL.Begin()
 
 	now := time.Now()
