@@ -4,19 +4,19 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/go-redis/redis/v7"
 )
 
 // An AuthController is a controller for an authentication.
 type AuthController struct {
-	AuthInteractor usecases.AuthInteractor
+	AuthInteractor usecase.AuthInteractor
 }
 
 // NewAuthController creates an AuthController.
-func NewAuthController(connMySQL *sql.DB, connRedis *redis.Client, logger usecases.Logger) *AuthController {
+func NewAuthController(connMySQL *sql.DB, connRedis *redis.Client, logger usecase.Logger) *AuthController {
 	return &AuthController{
-		AuthInteractor: usecases.AuthInteractor{
+		AuthInteractor: usecase.AuthInteractor{
 			AdminRepository: &AdminRepository{
 				ConnMySQL: connMySQL,
 				ConnRedis: connRedis,

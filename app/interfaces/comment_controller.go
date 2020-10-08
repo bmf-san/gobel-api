@@ -4,19 +4,19 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // A CommentController is a controller for a comment.
 type CommentController struct {
-	CommentInteractor usecases.CommentInteractor
-	Logger            usecases.Logger
+	CommentInteractor usecase.CommentInteractor
+	Logger            usecase.Logger
 }
 
 // NewCommentController creates a CommentController.
-func NewCommentController(connMySQL *sql.DB, logger usecases.Logger) *CommentController {
+func NewCommentController(connMySQL *sql.DB, logger usecase.Logger) *CommentController {
 	return &CommentController{
-		CommentInteractor: usecases.CommentInteractor{
+		CommentInteractor: usecase.CommentInteractor{
 			CommentRepository: &CommentRepository{
 				ConnMySQL: connMySQL,
 			},

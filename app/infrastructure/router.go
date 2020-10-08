@@ -7,13 +7,13 @@ import (
 
 	"github.com/bmf-san/gobel-api/app/interfaces"
 	"github.com/bmf-san/gobel-api/app/middleware"
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/goblin"
 	"github.com/go-redis/redis/v7"
 )
 
 // Dispatch handle routing
-func Dispatch(connMySQL *sql.DB, connRedis *redis.Client, logger usecases.Logger) {
+func Dispatch(connMySQL *sql.DB, connRedis *redis.Client, logger usecase.Logger) {
 	jwtRepository := interfaces.JWTRepository{
 		ConnRedis: connRedis,
 	}

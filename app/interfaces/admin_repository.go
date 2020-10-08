@@ -4,7 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/go-redis/redis/v7"
 )
 
@@ -56,7 +56,7 @@ func (ar *AdminRepository) FindByID(adminID int) (domain.Admin, error) {
 }
 
 // FindByCredentials saves login session by the credential.
-func (ar *AdminRepository) FindByCredentials(req usecases.RequestCredential) (domain.Admin, error) {
+func (ar *AdminRepository) FindByCredentials(req usecase.RequestCredential) (domain.Admin, error) {
 	const query = `
 		SELECT
 			id,

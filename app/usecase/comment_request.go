@@ -1,4 +1,4 @@
-package usecases
+package usecase
 
 // A RequestComment represents the singular of comment for store.
 type RequestComment struct {

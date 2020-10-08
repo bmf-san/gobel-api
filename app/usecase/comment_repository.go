@@ -1,4 +1,4 @@
-package usecases
+package usecase
 
 import "github.com/bmf-san/gobel-api/app/domain"
 

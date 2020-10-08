@@ -1,4 +1,4 @@
-package usecases
+package usecase
 
 // A RequestCredential represents the singular of credential.
 type RequestCredential struct {

@@ -4,19 +4,19 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/bmf-san/gobel-api/app/usecases"
+	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // A TagController is a controller for a post.
 type TagController struct {
-	TagInteractor usecases.TagInteractor
-	Logger        usecases.Logger
+	TagInteractor usecase.TagInteractor
+	Logger        usecase.Logger
 }
 
 // NewTagController creates a TagController.
-func NewTagController(connMySQL *sql.DB, logger usecases.Logger) *TagController {
+func NewTagController(connMySQL *sql.DB, logger usecase.Logger) *TagController {
 	return &TagController{
-		TagInteractor: usecases.TagInteractor{
+		TagInteractor: usecase.TagInteractor{
 			TagRepository: &TagRepository{
 				ConnMySQL: connMySQL,
 			},

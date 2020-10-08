@@ -1,4 +1,4 @@
-package usecases
+package usecase
 
 // A RequestPost represents the singular of post for store.
 type RequestPost struct {
