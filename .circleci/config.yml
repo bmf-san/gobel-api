@@ -12,8 +12,7 @@ references:
                 - ".git"
     restore_docker_compose_cache: &restore_docker_compose_cache
         restore_cache:
-            key: v1-docker-{{ .Branch }}-{{ checksum "docker-compose.ci.yml" }}
-            paths: ~/caches/images.tar
+            key: v1-docker-{{ .Branch }}-{{ checksum "docker-compose-ci.yml" }}
     load_docker_image: &load_docker_image
         run:
             name: Load docker image
@@ -36,10 +35,11 @@ references:
                 docker save $(docker images -q) -o ~/caches/images.tar
     save_docker_compose_cache: &save_docker_compose_cache
         save_cache:
-            key: v1-docker-{{ .Branch }}-{{ checksum "docker-compose.ci.yml" }}
-            paths: ~/caches/images.tar
+            key: v1-docker-{{ .Branch }}-{{ checksum "docker-compose-ci.yml" }}
+            paths:
+                - ~/caches/images.tar
 
-version: 2
+version: 2.1
 jobs:
     build:
         working_directory: ~/workspace
