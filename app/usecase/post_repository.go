@@ -8,6 +8,8 @@ import (
 type PostRepository interface {
 	CountAllPublish() (int, error)
 	CountAll() (int, error)
+	CountAllPublishByCategory(name string) (int, error)
+	CountAllPublishByTag(name string) (int, error)
 	FindAllPublish(page int, limit int) (domain.Posts, error)
 	FindAllPublishByCategory(page int, limit int, name string) (domain.Posts, error)
 	FindAllPublishByTag(page int, limit int, name string) (domain.Posts, error)

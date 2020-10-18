@@ -89,7 +89,9 @@ func (pi *PostInteractor) HandleIndexByCategory(w http.ResponseWriter, r *http.R
 	const defaultPage = 1
 	const defaultLimit = 10
 
-	count, err := pi.PostRepository.CountAllPublish()
+	name := goblin.GetParam(r.Context(), "name")
+
+	count, err := pi.PostRepository.CountAllPublishByCategory(name)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -121,8 +123,6 @@ func (pi *PostInteractor) HandleIndexByCategory(w http.ResponseWriter, r *http.R
 			return
 		}
 	}
-
-	name := goblin.GetParam(r.Context(), "name")
 
 	posts, err := pi.PostRepository.FindAllPublishByCategory(page, limit, name)
 	if err != nil {
@@ -154,7 +154,9 @@ func (pi *PostInteractor) HandleIndexByTag(w http.ResponseWriter, r *http.Reques
 	const defaultPage = 1
 	const defaultLimit = 10
 
-	count, err := pi.PostRepository.CountAllPublish()
+	name := goblin.GetParam(r.Context(), "name")
+
+	count, err := pi.PostRepository.CountAllPublishByTag(name)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
@@ -186,8 +188,6 @@ func (pi *PostInteractor) HandleIndexByTag(w http.ResponseWriter, r *http.Reques
 			return
 		}
 	}
-
-	name := goblin.GetParam(r.Context(), "name")
 
 	posts, err := pi.PostRepository.FindAllPublishByTag(page, limit, name)
 	if err != nil {

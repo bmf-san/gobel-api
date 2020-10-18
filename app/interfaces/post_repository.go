@@ -49,6 +49,54 @@ func (pr *PostRepository) CountAll() (int, error) {
 	return count, nil
 }
 
+// CountAllPublishByCategory count all publish entities by category.
+func (pr *PostRepository) CountAllPublishByCategory(name string) (int, error) {
+	row := pr.ConnMySQL.QueryRow(`
+		SELECT
+			count(*)
+		FROM
+			view_posts
+		WHERE
+			category_name = ?
+	`, name)
+	var count int
+	if err := row.Scan(&count); err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+// CountAllPublishByTag count all publish entities by Tag.
+func (pr *PostRepository) CountAllPublishByTag(name string) (int, error) {
+	row := pr.ConnMySQL.QueryRow(`
+		SELECT
+			count(*)
+		FROM
+			view_posts
+		WHERE
+			id
+		IN (
+			SELECT
+    			post_id
+			FROM
+        		tags
+			LEFT JOIN
+        		tag_post
+			ON
+        		tags.id = tag_post.tag_id
+			WHERE
+				tags.name = ?
+			)
+	`, name)
+	var count int
+	if err := row.Scan(&count); err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
 // FindAllPublish returns all entities.
 func (pr *PostRepository) FindAllPublish(page int, limit int) (domain.Posts, error) {
 	var posts domain.Posts
