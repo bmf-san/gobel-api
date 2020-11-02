@@ -1,6 +1,6 @@
 module github.com/bmf-san/gobel-api/app
 
-go 1.14
+go 1.15
 
 require (
 	github.com/beego/mux v0.0.0-20170807094426-6660b4b5accb // indirect
