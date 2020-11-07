@@ -17,10 +17,6 @@ Gobel is headless cms built with golang. This is a api repository.
 - [Specification](https://github.com/bmf-san/gobel-api/blob/master/doc/Specification.md)
 - [Talend API Tester](https://github.com/bmf-san/gobel-api/blob/master/doc/talend_api_tester.json)
 
-# Requirements
-- Golang1.13
-- Docker Compose
-
 # Get started
 `cp .env_example .env`
 
