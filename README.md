@@ -17,23 +17,33 @@ Gobel is headless cms built with golang. This is a api repository.
 - [Specification](https://github.com/bmf-san/gobel-api/blob/master/doc/Specification.md)
 - [Talend API Tester](https://github.com/bmf-san/gobel-api/blob/master/doc/talend_api_tester.json)
 
-# Requirements
-- Golang1.13
-- Docker Compose
-
 # Get started
+## Edit an env file
 `cp .env_example .env`
 
-`docker network create --driver bridge gobel_link`
-
-`make docker-compose-build`
-
-`make docker-compose-up` or `make docker-compose-up-d`
-
-Add hosts to `/etc/hosts`.
+##  Edit a host file
 ```
 127.0.0.1 gobel-api.local
 ```
+
+## Creaate a network
+`docker network create --driver bridge gobel_link`
+
+## Build containers
+`make docker-compose-build`
+
+## Run containers
+```
+make docker-compose-up
+```
+
+or
+
+```
+make docker-compose-up-d
+```
+
+Then go to `gobel-api.local:80`
 
 # Architecture
 gobel-api is based on Clean Architecture.
