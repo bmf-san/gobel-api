@@ -1,12 +1,9 @@
-# app
-/app/app
-/app/.env
 .DS_STORE
-/app/log/*
-!/app/log/.gitkeep
+
+# app
+.env
 
 # docker
-.env
 /mysql/data
 !/mysql/data/.gitkeep
 /mysql/log
