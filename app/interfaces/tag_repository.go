@@ -44,7 +44,11 @@ func (tr *TagRepository) FindAll(page int, limit int) (domain.Tags, error) {
 		return nil, err
 	}
 
-	defer rows.Close()
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	for rows.Next() {
 		var (
@@ -89,7 +93,11 @@ func (tr *TagRepository) FindByID(id int) (domain.Tag, error) {
 			id = ?
 	`, id)
 
-	defer row.Close()
+	defer func() {
+		if rerr := row.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	if err != nil {
 		return tag, err
@@ -131,7 +139,11 @@ func (tr *TagRepository) FindByName(name string) (domain.Tag, error) {
 			name = ?
 	`, name)
 
-	defer row.Close()
+	defer func() {
+		if rerr := row.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	if err != nil {
 		return tag, err

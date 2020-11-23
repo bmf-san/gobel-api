@@ -29,7 +29,11 @@ func (ar *AdminRepository) FindByID(adminID int) (domain.Admin, error) {
 	`
 	row, err := ar.ConnMySQL.Query(query, adminID)
 
-	defer row.Close()
+	defer func() {
+		if rerr := row.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	var admin domain.Admin
 
@@ -70,7 +74,11 @@ func (ar *AdminRepository) FindByCredentials(req usecase.RequestCredential) (dom
 	`
 	row, err := ar.ConnMySQL.Query(query, req.Email)
 
-	defer row.Close()
+	defer func() {
+		if rerr := row.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	var admin domain.Admin
 

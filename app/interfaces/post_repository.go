@@ -111,11 +111,15 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (domain.Posts, err
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -221,11 +225,15 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (domain.Posts, err
 
 	rows, err = pr.ConnMySQL.Query(stmt)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -277,11 +285,15 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (domain.Posts, err
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -333,11 +345,15 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 		LIMIT ?, ?
 	`, name, page*limit-limit, limit)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -443,11 +459,15 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 
 	rows, err = pr.ConnMySQL.Query(stmt)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -500,11 +520,15 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 		LIMIT ?, ?
 	`, name, page*limit-limit, limit)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -566,11 +590,15 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 	LIMIT ?, ?
 	`, name, page*limit-limit, limit)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -676,11 +704,15 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 
 	rows, err = pr.ConnMySQL.Query(stmt)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -742,11 +774,15 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 		LIMIT ?, ?
 	`, name, page*limit-limit, limit)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -794,11 +830,16 @@ func (pr *PostRepository) FindAll(page int, limit int) (domain.Posts, error) {
 		ORDER BY id
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
+
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -904,11 +945,15 @@ func (pr *PostRepository) FindAll(page int, limit int) (domain.Posts, error) {
 
 	rows, err = pr.ConnMySQL.Query(stmt)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -957,11 +1002,15 @@ func (pr *PostRepository) FindAll(page int, limit int) (domain.Posts, error) {
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -1010,7 +1059,11 @@ func (pr *PostRepository) FindByTitle(title string) (domain.Post, error) {
 			title = ?
 	`, title)
 
-	defer row.Close()
+	defer func() {
+		if rerr := row.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	if err != nil {
 		return post, err
@@ -1098,11 +1151,15 @@ func (pr *PostRepository) FindByTitle(title string) (domain.Post, error) {
 			tag_post.post_id = ?
 	`, p.ID)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return post, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -1141,11 +1198,15 @@ func (pr *PostRepository) FindByTitle(title string) (domain.Post, error) {
 			post_id = ?
 	`, p.ID)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return post, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -1191,7 +1252,11 @@ func (pr *PostRepository) FindByID(id int) (domain.Post, error) {
 			id = ?
 	`, id)
 
-	defer row.Close()
+	defer func() {
+		if rerr := row.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	if err != nil {
 		return post, err
@@ -1279,11 +1344,15 @@ func (pr *PostRepository) FindByID(id int) (domain.Post, error) {
 			tag_post.post_id = ?
 	`, p.ID)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return post, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (
@@ -1322,11 +1391,15 @@ func (pr *PostRepository) FindByID(id int) (domain.Post, error) {
 			post_id = ?
 	`, p.ID)
 
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
 	if err != nil {
 		return post, err
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		var (

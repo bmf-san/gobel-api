@@ -43,7 +43,11 @@ func (cr *CategoryRepository) FindAll(page int, limit int) (domain.Categories, e
 		return nil, err
 	}
 
-	defer rows.Close()
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	var categories domain.Categories
 	for rows.Next() {
@@ -89,7 +93,11 @@ func (cr *CategoryRepository) FindByID(id int) (domain.Category, error) {
 			id = ?
 	`, id)
 
-	defer row.Close()
+	defer func() {
+		if rerr := row.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	if err != nil {
 		return category, err
@@ -131,7 +139,11 @@ func (cr *CategoryRepository) FindByName(name string) (domain.Category, error) {
 			name = ?
 	`, name)
 
-	defer row.Close()
+	defer func() {
+		if rerr := row.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	if err != nil {
 		return category, nil
