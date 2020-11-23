@@ -44,7 +44,11 @@ func (cr *CommentRepository) FindAll(page int, limit int) (domain.Comments, erro
 		return nil, err
 	}
 
-	defer rows.Close()
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	var comments domain.Comments
 	for rows.Next() {
@@ -96,7 +100,11 @@ func (cr *CommentRepository) FindByID(id int) (domain.Comment, error) {
 			id = ?
 	`, id)
 
-	defer row.Close()
+	defer func() {
+		if rerr := row.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
 
 	if err != nil {
 		return comment, err
