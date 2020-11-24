@@ -1,6 +1,8 @@
 package infrastructure
 
 import (
+	"time"
+
 	"github.com/bmf-san/golem"
 )
 
@@ -10,9 +12,9 @@ type Logger struct {
 }
 
 // NewLogger creates a logger.
-func NewLogger() *Logger {
+func NewLogger(threshold int, location *time.Location) *Logger {
 	return &Logger{
-		logger: golem.NewLogger(),
+		logger: golem.NewLogger(threshold, location),
 	}
 }
 

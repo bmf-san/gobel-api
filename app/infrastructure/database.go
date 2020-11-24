@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/bmf-san/gobel-api/app/interfaces"
 	"github.com/go-redis/redis/v7"
@@ -29,6 +30,8 @@ func (d *DB) GetConnMySQL() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	conn.SetConnMaxLifetime(time.Second * 10)
 
 	return conn, nil
 }
