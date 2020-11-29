@@ -2,13 +2,16 @@
 [![GitHub license](https://img.shields.io/github/license/bmf-san/gobel-api)](https://github.com/bmf-san/gobel-api/blob/master/LICENSE)
 [![CircleCI](https://circleci.com/gh/bmf-san/gobel-api/tree/master.svg?style=svg)](https://circleci.com/gh/bmf-san/gobel-api/tree/master)
 
-Gobel is headless cms built with golang. This is a api repository.
+Gobel is a headless cms built with golang. 
+
+This is an api repository.
 
 # gobel
 - [gobel-api](https://github.com/bmf-san/gobel-api)
 - [gobel-admin-client](https://github.com/bmf-san/gobel-admin-client)
 - [gobel-client-example](https://github.com/bmf-san/gobel-client-example)
 - [gobel-example](https://github.com/bmf-san/gobel-example)
+- [gobel-ops-example](https://github.com/bmf-san/gobel-ops-example)
 
 # Documentation
 - [Coding Rule](https://github.com/bmf-san/gobel-api/blob/master/doc/CodingRule.md)
