@@ -2,16 +2,16 @@ package repository
 
 import (
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecase/dto"
+	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
 )
 
-// A TagRepository is a repository interface for a post.
-type TagRepository interface {
+// A Tag is a repository interface for a post.
+type Tag interface {
 	CountAll() (int, error)
 	FindAll(page int, limit int) (domain.Tags, error)
 	FindByID(id int) (domain.Tag, error)
 	FindByName(name string) (domain.Tag, error)
-	Save(req dto.RequestTag) (int, error)
-	SaveByID(req dto.RequestTag, id int) error
+	Save(req request.StoreTag) (int, error)
+	SaveByID(req request.UpdateTag) error
 	DeleteByID(id int) (int, error)
 }

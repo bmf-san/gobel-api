@@ -13,12 +13,12 @@ import (
 )
 
 // Route sets the routing.
-func Route(connm *sql.DB, connr *redis.Client, l domain.Logger) goblin.Router {
+func Route(connm *sql.DB, connr *redis.Client, l domain.Logger) *goblin.Router {
 	ar := repository.AdminRepository{
 		ConnMySQL: connm,
 		ConnRedis: connr,
 	}
-	jr := repository.JWTRepository{
+	jr := repository.JWT{
 		ConnRedis: connr,
 	}
 
@@ -59,7 +59,7 @@ func Route(connm *sql.DB, connr *redis.Client, l domain.Logger) goblin.Router {
 	r.Methods(http.MethodPost).Handler(`/signin`, authController.SignIn())
 	r.Methods(http.MethodPost).Use(mw.Auth).Handler(`/private/signout`, authController.SignOut())
 	r.Methods(http.MethodPost).Use(mw.Refresh).Handler(`/private/refresh`, authController.Refresh())
-	r.Methods(http.MethodGet).Use(mw.Auth).Handler(`/private/me`, authController.ShowMe())
+	r.Methods(http.MethodGet).Use(mw.Auth).Handler(`/private/me`, authController.ShowUserInfo())
 	r.Methods(http.MethodGet).Use(mw.Auth).Handler(`/private/posts`, postController.IndexPrivate())
 	r.Methods(http.MethodGet).Use(mw.Auth).Handler(`/private/posts/:id`, postController.ShowPrivate())
 	r.Methods(http.MethodPost).Use(mw.Auth).Handler(`/private/posts`, postController.StorePrivate())
@@ -76,6 +76,7 @@ func Route(connm *sql.DB, connr *redis.Client, l domain.Logger) goblin.Router {
 	r.Methods(http.MethodGet).Use(mw.Auth).Handler(`/private/tags`, tagController.IndexPrivate())
 	r.Methods(http.MethodGet).Use(mw.Auth).Handler(`/private/tags/:id`, tagController.ShowPrivate())
 	r.Methods(http.MethodPost).Use(mw.Auth).Handler(`/private/tags`, tagController.StorePrivate())
+	r.Methods(http.MethodPatch).Use(mw.Auth).Handler(`/private/tags/:id`, tagController.UpdatePrivate())
 	r.Methods(http.MethodDelete).Use(mw.Auth).Handler(`/private/tags/:id`, tagController.DestroyPrivate())
 
 	return r

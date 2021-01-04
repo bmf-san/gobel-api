@@ -161,6 +161,7 @@
       - [Request](#request-13)
         - [Header](#header-30)
         - [Body](#body-30)
+      - [Response](#response-14)
         - [Header](#header-31)
         - [Body](#body-31)
     - [Remove the specified post](#remove-the-specified-post)
@@ -169,7 +170,7 @@
       - [Request](#request-14)
         - [Header](#header-32)
         - [Body](#body-32)
-      - [Response](#response-14)
+      - [Response](#response-15)
         - [Header](#header-33)
         - [Body](#body-33)
     - [Get all comments](#get-all-comments)
@@ -178,7 +179,7 @@
       - [Request](#request-15)
         - [Header](#header-34)
         - [Body](#body-34)
-      - [Response](#response-15)
+      - [Response](#response-16)
         - [Header](#header-35)
         - [Body](#body-35)
     - [Get the specified comment by id](#get-the-specified-comment-by-id)
@@ -187,16 +188,16 @@
       - [Request](#request-16)
         - [Header](#header-36)
         - [Body](#body-36)
-      - [Response](#response-16)
+      - [Response](#response-17)
         - [Header](#header-37)
         - [Body](#body-37)
-  - [Update the specified comment status](#update-the-specified-comment-status)
+    - [Update the specified comment status](#update-the-specified-comment-status)
       - [Endpoint](#endpoint-20)
       - [Query Parameters](#query-parameters-7)
       - [Request](#request-17)
         - [Header](#header-38)
         - [Body](#body-38)
-      - [Response](#response-17)
+      - [Response](#response-18)
         - [Header](#header-39)
         - [Body](#body-39)
     - [Get all categories](#get-all-categories-1)
@@ -205,7 +206,7 @@
       - [Request](#request-18)
         - [Header](#header-40)
         - [Body](#body-40)
-      - [Response](#response-18)
+      - [Response](#response-19)
         - [Header](#header-41)
         - [Body](#body-41)
     - [Get the specified category by id](#get-the-specified-category-by-id)
@@ -214,13 +215,13 @@
       - [Request](#request-19)
         - [Header](#header-42)
         - [Body](#body-42)
-      - [Response](#response-19)
+      - [Response](#response-20)
         - [Header](#header-43)
         - [Body](#body-43)
     - [Get all tags](#get-all-tags-1)
       - [Endpoint](#endpoint-23)
       - [Query Parameters](#query-parameters-9)
-      - [Response](#response-20)
+      - [Response](#response-21)
         - [Header](#header-44)
         - [Body](#body-44)
       - [Request](#request-20)
@@ -240,7 +241,7 @@
       - [Request](#request-23)
         - [Header](#header-48)
         - [Body](#body-48)
-      - [Response](#response-21)
+      - [Response](#response-22)
         - [Header](#header-49)
         - [Body](#body-49)
     - [Update the specified category](#update-the-specified-category)
@@ -249,7 +250,7 @@
       - [Request](#request-24)
         - [Header](#header-50)
         - [Body](#body-50)
-      - [Response](#response-22)
+      - [Response](#response-23)
         - [Header](#header-51)
         - [Body](#body-51)
     - [Remove the specified category](#remove-the-specified-category)
@@ -258,7 +259,7 @@
       - [Request](#request-25)
         - [Header](#header-52)
         - [Body](#body-52)
-      - [Response](#response-23)
+      - [Response](#response-24)
         - [Header](#header-53)
         - [Body](#body-53)
     - [Store a newly tag](#store-a-newly-tag)
@@ -266,7 +267,7 @@
       - [Request](#request-26)
         - [Header](#header-54)
         - [Body](#body-54)
-      - [Response](#response-24)
+      - [Response](#response-25)
         - [Header](#header-55)
         - [Body](#body-55)
     - [Update the specified tag](#update-the-specified-tag)
@@ -275,7 +276,7 @@
       - [Request](#request-27)
         - [Header](#header-56)
         - [Body](#body-56)
-      - [Response](#response-25)
+      - [Response](#response-26)
         - [Header](#header-57)
         - [Body](#body-57)
     - [Remove the specified tag](#remove-the-specified-tag)
@@ -284,7 +285,7 @@
       - [Request](#request-28)
         - [Header](#header-58)
         - [Body](#body-58)
-      - [Response](#response-26)
+      - [Response](#response-27)
         - [Header](#header-59)
         - [Body](#body-59)
 
@@ -1082,9 +1083,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -1389,9 +1388,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -1467,10 +1464,9 @@ N/A
 }
 ```
 
+#### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -1530,9 +1526,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -1630,7 +1624,7 @@ N/A
 }
 ```
 
-## Update the specified comment status
+### Update the specified comment status
 #### Endpoint
 `PATCH /private/comments/:id/status`
 
@@ -1654,9 +1648,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -1858,9 +1850,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -1899,9 +1889,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -1933,9 +1921,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -1963,9 +1949,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -2001,9 +1985,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json
@@ -2035,9 +2017,7 @@ N/A
 
 #### Response
 ##### Header
-|     Name      |   Description   |                   Example                   |
-| :------------ | :-------------- | :------------------------------------------ |
-| Authorization | An access token | Bearer e856e7bd-2572-4890-b9e0-a79ea09cd431 |
+N/A
 
 ##### Body
 ```json

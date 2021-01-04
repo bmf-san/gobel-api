@@ -17,7 +17,7 @@ CREATE TABLE `archived_tag_post` (
   KEY `archived_post_id` (`archived_post_id`),
   CONSTRAINT `archived_tag_post_ibfk_1` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`),
   CONSTRAINT `archived_tag_post_ibfk_2` FOREIGN KEY (`archived_post_id`) REFERENCES `archived_posts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
 ```
 
 </details>

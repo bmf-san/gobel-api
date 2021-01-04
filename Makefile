@@ -72,7 +72,7 @@ test-cover: ## Run unit tests with cover options. ex. make test-cover OUT="c.out
 
 .PHONY: test-api
 test-api: ## Run tests for api responses with using db.
-	cd app && go test -tags=intefration
+	cd app && go test -tags=integration
 
 .PHONY: build
 build: ## Run go build

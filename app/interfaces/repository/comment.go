@@ -5,16 +5,16 @@ import (
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecase/dto"
+	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
 )
 
-// A CommentRepository is a repository for a comment.[]
-type CommentRepository struct {
+// A Comment is a repository for a comment.[]
+type Comment struct {
 	ConnMySQL *sql.DB
 }
 
 // CountAll count all entities.
-func (cr *CommentRepository) CountAll() (int, error) {
+func (cr *Comment) CountAll() (int, error) {
 	row := cr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -31,7 +31,7 @@ func (cr *CommentRepository) CountAll() (int, error) {
 }
 
 // FindAll returns all entities.
-func (cr *CommentRepository) FindAll(page int, limit int) (domain.Comments, error) {
+func (cr *Comment) FindAll(page int, limit int) (domain.Comments, error) {
 	rows, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -90,7 +90,7 @@ func (cr *CommentRepository) FindAll(page int, limit int) (domain.Comments, erro
 }
 
 // FindByID returns the entity identified by the given id.
-func (cr *CommentRepository) FindByID(id int) (domain.Comment, error) {
+func (cr *Comment) FindByID(id int) (domain.Comment, error) {
 	var comment domain.Comment
 	row, err := cr.ConnMySQL.Query(`
 		SELECT
@@ -142,7 +142,7 @@ func (cr *CommentRepository) FindByID(id int) (domain.Comment, error) {
 }
 
 // Save saves the given entity.
-func (cr *CommentRepository) Save(req dto.RequestComment) (int, error) {
+func (cr *Comment) Save(req request.StoreComment) (int, error) {
 	tx, err := cr.ConnMySQL.Begin()
 	if err != nil {
 		return 0, err
@@ -175,7 +175,7 @@ func (cr *CommentRepository) Save(req dto.RequestComment) (int, error) {
 }
 
 // SaveStatusByID save the given entity identified by the given id
-func (cr *CommentRepository) SaveStatusByID(req dto.RequestCommentStatus, id int) error {
+func (cr *Comment) SaveStatusByID(req request.UpdateCommentStatus) error {
 	tx, err := cr.ConnMySQL.Begin()
 	if err != nil {
 		return err
@@ -189,7 +189,7 @@ func (cr *CommentRepository) SaveStatusByID(req dto.RequestCommentStatus, id int
 			status = ?,
 			updated_at = ?
 		WHERE id = ?
-	`, req.Status, now, id)
+	`, req.Status, now, req.ID)
 	if err != nil {
 		_ = tx.Rollback()
 		return err

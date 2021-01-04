@@ -129,12 +129,12 @@ workflows:
       - lint:
           matrix:
             parameters:
-              version: ["1.19", "1.18", "1.17"]
+              version: ["1.20", "1.19", "1.18"]
       - test:
           matrix:
             parameters:
-              version: ["1.19", "1.18", "1.17"]
+              version: ["1.20", "1.19", "1.18"]
       - test-api:
           matrix:
             parameters:
-              version: ["1.19", "1.18", "1.17"]
+              version: ["1.20", "1.19", "1.18"]

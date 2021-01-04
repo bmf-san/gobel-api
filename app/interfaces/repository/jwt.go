@@ -10,13 +10,13 @@ import (
 	"github.com/google/uuid"
 )
 
-// A JWTRepository is a repository for jwt.
-type JWTRepository struct {
+// A JWT is a repository for jwt.
+type JWT struct {
 	ConnRedis *redis.Client
 }
 
 // FindIDByAccessUUID returns the entity identified by the given access uuid.
-func (jr *JWTRepository) FindIDByAccessUUID(au string) (int, error) {
+func (jr *JWT) FindIDByAccessUUID(au string) (int, error) {
 	ctx := context.Background()
 	idStr, err := jr.ConnRedis.Get(ctx, au).Result()
 	if err != nil {
@@ -32,7 +32,7 @@ func (jr *JWTRepository) FindIDByAccessUUID(au string) (int, error) {
 }
 
 // FindIDByRefreshUUID returns the entity identified by the given refresh uuid.
-func (jr *JWTRepository) FindIDByRefreshUUID(ru string) (int, error) {
+func (jr *JWT) FindIDByRefreshUUID(ru string) (int, error) {
 	ctx := context.Background()
 	idStr, err := jr.ConnRedis.Get(ctx, ru).Result()
 	if err != nil {
@@ -48,7 +48,7 @@ func (jr *JWTRepository) FindIDByRefreshUUID(ru string) (int, error) {
 }
 
 // SaveID saves the given entity by id
-func (jr *JWTRepository) SaveID(id int) (domain.JWT, error) {
+func (jr *JWT) SaveID(id int) (domain.JWT, error) {
 	auuid, err := uuid.NewRandom()
 	if err != nil {
 		return domain.JWT{}, err
@@ -87,7 +87,7 @@ func (jr *JWTRepository) SaveID(id int) (domain.JWT, error) {
 }
 
 // DeleteByAccessUUID deletes the entity by access uuid.
-func (jr *JWTRepository) DeleteByAccessUUID(au string) (int64, error) {
+func (jr *JWT) DeleteByAccessUUID(au string) (int64, error) {
 	ctx := context.Background()
 	deleted, err := jr.ConnRedis.Del(ctx, au).Result()
 	if err != nil {
@@ -98,7 +98,7 @@ func (jr *JWTRepository) DeleteByAccessUUID(au string) (int64, error) {
 }
 
 // DeleteByRefreshUUID deletes the entity by access uuid.
-func (jr *JWTRepository) DeleteByRefreshUUID(au string) (int64, error) {
+func (jr *JWT) DeleteByRefreshUUID(au string) (int64, error) {
 	ctx := context.Background()
 	deleted, err := jr.ConnRedis.Del(ctx, au).Result()
 	if err != nil {

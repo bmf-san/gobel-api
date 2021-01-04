@@ -2,11 +2,11 @@ package repository
 
 import (
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecase/dto"
+	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
 )
 
-// A PostRepository is a repository interface for a post.
-type PostRepository interface {
+// A Post is a repository interface for a post.
+type Post interface {
 	CountAllPublish() (int, error)
 	CountAll() (int, error)
 	CountAllPublishByCategory(name string) (int, error)
@@ -17,7 +17,7 @@ type PostRepository interface {
 	FindAll(page int, limit int) (domain.Posts, error)
 	FindPublishByTitle(title string) (domain.Post, error)
 	FindByID(id int) (domain.Post, error)
-	Save(req dto.RequestPost) (int, error)
-	SaveByID(req dto.RequestPost, id int) error
+	Save(req request.StorePost) (int, error)
+	SaveByID(req request.UpdatePost) error
 	DeleteByID(id int) (int, error)
 }

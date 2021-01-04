@@ -16,7 +16,7 @@ CREATE TABLE `archived_comments` (
   PRIMARY KEY (`id`),
   KEY `archived_post_id` (`archived_post_id`),
   CONSTRAINT `archived_comments_ibfk_1` FOREIGN KEY (`archived_post_id`) REFERENCES `archived_posts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 ```
 
 </details>

@@ -11,7 +11,7 @@ type Logger struct {
 	logger *golem.Logger
 }
 
-// NewLogger creates a logger.
+// NewLogger creates a Logger.
 func NewLogger(threshold int, location *time.Location) *Logger {
 	return &Logger{
 		logger: golem.NewLogger(threshold, location),
