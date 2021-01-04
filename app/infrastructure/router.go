@@ -3,7 +3,6 @@ package infrastructure
 import (
 	"database/sql"
 	"net/http"
-	"os"
 
 	"github.com/bmf-san/gobel-api/app/interfaces"
 	"github.com/bmf-san/gobel-api/app/middleware"
@@ -12,8 +11,8 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
-// Dispatch handle routing
-func Dispatch(connMySQL *sql.DB, connRedis *redis.Client, logger usecase.Logger) {
+// Route sets the routing.
+func Route(connMySQL *sql.DB, connRedis *redis.Client, logger usecase.Logger) *goblin.Router {
 	jwtRepository := interfaces.JWTRepository{
 		ConnRedis: connRedis,
 	}
@@ -134,7 +133,5 @@ func Dispatch(connMySQL *sql.DB, connRedis *redis.Client, logger usecase.Logger)
 		return
 	})))
 
-	if err := http.ListenAndServe(":"+os.Getenv("SERVER_PORT"), r); err != nil {
-		logger.Error(err.Error())
-	}
+	return r
 }
