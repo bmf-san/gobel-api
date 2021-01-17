@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -48,13 +47,14 @@ func main() {
 	}()
 
 	q := make(chan os.Signal, 1)
-	signal.Notify(q, syscall.SIGTERM, os.Interrupt)
-	logger.Info(fmt.Sprintf("SIGNAL %d received", <-q))
+	signal.Notify(q, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	<-q
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	if err := s.Shutdown(ctx); err != nil {
 		logger.Error(err.Error())
 	}
+
 	logger.Info("Gracefully shutdown")
 }
