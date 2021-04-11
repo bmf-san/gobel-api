@@ -53,7 +53,6 @@ func (j *JWT) CreateRefreshToken(id int) (string, error) {
 // GetVerifiedAccessToken gets a verified token from a bearer token.
 func (j *JWT) GetVerifiedAccessToken(bearerToken string) (*jwt.Token, error) {
 	token := j.ExtractToken(bearerToken)
-
 	verifiedToken, err := j.VerifyToken(token, os.Getenv("JWT_ACCESS_TOKEN_SECRET"))
 	if err != nil {
 		return nil, err

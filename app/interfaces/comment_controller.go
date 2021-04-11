@@ -30,24 +30,29 @@ func NewCommentController(connMySQL *sql.DB, logger usecase.Logger) *CommentCont
 }
 
 // IndexPrivate displays a listing of the resource.
-func (cc *CommentController) IndexPrivate(w http.ResponseWriter, r *http.Request) {
-	cc.CommentInteractor.HandleIndexPrivate(w, r)
+func (cc *CommentController) IndexPrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cc.CommentInteractor.HandleIndexPrivate(w, r)
+	})
 }
 
 // ShowPrivate displays the specified resource.
-func (cc *CommentController) ShowPrivate(w http.ResponseWriter, r *http.Request) {
-	cc.CommentInteractor.HandleShowPrivate(w, r)
-	return
+func (cc *CommentController) ShowPrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cc.CommentInteractor.HandleShowPrivate(w, r)
+	})
 }
 
 // Store stores a newly created resource in storage.
-func (cc *CommentController) Store(w http.ResponseWriter, r *http.Request) {
-	cc.CommentInteractor.HandleStore(w, r)
-	return
+func (cc *CommentController) Store() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cc.CommentInteractor.HandleStore(w, r)
+	})
 }
 
 // UpdateStatusPrivate updates the specified resource in storage.
-func (cc *CommentController) UpdateStatusPrivate(w http.ResponseWriter, r *http.Request) {
-	cc.CommentInteractor.HandleUpdateStatusPrivate(w, r)
-	return
+func (cc *CommentController) UpdateStatusPrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cc.CommentInteractor.HandleUpdateStatusPrivate(w, r)
+	})
 }

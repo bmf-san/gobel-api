@@ -11,127 +11,129 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
+// defaultHandler is a handler for default.
+func defaultHandler() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		return
+	})
+}
+
 // Route sets the routing.
-func Route(connMySQL *sql.DB, connRedis *redis.Client, logger usecase.Logger) *goblin.Router {
-	jwtRepository := interfaces.JWTRepository{
-		ConnRedis: connRedis,
-	}
-	adminRepository := interfaces.AdminRepository{
+func Route(connMySQL *sql.DB, connRedis *redis.Client, l usecase.Logger) *goblin.Router {
+	ar := interfaces.AdminRepository{
 		ConnMySQL: connMySQL,
 		ConnRedis: connRedis,
 	}
+	jr := interfaces.JWTRepository{
+		ConnRedis: connRedis,
+	}
 
-	asset := middleware.NewAsset(jwtRepository, adminRepository, logger)
+	mw := middleware.NewMiddleware(l, ar, jr)
 
-	publicMws := middleware.NewMiddlewares(asset.CORS)
-	privateMws := middleware.NewMiddlewares(asset.CORS, asset.Auth)
-	refreshMws := middleware.NewMiddlewares(asset.CORS, asset.Refresh)
-
-	authController := interfaces.NewAuthController(connMySQL, connRedis, logger)
-	postController := interfaces.NewPostController(connMySQL, connRedis, logger)
-	commentController := interfaces.NewCommentController(connMySQL, logger)
-	categoryController := interfaces.NewCategoryController(connMySQL, logger)
-	tagController := interfaces.NewTagController(connMySQL, logger)
+	defaultController := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	})
+	authController := interfaces.NewAuthController(connMySQL, connRedis, l)
+	postController := interfaces.NewPostController(connMySQL, connRedis, l)
+	commentController := interfaces.NewCommentController(connMySQL, l)
+	categoryController := interfaces.NewCategoryController(connMySQL, l)
+	tagController := interfaces.NewTagController(connMySQL, l)
 
 	r := goblin.NewRouter()
 
-	r.GET("/posts", publicMws.Then(postController.Index))
-	r.GET("/posts/categories/:name", publicMws.Then(postController.IndexByCategory))
-	r.GET("/posts/tags/:name", publicMws.Then(postController.IndexByTag))
-	r.GET("/posts/:title", publicMws.Then(postController.Show))
-	r.POST("/posts/:title/comments", publicMws.Then(commentController.Store))
-	r.GET("/categories", publicMws.Then(categoryController.Index))
-	r.GET("/categories/:name", publicMws.Then(categoryController.Show))
-	r.GET("/tags", publicMws.Then(tagController.Index))
-	r.GET("/tags/:name", publicMws.Then(tagController.Show))
-	r.POST("/signin", publicMws.Then(authController.SignIn))
-	r.OPTION("/signin", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.POST("/private/signout", privateMws.Then(authController.SignOut))
-	r.OPTION("/private/signout", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.POST("/private/refresh", refreshMws.Then(authController.Refresh))
-	r.OPTION("/private/refresh", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.GET("/private/me", privateMws.Then(authController.ShowMe))
-	r.OPTION("/private/me", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.GET("/private/posts", privateMws.Then(postController.IndexPrivate))
-	r.OPTION("/private/posts", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.GET("/private/posts/:id", privateMws.Then(postController.ShowPrivate))
-	r.OPTION("/private/posts/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.POST("/private/posts", privateMws.Then(postController.StorePrivate))
-	r.OPTION("/private/posts", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.PATCH("/private/posts/:id", privateMws.Then(postController.UpdatePrivate))
-	r.OPTION("/private/posts/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.DELETE("/private/posts/:id", privateMws.Then(postController.DestroyPrivate))
-	r.OPTION("/private/posts/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.GET("/private/comments", privateMws.Then(commentController.IndexPrivate))
-	r.OPTION("/private/comments", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.GET("/private/comments/:id", privateMws.Then(commentController.ShowPrivate))
-	r.OPTION("/private/comments/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.PATCH("/private/comments/:id/status", privateMws.Then(commentController.UpdateStatusPrivate))
-	r.OPTION("/private/comments/:id/status", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.GET("/private/categories", privateMws.Then(categoryController.IndexPrivate))
-	r.OPTION("/private/categories", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.GET("/private/categories/:id", privateMws.Then(categoryController.ShowPrivate))
-	r.OPTION("/private/categories/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.POST("/private/categories", privateMws.Then(categoryController.StorePrivate))
-	r.OPTION("/private/categories", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.PATCH("/private/categories/:id", privateMws.Then(categoryController.UpdatePrivate))
-	r.OPTION("/private/categories/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.DELETE("/private/categories/:id", privateMws.Then(categoryController.DestroyPrivate))
-	r.OPTION("/private/categories/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.GET("/private/tags", privateMws.Then(tagController.IndexPrivate))
-	r.OPTION("/private/tags", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.GET("/private/tags/:id", privateMws.Then(tagController.ShowPrivate))
-	r.OPTION("/private/tags/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.POST("/private/tags", privateMws.Then(tagController.StorePrivate))
-	r.OPTION("/private/tags", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.PATCH("/private/tags/:id", privateMws.Then(tagController.UpdatePrivate))
-	r.OPTION("/private/tags/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
-	r.DELETE("/private/tags/:id", privateMws.Then(tagController.DestroyPrivate))
-	r.OPTION("/private/tags/:id", publicMws.Then(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})))
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader).Handler(`/posts`, postController.Index())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/posts`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader).Handler(`/posts/categories/:name`, postController.IndexByCategory())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/posts/categories/:name`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader).Handler(`/posts/tags/:name`, postController.IndexByTag())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/posts/tags/:name`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader).Handler(`/posts/:title`, postController.Show())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/posts/:title`, defaultController)
+
+	r.Methods(http.MethodPost).Use(mw.DefaultHeader).Handler(`/posts/:title/comments`, commentController.Store())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/posts/:title/comments`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader).Handler(`/categories`, categoryController.Index())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/categories`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader).Handler(`/categories/:name`, categoryController.Show())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/categories/:name`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader).Handler(`/tags`, tagController.Index())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/tags`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader).Handler(`/tags/:name`, tagController.Show())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/tags/:name`, defaultController)
+
+	r.Methods(http.MethodPost).Use(mw.DefaultHeader).Handler(`/signin`, authController.SignIn())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/signin`, defaultController)
+
+	r.Methods(http.MethodPost).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/signout`, authController.SignOut())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/signout`, defaultController)
+
+	r.Methods(http.MethodPost).Use(mw.DefaultHeader, mw.Refresh).Handler(`/private/refresh`, authController.Refresh())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/refresh`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/me`, authController.ShowMe())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/me`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/posts`, postController.IndexPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/posts`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/posts/:id`, postController.ShowPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/posts/:id`, defaultController)
+
+	r.Methods(http.MethodPost).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/posts`, postController.StorePrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/posts`, defaultController)
+
+	r.Methods(http.MethodPatch).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/posts/:id`, postController.UpdatePrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/posts/:id`, defaultController)
+
+	r.Methods(http.MethodDelete).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/posts/:id`, postController.DestroyPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/posts/:id`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/comments`, commentController.IndexPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/comments`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/comments/:id`, commentController.ShowPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/comments/:id`, defaultController)
+
+	r.Methods(http.MethodPatch).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/comments/:id/status`, commentController.UpdateStatusPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/comments/:id/status`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/categories`, categoryController.IndexPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/categories`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/categories/:id`, categoryController.ShowPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/categories/:id`, defaultController)
+
+	r.Methods(http.MethodPost).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/categories`, categoryController.StorePrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/categories`, defaultController)
+
+	r.Methods(http.MethodPatch).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/categories/:id`, categoryController.UpdatePrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/categories/:id`, defaultController)
+
+	r.Methods(http.MethodDelete).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/categories/:id`, categoryController.DestroyPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/categories/:id`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/tags`, tagController.IndexPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/tags`, defaultController)
+
+	r.Methods(http.MethodGet).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/tags/:id`, tagController.ShowPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/tags/:id`, defaultController)
+
+	r.Methods(http.MethodPost).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/tags`, tagController.StorePrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/tags`, defaultController)
+
+	r.Methods(http.MethodPatch).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/tags/:id`, tagController.UpdatePrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/tags/:id`, defaultController)
+
+	r.Methods(http.MethodDelete).Use(mw.DefaultHeader, mw.Auth).Handler(`/private/tags/:id`, tagController.DestroyPrivate())
+	r.Methods(http.MethodOptions).Use(mw.CORS).Handler(`/private/tags/:id`, defaultController)
 
 	return r
 }

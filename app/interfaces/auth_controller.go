@@ -31,25 +31,29 @@ func NewAuthController(connMySQL *sql.DB, connRedis *redis.Client, logger usecas
 }
 
 // SignIn signs in with a credential.
-func (ac *AuthController) SignIn(w http.ResponseWriter, r *http.Request) {
-	ac.AuthInteractor.HandleSignIn(w, r)
-	return
+func (ac *AuthController) SignIn() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ac.AuthInteractor.HandleSignIn(w, r)
+	})
 }
 
 // SignOut signs out.
-func (ac *AuthController) SignOut(w http.ResponseWriter, r *http.Request) {
-	ac.AuthInteractor.HandleSignOut(w, r)
-	return
+func (ac *AuthController) SignOut() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ac.AuthInteractor.HandleSignOut(w, r)
+	})
 }
 
 // Refresh refreshes a jwt.
-func (ac *AuthController) Refresh(w http.ResponseWriter, r *http.Request) {
-	ac.AuthInteractor.HandleRefresh(w, r)
-	return
+func (ac *AuthController) Refresh() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ac.AuthInteractor.HandleRefresh(w, r)
+	})
 }
 
 // ShowMe displays the specified resource.
-func (ac *AuthController) ShowMe(w http.ResponseWriter, r *http.Request) {
-	ac.AuthInteractor.HandleShowMe(w, r)
-	return
+func (ac *AuthController) ShowMe() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ac.AuthInteractor.HandleShowMe(w, r)
+	})
 }
