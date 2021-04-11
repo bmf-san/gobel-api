@@ -1,8 +1,8 @@
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/bmf-san/gobel-api/app v0.0.0-20200407144824-d76103b67196/go.mod h1:Qni9iFsAzo8Y3eWJ8Sb3ypH1SIHNg2GVNWuAa/zVN5w=
 github.com/bmf-san/goblin v0.0.0-20200105095952-e37989167161/go.mod h1:qXZgUT0V3TiFV043L16JFLw4gV2s0uaSFUEnW3TRMmQ=
-github.com/bmf-san/goblin v0.0.0-20200727143354-677fa7eea1e4 h1:jXFXESMW1t/uY6l6YAmYhXAf4GvHSpPCPv0B7SNXlAE=
-github.com/bmf-san/goblin v0.0.0-20200727143354-677fa7eea1e4/go.mod h1:0po95TgRekvmmcbXxg26hRehMm6fBhbZJgvIJ7iXbyc=
+github.com/bmf-san/goblin v0.0.0-20210411154201-18a609d6f54c h1:B0ycTbKA9m6IuGg+Ud1ya9z/dEnuSjR273qeuTF+FKk=
+github.com/bmf-san/goblin v0.0.0-20210411154201-18a609d6f54c/go.mod h1:NCMwqxUFLG11DjoF7mBMD1vNrrB5/d4Z3Vea8PS3b+o=
 github.com/bmf-san/golem v0.0.0-20201124170718-57b487ad1eb5 h1:nz15EhpQ6Yh6mexMUy2nRJnWX5EEOqV9QXz7aqasqH4=
 github.com/bmf-san/golem v0.0.0-20201124170718-57b487ad1eb5/go.mod h1:WO0mipXeyFiPkU+4uLuovMQtMZLf4VtrrJyXpdcZYoQ=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
