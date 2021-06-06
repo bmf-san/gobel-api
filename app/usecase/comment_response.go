@@ -21,6 +21,7 @@ func (r *CommentResponse) MakeResponseHandleIndexPrivate(comments domain.Comment
 			Body:      c.Body,
 			Status:    c.Status,
 			CreatedAt: c.CreatedAt,
+			UpdatedAt: c.UpdatedAt,
 		}
 		cmt = append(cmt, rc)
 	}
@@ -41,6 +42,7 @@ func (r *CommentResponse) MakeResponseHandleStore(c domain.Comment) (int, []byte
 		Body:      c.Body,
 		Status:    c.Status,
 		CreatedAt: c.CreatedAt,
+		UpdatedAt: c.UpdatedAt,
 	})
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
@@ -57,6 +59,7 @@ func (r *CommentResponse) MakeResponseHandleShowPrivate(c domain.Comment) (int, 
 		Body:      c.Body,
 		Status:    c.Status,
 		CreatedAt: c.CreatedAt,
+		UpdatedAt: c.UpdatedAt,
 	})
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
@@ -73,6 +76,7 @@ func (r *CommentResponse) MakeResponseHandleUpdateStatusPrivate(c domain.Comment
 		Body:      c.Body,
 		Status:    c.Status,
 		CreatedAt: c.CreatedAt,
+		UpdatedAt: c.UpdatedAt,
 	})
 	if err != nil {
 		return http.StatusInternalServerError, nil, err
@@ -86,6 +90,7 @@ type ResponseComment struct {
 	ID        int       `json:"id"`
 	Body      string    `json:"body"`
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // A ResponseComments represents the plural of comment for response.
@@ -98,6 +103,7 @@ type PrivateResponseComment struct {
 	Body      string    `json:"body"`
 	Status    string    `json:"status"`
 	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // A PrivateResponseComments represents the plural of comment for response.
