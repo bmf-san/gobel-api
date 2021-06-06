@@ -178,6 +178,8 @@ func (ai *AuthInteractor) HandleShowMe(w http.ResponseWriter, r *http.Request) {
 	code, msg, err := ar.MakeResponseHandleShowMe(admin)
 	if err != nil {
 		ai.Logger.Error(err.Error())
+		ai.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
+		return
 	}
 	ai.JSONResponse.HTTPStatus(w, code, msg)
 	return

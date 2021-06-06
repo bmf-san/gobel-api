@@ -27,43 +27,50 @@ func NewTagController(connMySQL *sql.DB, logger usecase.Logger) *TagController {
 }
 
 // Index displays a listing of the resource.
-func (tc *TagController) Index(w http.ResponseWriter, r *http.Request) {
-	tc.TagInteractor.HandleIndex(w, r)
-	return
+func (tc *TagController) Index() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tc.TagInteractor.HandleIndex(w, r)
+	})
 }
 
 // IndexPrivate displays a listing of the resource.
-func (tc *TagController) IndexPrivate(w http.ResponseWriter, r *http.Request) {
-	tc.TagInteractor.HandleIndexPrivate(w, r)
-	return
+func (tc *TagController) IndexPrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tc.TagInteractor.HandleIndexPrivate(w, r)
+	})
 }
 
 // Show displays the specified resource.
-func (tc *TagController) Show(w http.ResponseWriter, r *http.Request) {
-	tc.TagInteractor.HandleShow(w, r)
-	return
+func (tc *TagController) Show() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tc.TagInteractor.HandleShow(w, r)
+	})
 }
 
 // ShowPrivate displays the specified resource.
-func (tc *TagController) ShowPrivate(w http.ResponseWriter, r *http.Request) {
-	tc.TagInteractor.HandleShowPrivate(w, r)
-	return
+func (tc *TagController) ShowPrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tc.TagInteractor.HandleShowPrivate(w, r)
+	})
 }
 
 // StorePrivate stores a newly created resource in storage.
-func (tc *TagController) StorePrivate(w http.ResponseWriter, r *http.Request) {
-	tc.TagInteractor.HandleStorePrivate(w, r)
-	return
+func (tc *TagController) StorePrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tc.TagInteractor.HandleStorePrivate(w, r)
+	})
 }
 
 // UpdatePrivate updates the specified resource in storage.
-func (tc *TagController) UpdatePrivate(w http.ResponseWriter, r *http.Request) {
-	tc.TagInteractor.HandleUpdatePrivate(w, r)
-	return
+func (tc *TagController) UpdatePrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tc.TagInteractor.HandleUpdatePrivate(w, r)
+	})
 }
 
 // DestroyPrivate removes the specified resource from strorage.
-func (tc *TagController) DestroyPrivate(w http.ResponseWriter, r *http.Request) {
-	tc.TagInteractor.HandleDestroyPrivate(w, r)
-	return
+func (tc *TagController) DestroyPrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tc.TagInteractor.HandleDestroyPrivate(w, r)
+	})
 }

@@ -35,55 +35,64 @@ func NewPostController(connMySQL *sql.DB, connRedis *redis.Client, logger usecas
 }
 
 // Index displays a listing of the resource.
-func (pc *PostController) Index(w http.ResponseWriter, r *http.Request) {
-	pc.PostInteractor.HandleIndex(w, r)
-	return
+func (pc *PostController) Index() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pc.PostInteractor.HandleIndex(w, r)
+	})
 }
 
 // IndexByCategory displays a listing of the resource.
-func (pc *PostController) IndexByCategory(w http.ResponseWriter, r *http.Request) {
-	pc.PostInteractor.HandleIndexByCategory(w, r)
-	return
+func (pc *PostController) IndexByCategory() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pc.PostInteractor.HandleIndexByCategory(w, r)
+	})
 }
 
 // IndexByTag displays a listing of the resource.
-func (pc *PostController) IndexByTag(w http.ResponseWriter, r *http.Request) {
-	pc.PostInteractor.HandleIndexByTag(w, r)
-	return
+func (pc *PostController) IndexByTag() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pc.PostInteractor.HandleIndexByTag(w, r)
+	})
 }
 
 // IndexPrivate displays a listing of the resource.
-func (pc *PostController) IndexPrivate(w http.ResponseWriter, r *http.Request) {
-	pc.PostInteractor.HandleIndexPrivate(w, r)
-	return
+func (pc *PostController) IndexPrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pc.PostInteractor.HandleIndexPrivate(w, r)
+	})
 }
 
 // Show displays the specified resource.
-func (pc *PostController) Show(w http.ResponseWriter, r *http.Request) {
-	pc.PostInteractor.HandleShow(w, r)
-	return
+func (pc *PostController) Show() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pc.PostInteractor.HandleShow(w, r)
+	})
 }
 
 // ShowPrivate displays the specified resource.
-func (pc *PostController) ShowPrivate(w http.ResponseWriter, r *http.Request) {
-	pc.PostInteractor.HandleShowPrivate(w, r)
-	return
+func (pc *PostController) ShowPrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pc.PostInteractor.HandleShowPrivate(w, r)
+	})
 }
 
 // StorePrivate stores a newly created resource in storage.
-func (pc *PostController) StorePrivate(w http.ResponseWriter, r *http.Request) {
-	pc.PostInteractor.HandleStorePrivate(w, r)
-	return
+func (pc *PostController) StorePrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pc.PostInteractor.HandleStorePrivate(w, r)
+	})
 }
 
 // UpdatePrivate updates the specified resource in storage.
-func (pc *PostController) UpdatePrivate(w http.ResponseWriter, r *http.Request) {
-	pc.PostInteractor.HandleUpdatePrivate(w, r)
-	return
+func (pc *PostController) UpdatePrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pc.PostInteractor.HandleUpdatePrivate(w, r)
+	})
 }
 
 // DestroyPrivate removes the specified resource from strorage.
-func (pc *PostController) DestroyPrivate(w http.ResponseWriter, r *http.Request) {
-	pc.PostInteractor.HandleDestroyPrivate(w, r)
-	return
+func (pc *PostController) DestroyPrivate() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		pc.PostInteractor.HandleDestroyPrivate(w, r)
+	})
 }
