@@ -43,7 +43,6 @@ version: 2.1
 jobs:
     build:
         working_directory: ~/workspace
-        machine: true
         steps:
             - setup_remote_docker
             - *restore_git_cache
