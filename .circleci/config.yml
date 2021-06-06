@@ -45,6 +45,7 @@ jobs:
         working_directory: ~/workspace
         machine: true
         steps:
+            - setup_remote_docker
             - *restore_git_cache
             - checkout
             - *save_git_cache
