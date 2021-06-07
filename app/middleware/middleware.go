@@ -25,14 +25,6 @@ func NewMiddleware(l usecase.Logger, ar interfaces.AdminRepository, jr interface
 	}
 }
 
-// DefaultHeader is a middleware for default header.
-func (mw *Middleware) DefaultHeader(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", os.Getenv("ALLOW_ORIGIN"))
-		next.ServeHTTP(w, r)
-	})
-}
-
 // Auth is a middleware for authentication.
 func (mw *Middleware) Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
