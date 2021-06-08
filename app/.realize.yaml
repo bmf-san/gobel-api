@@ -8,10 +8,10 @@ schema:
   commands:
     build:
       status: true
-      method: go build -o /app
+      method: go build -o /go/gobel-api/app
     run:
       status: true
-      method: /app
+      method: /go/gobel-api/app
   watcher:
     extensions:
     - go

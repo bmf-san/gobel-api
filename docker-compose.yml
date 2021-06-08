@@ -9,7 +9,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./app:/go/src/github.com/bmf-san/gobel-api/app
+      - ./app:/go/gobel-api/app
     networks:
       - gobel_link
     depends_on:
