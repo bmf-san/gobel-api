@@ -1,17 +1,18 @@
 FROM golang:1.16.0-alpine
 
+WORKDIR /go/gobel-api/app
+
 COPY . .
 
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache libc-dev gcc git openssh openssl bash && \
-    go mod download && \
     go get -u golang.org/x/lint/golint
 
-WORKDIR /app
+ENV CGO_ENABLED=0
+ENV GOOS=linux
+ENV GOARCH=amd64
 
-RUN go mod download
-
-RUN GOOS=linux GOARCH=amd64 go build -o app
+RUN go build -o app
 
 EXPOSE 8080

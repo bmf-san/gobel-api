@@ -1,13 +1,12 @@
 FROM golang:1.16.0-alpine as builder
 
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache libc-dev gcc git openssh openssl bash && \
-    go get -u golang.org/x/lint/golint
-
-WORKDIR /go/src/gobel-api
+WORKDIR /go/gobel-api/app
 
 COPY . .
+
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache libc-dev gcc git openssh openssl bash
 
 ENV CGO_ENABLED=0
 ENV GOOS=linux
@@ -17,6 +16,6 @@ RUN go build -o app
 
 FROM alpine
 
-COPY --from=builder /go/src/gobel-api/app ./
+COPY --from=builder /go/gobel-api/app ./
 
 CMD ["./app"]
