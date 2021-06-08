@@ -2,6 +2,7 @@
 
 # app
 .env
+/app/tmp
 
 # docker
 /mysql/data
