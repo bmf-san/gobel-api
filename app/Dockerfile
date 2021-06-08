@@ -5,8 +5,8 @@ WORKDIR /go/gobel-api/app
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache libc-dev gcc git openssh openssl bash && \
-    GO111MODULE=off go get github.com/oxequa/realize && \
+    go get -u github.com/cosmtrek/air && \
     go get -u golang.org/x/lint/golint
 
-CMD realize start --run
+CMD air -c .air.toml
 
