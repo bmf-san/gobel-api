@@ -2,8 +2,6 @@ FROM golang:1.16.0-alpine
 
 WORKDIR /go/gobel-api/app
 
-COPY . .
-
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache libc-dev gcc git openssh openssl bash && \
