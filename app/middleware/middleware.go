@@ -102,14 +102,22 @@ func (mw *Middleware) Refresh(next http.Handler) http.Handler {
 	})
 }
 
-// CORS is a middleware for CORS.
-func (mw *Middleware) CORS(next http.Handler) http.Handler {
+// CORSMain is a middleware for main requests.
+func (mw *Middleware) CORSMain(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", os.Getenv("ALLOW_ORIGIN"))
+		w.Header().Set("Access-Control-Expose-Headers", "Content-Length, Pagination-Count, Pagination-Pagecount, Pagination-Page, Pagination-Limit")
+		next.ServeHTTP(w, r)
+	})
+}
+
+// CORSPreflight is a middleware for preflight requests.
+func (mw *Middleware) CORSPreflight(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", os.Getenv("ALLOW_ORIGIN"))
 		w.Header().Set("Access-Control-Max-Age", "86400")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, PATCH")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, Authorization, Access-Control-Allow-Origin")
-		w.Header().Set("Access-Control-Expose-Headers", "Content-Length, Pagination-Count, Pagination-Pagecount, Pagination-Page, Pagination-Limit")
 		next.ServeHTTP(w, r)
 	})
 }
