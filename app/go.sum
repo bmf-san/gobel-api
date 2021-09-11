@@ -1,5 +1,5 @@
-github.com/bmf-san/goblin v0.0.0-20210518151138-ad76fa1fb9ab h1:O8QberKT1WKH9b7TTaJUkfiMnJ8+rutjfEDAsIofKN0=
-github.com/bmf-san/goblin v0.0.0-20210518151138-ad76fa1fb9ab/go.mod h1:NCMwqxUFLG11DjoF7mBMD1vNrrB5/d4Z3Vea8PS3b+o=
+github.com/bmf-san/goblin v0.0.0-20210911081040-262c174672a1 h1:9Ek+EdOJlkJLQx0IebRNOGrVWQj1feiOP6XdAIyBvMw=
+github.com/bmf-san/goblin v0.0.0-20210911081040-262c174672a1/go.mod h1:q6B02wO1BVMVxb5puHBtCQdg+03Q8XJIjsh6joYrhZw=
 github.com/bmf-san/golem v0.0.0-20210221133857-7ecb33f0ca76 h1:eZRVFcQ82z1uPDYQzI71M5zXwpjvrD3tLy+uc0txC6E=
 github.com/bmf-san/golem v0.0.0-20210221133857-7ecb33f0ca76/go.mod h1:v2YJqaEietOXsYUQVOJeBNIxAGrn4GCeWbfpVzAndRE=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
@@ -45,8 +45,8 @@ github.com/onsi/gomega v1.10.1/go.mod h1:iN09h71vgCQne3DLsj+A5owkum+a2tYe+TOCB1y
 github.com/satori/go.uuid v1.2.0 h1:0uYX9dsZ2yD7q2RtLRtPSdGDWzjeM3TbMJP9utgA0ww=
 github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
-golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 h1:/UOmuWzQfxxo9UtlXMwuQU8CMgg1eZXqTRwkSQJWKOI=
-golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
+golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 h1:HWj/xjIHfjYU5nVXpTM0s39J9CbLn7Cc5a7IC5rwsMQ=
+golang.org/x/crypto v0.0.0-20210817164053-32db794688a5/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
 golang.org/x/net v0.0.0-20180906233101-161cd47e91fd/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20190923162816-aa69164e4478/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
 golang.org/x/net v0.0.0-20200520004742-59133d7f0dd7/go.mod h1:qpuaurCH72eLCgpAm/N6yyVIVM9cpaDIP3A8BGJEC5A=
