@@ -9,29 +9,33 @@ docker-compose-build: ## Build containers by docker-compose.
 ifeq ($(env), ci)
 	docker-compose -f docker-compose-ci.yml build
 else
-	docker-compose -f docker-compose.yml build
+	docker-compose -f docker-compose-local.yml build
 endif
 
 docker-compose-up: ## Run containers by docker-compose.
 ifeq ($(env), ci)
 	docker-compose -f docker-compose-ci.yml up
 else
-	docker-compose -f docker-compose.yml up
+	docker-compose -f docker-compose-local.yml up
 endif
 
 docker-compose-up-d: ## Run containers in the background by docker-compose.
 ifeq ($(env), ci)
 	docker-compose -f docker-compose-ci.yml up -d
 else
-	docker-compose -f docker-compose.yml up -d
+	docker-compose -f docker-compose-local.yml up -d
 endif
 
 docker-compose-pull: ## Pull images by docker-compose.
 ifeq ($(env), ci)
 	docker-compose -f docker-compose-ci.yml pull
 else
-	docker-compose -f docker-compose.yml pull
+	docker-compose -f docker-compose-local.yml pull
 endif
+
+build-and-push: ## Build and push image to dockerhub.
+	docker build -f app/Dockerfile -t bmfsan/gobel-api ./app/
+	docker push bmfsan/gobel-api
 
 lint: ## Run golint.
 	docker exec -it gobel-api golint ./...
