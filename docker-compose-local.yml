@@ -5,7 +5,7 @@ services:
     env_file: ".env"
     build:
         context: "./app"
-        dockerfile: "Dockerfile"
+        dockerfile: "Dockerfile.local"
     ports:
       - "8080:8080"
     volumes:
@@ -19,7 +19,7 @@ services:
     env_file: ".env"
     build:
         context: "./mysql"
-        dockerfile: "Dockerfile"
+        dockerfile: "Dockerfile.local"
     ports:
       - "3306:3306"
     volumes:
@@ -36,7 +36,7 @@ services:
     container_name: "gobel-api-nginx"
     build:
         context: "./nginx"
-        dockerfile: "Dockerfile"
+        dockerfile: "Dockerfile.local"
     ports:
       - "80:80"
     networks:
@@ -48,7 +48,7 @@ services:
     env_file: ".env"
     build:
         context: "./redis"
-        dockerfile: "Dockerfile"
+        dockerfile: "Dockerfile.local"
     ports:
       - "6379:6379"
     volumes:
@@ -60,7 +60,7 @@ services:
     env_file: ".env"
     build:
         context: "./redis-insight"
-        dockerfile: "Dockerfile"
+        dockerfile: "Dockerfile.local"
     ports:
       - "8001:8001"
     volumes:
