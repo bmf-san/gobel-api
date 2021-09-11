@@ -1,6 +1,6 @@
 module github.com/bmf-san/gobel-api/app
 
-go 1.16
+go 1.17
 
 require (
 	github.com/bmf-san/goblin v0.0.0-20210518151138-ad76fa1fb9ab
