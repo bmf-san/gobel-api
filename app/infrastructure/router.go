@@ -11,13 +11,6 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
-// defaultHandler is a handler for default.
-func defaultHandler() http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		return
-	})
-}
-
 // Route sets the routing.
 func Route(connMySQL *sql.DB, connRedis *redis.Client, l usecase.Logger) *goblin.Router {
 	ar := interfaces.AdminRepository{
@@ -32,7 +25,6 @@ func Route(connMySQL *sql.DB, connRedis *redis.Client, l usecase.Logger) *goblin
 
 	defaultController := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
-		return
 	})
 	authController := interfaces.NewAuthController(connMySQL, connRedis, l)
 	postController := interfaces.NewPostController(connMySQL, connRedis, l)
@@ -41,6 +33,11 @@ func Route(connMySQL *sql.DB, connRedis *redis.Client, l usecase.Logger) *goblin
 	tagController := interfaces.NewTagController(connMySQL, l)
 
 	r := goblin.NewRouter()
+
+	r.Methods(http.MethodGet).Handler(`/healthcheck`, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("ok"))
+	}))
 
 	r.Methods(http.MethodGet).Use(mw.CORSMain).Handler(`/posts`, postController.Index())
 	r.Methods(http.MethodOptions).Use(mw.CORSPreflight).Handler(`/posts`, defaultController)
