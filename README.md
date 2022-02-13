@@ -32,7 +32,7 @@ This is an api repository.
 127.0.0.1 gobel-api.local
 ```
 
-## Creaate a network
+## Create a network
 `docker network create --driver bridge gobel_link`
 
 ## Build containers
