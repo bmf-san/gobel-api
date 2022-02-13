@@ -20,6 +20,8 @@ services:
     build:
         context: "./mysql"
         dockerfile: "Dockerfile.local"
+        args:
+          PLATFORM: "${PLATFORM}"
     ports:
       - "3306:3306"
     volumes:
@@ -37,6 +39,8 @@ services:
     build:
         context: "./nginx"
         dockerfile: "Dockerfile.local"
+        args:
+          PLATFORM: "${PLATFORM}"
     ports:
       - "80:80"
     networks:
