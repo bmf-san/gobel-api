@@ -7,30 +7,30 @@
 
 ```sql
 CREATE TABLE `tag_post` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `tag_id` int(11) unsigned NOT NULL,
-  `post_id` int(11) unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tag_id` int unsigned NOT NULL,
+  `post_id` int unsigned NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `tag_id` (`tag_id`),
-  KEY `post_id` (`post_id`),
+  KEY `index_tag_post_tag_id` (`tag_id`),
+  KEY `index_tag_post_post_id` (`post_id`),
   CONSTRAINT `tag_post_ibfk_1` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`),
   CONSTRAINT `tag_post_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1048577 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
 ```
 
 </details>
 
 ## Columns
 
-| Name       | Type             | Default           | Nullable | Children | Parents           | Comment |
-| ---------- | ---------------- | ----------------- | -------- | -------- | ----------------- | ------- |
-| id         | int(11) unsigned |                   | false    |          |                   |         |
-| tag_id     | int(11) unsigned |                   | false    |          | [tags](tags.md)   |         |
-| post_id    | int(11) unsigned |                   | false    |          | [posts](posts.md) |         |
-| created_at | datetime         | CURRENT_TIMESTAMP | true     |          |                   |         |
-| updated_at | datetime         | CURRENT_TIMESTAMP | true     |          |                   |         |
+| Name       | Type         | Default           | Nullable | Extra Definition                              | Children | Parents           | Comment |
+| ---------- | ------------ | ----------------- | -------- | --------------------------------------------- | -------- | ----------------- | ------- |
+| id         | int unsigned |                   | false    | auto_increment                                |          |                   |         |
+| tag_id     | int unsigned |                   | false    |                                               |          | [tags](tags.md)   |         |
+| post_id    | int unsigned |                   | false    |                                               |          | [posts](posts.md) |         |
+| created_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |                   |         |
+| updated_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |                   |         |
 
 ## Constraints
 
@@ -42,15 +42,15 @@ CREATE TABLE `tag_post` (
 
 ## Indexes
 
-| Name    | Definition                        |
-| ------- | --------------------------------- |
-| post_id | KEY post_id (post_id) USING BTREE |
-| tag_id  | KEY tag_id (tag_id) USING BTREE   |
-| PRIMARY | PRIMARY KEY (id) USING BTREE      |
+| Name                   | Definition                                       |
+| ---------------------- | ------------------------------------------------ |
+| index_tag_post_post_id | KEY index_tag_post_post_id (post_id) USING BTREE |
+| index_tag_post_tag_id  | KEY index_tag_post_tag_id (tag_id) USING BTREE   |
+| PRIMARY                | PRIMARY KEY (id) USING BTREE                     |
 
 ## Relations
 
-![er](tag_post.png)
+![er](tag_post.svg)
 
 ---
 

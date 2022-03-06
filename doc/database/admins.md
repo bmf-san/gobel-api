@@ -7,7 +7,7 @@
 
 ```sql
 CREATE TABLE `admins` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -16,21 +16,21 @@ CREATE TABLE `admins` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000001 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
 ```
 
 </details>
 
 ## Columns
 
-| Name       | Type             | Default           | Nullable | Children                                              | Parents | Comment |
-| ---------- | ---------------- | ----------------- | -------- | ----------------------------------------------------- | ------- | ------- |
-| id         | int(11) unsigned |                   | false    | [archived_posts](archived_posts.md) [posts](posts.md) |         |         |
-| name       | varchar(255)     |                   | false    |                                                       |         |         |
-| email      | varchar(255)     |                   | false    |                                                       |         |         |
-| password   | varchar(255)     |                   | false    |                                                       |         |         |
-| created_at | datetime         | CURRENT_TIMESTAMP | true     |                                                       |         |         |
-| updated_at | datetime         | CURRENT_TIMESTAMP | true     |                                                       |         |         |
+| Name       | Type         | Default           | Nullable | Extra Definition                              | Children                                              | Parents | Comment |
+| ---------- | ------------ | ----------------- | -------- | --------------------------------------------- | ----------------------------------------------------- | ------- | ------- |
+| id         | int unsigned |                   | false    | auto_increment                                | [archived_posts](archived_posts.md) [posts](posts.md) |         |         |
+| name       | varchar(255) |                   | false    |                                               |                                                       |         |         |
+| email      | varchar(255) |                   | false    |                                               |                                                       |         |         |
+| password   | varchar(255) |                   | false    |                                               |                                                       |         |         |
+| created_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |                                                       |         |         |
+| updated_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |                                                       |         |         |
 
 ## Constraints
 
@@ -50,7 +50,7 @@ CREATE TABLE `admins` (
 
 ## Relations
 
-![er](admins.png)
+![er](admins.svg)
 
 ---
 

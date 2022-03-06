@@ -7,30 +7,31 @@
 
 ```sql
 CREATE TABLE `comments` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `post_id` int(11) unsigned NOT NULL,
-  `body` text NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `post_id` int unsigned NOT NULL,
+  `body` longtext NOT NULL,
   `status` varchar(255) DEFAULT 'pending',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `post_id` (`post_id`),
+  KEY `index_comments_status` (`status`),
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000002 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
 ```
 
 </details>
 
 ## Columns
 
-| Name       | Type             | Default           | Nullable | Children | Parents           | Comment |
-| ---------- | ---------------- | ----------------- | -------- | -------- | ----------------- | ------- |
-| id         | int(11) unsigned |                   | false    |          |                   |         |
-| post_id    | int(11) unsigned |                   | false    |          | [posts](posts.md) |         |
-| body       | text             |                   | false    |          |                   |         |
-| status     | varchar(255)     | pending           | true     |          |                   |         |
-| created_at | datetime         | CURRENT_TIMESTAMP | true     |          |                   |         |
-| updated_at | datetime         | CURRENT_TIMESTAMP | true     |          |                   |         |
+| Name       | Type         | Default           | Nullable | Extra Definition                              | Children | Parents           | Comment |
+| ---------- | ------------ | ----------------- | -------- | --------------------------------------------- | -------- | ----------------- | ------- |
+| id         | int unsigned |                   | false    | auto_increment                                |          |                   |         |
+| post_id    | int unsigned |                   | false    |                                               |          | [posts](posts.md) |         |
+| body       | longtext     |                   | false    |                                               |          |                   |         |
+| status     | varchar(255) | pending           | true     |                                               |          |                   |         |
+| created_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |                   |         |
+| updated_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |                   |         |
 
 ## Constraints
 
@@ -41,14 +42,15 @@ CREATE TABLE `comments` (
 
 ## Indexes
 
-| Name    | Definition                        |
-| ------- | --------------------------------- |
-| post_id | KEY post_id (post_id) USING BTREE |
-| PRIMARY | PRIMARY KEY (id) USING BTREE      |
+| Name                  | Definition                                     |
+| --------------------- | ---------------------------------------------- |
+| index_comments_status | KEY index_comments_status (status) USING BTREE |
+| post_id               | KEY post_id (post_id) USING BTREE              |
+| PRIMARY               | PRIMARY KEY (id) USING BTREE                   |
 
 ## Relations
 
-![er](comments.png)
+![er](comments.svg)
 
 ---
 

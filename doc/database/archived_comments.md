@@ -7,30 +7,30 @@
 
 ```sql
 CREATE TABLE `archived_comments` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `archived_post_id` int(11) unsigned NOT NULL,
-  `body` text NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `archived_post_id` int unsigned NOT NULL,
+  `body` longtext NOT NULL,
   `status` varchar(255) DEFAULT 'pending',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `archived_post_id` (`archived_post_id`),
   CONSTRAINT `archived_comments_ibfk_1` FOREIGN KEY (`archived_post_id`) REFERENCES `archived_posts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
 ```
 
 </details>
 
 ## Columns
 
-| Name             | Type             | Default           | Nullable | Children | Parents                             | Comment |
-| ---------------- | ---------------- | ----------------- | -------- | -------- | ----------------------------------- | ------- |
-| id               | int(11) unsigned |                   | false    |          |                                     |         |
-| archived_post_id | int(11) unsigned |                   | false    |          | [archived_posts](archived_posts.md) |         |
-| body             | text             |                   | false    |          |                                     |         |
-| status           | varchar(255)     | pending           | true     |          |                                     |         |
-| created_at       | datetime         | CURRENT_TIMESTAMP | true     |          |                                     |         |
-| updated_at       | datetime         | CURRENT_TIMESTAMP | true     |          |                                     |         |
+| Name             | Type         | Default           | Nullable | Extra Definition                              | Children | Parents                             | Comment |
+| ---------------- | ------------ | ----------------- | -------- | --------------------------------------------- | -------- | ----------------------------------- | ------- |
+| id               | int unsigned |                   | false    | auto_increment                                |          |                                     |         |
+| archived_post_id | int unsigned |                   | false    |                                               |          | [archived_posts](archived_posts.md) |         |
+| body             | longtext     |                   | false    |                                               |          |                                     |         |
+| status           | varchar(255) | pending           | true     |                                               |          |                                     |         |
+| created_at       | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |                                     |         |
+| updated_at       | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |                                     |         |
 
 ## Constraints
 
@@ -48,7 +48,7 @@ CREATE TABLE `archived_comments` (
 
 ## Relations
 
-![er](archived_comments.png)
+![er](archived_comments.svg)
 
 ---
 
