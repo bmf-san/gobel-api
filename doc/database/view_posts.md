@@ -13,31 +13,37 @@ CREATE VIEW view_posts AS (select `gobel`.`posts`.`id` AS `id`,`gobel`.`posts`.`
 
 </details>
 
+## Referenced Tables
+
+- [posts](posts.md)
+- [admins](admins.md)
+- [categories](categories.md)
+
 ## Columns
 
-| Name                | Type             | Default           | Nullable | Children | Parents | Comment |
-| ------------------- | ---------------- | ----------------- | -------- | -------- | ------- | ------- |
-| id                  | int(11) unsigned | 0                 | false    |          |         |         |
-| admin_id            | int(11) unsigned |                   | false    |          |         |         |
-| category_id         | int(11) unsigned |                   | false    |          |         |         |
-| title               | varchar(255)     |                   | true     |          |         |         |
-| md_body             | text             |                   | true     |          |         |         |
-| html_body           | text             |                   | true     |          |         |         |
-| status              | varchar(255)     | draft             | true     |          |         |         |
-| created_at          | datetime         | CURRENT_TIMESTAMP | true     |          |         |         |
-| updated_at          | datetime         | CURRENT_TIMESTAMP | true     |          |         |         |
-| admin_name          | varchar(255)     |                   | true     |          |         |         |
-| admin_email         | varchar(255)     |                   | true     |          |         |         |
-| admin_password      | varchar(255)     |                   | true     |          |         |         |
-| admin_created_at    | datetime         | CURRENT_TIMESTAMP | true     |          |         |         |
-| admin_updated_at    | datetime         | CURRENT_TIMESTAMP | true     |          |         |         |
-| category_name       | varchar(255)     |                   | true     |          |         |         |
-| category_created_at | datetime         | CURRENT_TIMESTAMP | true     |          |         |         |
-| category_updated_at | datetime         | CURRENT_TIMESTAMP | true     |          |         |         |
+| Name                | Type         | Default           | Nullable | Extra Definition                              | Children | Parents | Comment |
+| ------------------- | ------------ | ----------------- | -------- | --------------------------------------------- | -------- | ------- | ------- |
+| id                  | int unsigned | 0                 | false    |                                               |          |         |         |
+| admin_id            | int unsigned |                   | false    |                                               |          |         |         |
+| category_id         | int unsigned |                   | false    |                                               |          |         |         |
+| title               | varchar(255) |                   | true     |                                               |          |         |         |
+| md_body             | longtext     |                   | true     |                                               |          |         |         |
+| html_body           | longtext     |                   | true     |                                               |          |         |         |
+| status              | varchar(255) | draft             | true     |                                               |          |         |         |
+| created_at          | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |         |         |
+| updated_at          | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |         |         |
+| admin_name          | varchar(255) |                   | true     |                                               |          |         |         |
+| admin_email         | varchar(255) |                   | true     |                                               |          |         |         |
+| admin_password      | varchar(255) |                   | true     |                                               |          |         |         |
+| admin_created_at    | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |         |         |
+| admin_updated_at    | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |         |         |
+| category_name       | varchar(255) |                   | true     |                                               |          |         |         |
+| category_created_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |         |         |
+| category_updated_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |          |         |         |
 
 ## Relations
 
-![er](view_posts.png)
+![er](view_posts.svg)
 
 ---
 

@@ -7,12 +7,12 @@
 
 ```sql
 CREATE TABLE `archived_posts` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `admin_id` int(11) unsigned NOT NULL,
-  `category_id` int(11) unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `admin_id` int unsigned NOT NULL,
+  `category_id` int unsigned NOT NULL,
   `title` varchar(255) DEFAULT NULL,
-  `md_body` text,
-  `html_body` text,
+  `md_body` longtext,
+  `html_body` longtext,
   `status` varchar(255) DEFAULT 'draft',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -21,24 +21,24 @@ CREATE TABLE `archived_posts` (
   KEY `category_id` (`category_id`),
   CONSTRAINT `archived_posts_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`),
   CONSTRAINT `archived_posts_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
 ```
 
 </details>
 
 ## Columns
 
-| Name        | Type             | Default           | Nullable | Children                                                                            | Parents                     | Comment |
-| ----------- | ---------------- | ----------------- | -------- | ----------------------------------------------------------------------------------- | --------------------------- | ------- |
-| id          | int(11) unsigned |                   | false    | [archived_comments](archived_comments.md) [archived_tag_post](archived_tag_post.md) |                             |         |
-| admin_id    | int(11) unsigned |                   | false    |                                                                                     | [admins](admins.md)         |         |
-| category_id | int(11) unsigned |                   | false    |                                                                                     | [categories](categories.md) |         |
-| title       | varchar(255)     |                   | true     |                                                                                     |                             |         |
-| md_body     | text             |                   | true     |                                                                                     |                             |         |
-| html_body   | text             |                   | true     |                                                                                     |                             |         |
-| status      | varchar(255)     | draft             | true     |                                                                                     |                             |         |
-| created_at  | datetime         | CURRENT_TIMESTAMP | true     |                                                                                     |                             |         |
-| updated_at  | datetime         | CURRENT_TIMESTAMP | true     |                                                                                     |                             |         |
+| Name        | Type         | Default           | Nullable | Extra Definition                              | Children                                                                            | Parents                     | Comment |
+| ----------- | ------------ | ----------------- | -------- | --------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------- | ------- |
+| id          | int unsigned |                   | false    | auto_increment                                | [archived_comments](archived_comments.md) [archived_tag_post](archived_tag_post.md) |                             |         |
+| admin_id    | int unsigned |                   | false    |                                               |                                                                                     | [admins](admins.md)         |         |
+| category_id | int unsigned |                   | false    |                                               |                                                                                     | [categories](categories.md) |         |
+| title       | varchar(255) |                   | true     |                                               |                                                                                     |                             |         |
+| md_body     | longtext     |                   | true     |                                               |                                                                                     |                             |         |
+| html_body   | longtext     |                   | true     |                                               |                                                                                     |                             |         |
+| status      | varchar(255) | draft             | true     |                                               |                                                                                     |                             |         |
+| created_at  | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |                                                                                     |                             |         |
+| updated_at  | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |                                                                                     |                             |         |
 
 ## Constraints
 
@@ -58,7 +58,7 @@ CREATE TABLE `archived_posts` (
 
 ## Relations
 
-![er](archived_posts.png)
+![er](archived_posts.svg)
 
 ---
 

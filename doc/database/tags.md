@@ -7,25 +7,25 @@
 
 ```sql
 CREATE TABLE `tags` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000002 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
 ```
 
 </details>
 
 ## Columns
 
-| Name       | Type             | Default           | Nullable | Children                                                          | Parents | Comment |
-| ---------- | ---------------- | ----------------- | -------- | ----------------------------------------------------------------- | ------- | ------- |
-| id         | int(11) unsigned |                   | false    | [archived_tag_post](archived_tag_post.md) [tag_post](tag_post.md) |         |         |
-| name       | varchar(255)     |                   | false    |                                                                   |         |         |
-| created_at | datetime         | CURRENT_TIMESTAMP | true     |                                                                   |         |         |
-| updated_at | datetime         | CURRENT_TIMESTAMP | true     |                                                                   |         |         |
+| Name       | Type         | Default           | Nullable | Extra Definition                              | Children                                                          | Parents | Comment |
+| ---------- | ------------ | ----------------- | -------- | --------------------------------------------- | ----------------------------------------------------------------- | ------- | ------- |
+| id         | int unsigned |                   | false    | auto_increment                                | [archived_tag_post](archived_tag_post.md) [tag_post](tag_post.md) |         |         |
+| name       | varchar(255) |                   | false    |                                               |                                                                   |         |         |
+| created_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |                                                                   |         |         |
+| updated_at | datetime     | CURRENT_TIMESTAMP | true     | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |                                                                   |         |         |
 
 ## Constraints
 
@@ -43,7 +43,7 @@ CREATE TABLE `tags` (
 
 ## Relations
 
-![er](tags.png)
+![er](tags.svg)
 
 ---
 

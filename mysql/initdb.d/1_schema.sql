@@ -22,8 +22,8 @@ CREATE TABLE `posts` (
   `admin_id` int(11) UNSIGNED NOT NULL,
   `category_id` int(11) UNSIGNED NOT NULL,
   `title` varchar(255) DEFAULT NULL,
-  `md_body` text DEFAULT NULL,
-  `html_body` text DEFAULT NULL,
+  `md_body` longtext DEFAULT NULL,
+  `html_body` longtext DEFAULT NULL,
   `status` varchar(255) DEFAULT "draft",
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -37,8 +37,8 @@ CREATE TABLE `archived_posts` (
   `admin_id` int(11) UNSIGNED NOT NULL,
   `category_id` int(11) UNSIGNED NOT NULL,
   `title` varchar(255) DEFAULT NULL,
-  `md_body` text DEFAULT NULL,
-  `html_body` text DEFAULT NULL,
+  `md_body` longtext DEFAULT NULL,
+  `html_body` longtext DEFAULT NULL,
   `status` varchar(255) DEFAULT "draft",
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -50,7 +50,7 @@ DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `post_id` int(11) UNSIGNED NOT NULL,
-  `body` text NOT NULL,
+  `body` longtext NOT NULL,
   `status` varchar(255) DEFAULT "pending",
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -61,7 +61,7 @@ DROP TABLE IF EXISTS `archived_comments`;
 CREATE TABLE `archived_comments` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `archived_post_id` int(11) UNSIGNED NOT NULL,
-  `body` text NOT NULL,
+  `body` longtext NOT NULL,
   `status` varchar(255) DEFAULT "pending",
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -134,9 +134,3 @@ ALTER TABLE posts ADD INDEX index_posts_category_id(category_id);
 ALTER TABLE comments ADD INDEX index_comments_status(status);
 ALTER TABLE tag_post ADD INDEX index_tag_post_tag_id(tag_id);
 ALTER TABLE tag_post ADD INDEX index_tag_post_post_id(post_id);
-
-
-
-
-
-

@@ -10,16 +10,14 @@
 | [archived_tag_post](archived_tag_post.md) | 5       |         | BASE TABLE |
 | [categories](categories.md)               | 4       |         | BASE TABLE |
 | [comments](comments.md)                   | 6       |         | BASE TABLE |
-| [configs](configs.md)                     | 5       |         | BASE TABLE |
 | [posts](posts.md)                         | 9       |         | BASE TABLE |
 | [tag_post](tag_post.md)                   | 5       |         | BASE TABLE |
 | [tags](tags.md)                           | 4       |         | BASE TABLE |
-| [tests](tests.md)                         | 2       |         | BASE TABLE |
 | [view_posts](view_posts.md)               | 17      | VIEW    | VIEW       |
 
 ## Relations
 
-![er](schema.png)
+![er](schema.svg)
 
 ---
 
