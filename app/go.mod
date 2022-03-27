@@ -3,7 +3,7 @@ module github.com/bmf-san/gobel-api/app
 go 1.17
 
 require (
-	github.com/bmf-san/goblin v0.0.0-20210911081040-262c174672a1
+	github.com/bmf-san/goblin v0.0.0-20220316122604-059b3094b1cf
 	github.com/bmf-san/golem v0.0.0-20210221133857-7ecb33f0ca76
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-redis/redis/v7 v7.4.1

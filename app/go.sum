@@ -1,5 +1,7 @@
 github.com/bmf-san/goblin v0.0.0-20210911081040-262c174672a1 h1:9Ek+EdOJlkJLQx0IebRNOGrVWQj1feiOP6XdAIyBvMw=
 github.com/bmf-san/goblin v0.0.0-20210911081040-262c174672a1/go.mod h1:q6B02wO1BVMVxb5puHBtCQdg+03Q8XJIjsh6joYrhZw=
+github.com/bmf-san/goblin v0.0.0-20220316122604-059b3094b1cf h1:a8ehncIAVLJpDtPgxBCWYoDwPQ8tbVpD7StBm4v0NK8=
+github.com/bmf-san/goblin v0.0.0-20220316122604-059b3094b1cf/go.mod h1:8UEEHq7MILzQ8ASGQfahFR6pxLojXLU/XwMVcnlL9bo=
 github.com/bmf-san/golem v0.0.0-20210221133857-7ecb33f0ca76 h1:eZRVFcQ82z1uPDYQzI71M5zXwpjvrD3tLy+uc0txC6E=
 github.com/bmf-san/golem v0.0.0-20210221133857-7ecb33f0ca76/go.mod h1:v2YJqaEietOXsYUQVOJeBNIxAGrn4GCeWbfpVzAndRE=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
