@@ -1,4 +1,4 @@
-package usecase
+package interfaces
 
 // A Logger represents a logger.
 type Logger interface {
