@@ -14,7 +14,7 @@ type AuthController struct {
 }
 
 // NewAuthController creates an AuthController.
-func NewAuthController(connMySQL *sql.DB, connRedis *redis.Client, logger usecase.Logger) *AuthController {
+func NewAuthController(connMySQL *sql.DB, connRedis *redis.Client, logger Logger) *AuthController {
 	return &AuthController{
 		AuthInteractor: usecase.AuthInteractor{
 			AdminRepository: &AdminRepository{

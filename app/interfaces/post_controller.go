@@ -11,11 +11,11 @@ import (
 // A PostController is a controller for a post.
 type PostController struct {
 	PostInteractor usecase.PostInteractor
-	Logger         usecase.Logger
+	Logger         Logger
 }
 
 // NewPostController creates a PostController.
-func NewPostController(connMySQL *sql.DB, connRedis *redis.Client, logger usecase.Logger) *PostController {
+func NewPostController(connMySQL *sql.DB, connRedis *redis.Client, logger Logger) *PostController {
 	return &PostController{
 		PostInteractor: usecase.PostInteractor{
 			AdminRepository: &AdminRepository{

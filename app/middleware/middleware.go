@@ -7,17 +7,16 @@ import (
 
 	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces"
-	"github.com/bmf-san/gobel-api/app/usecase"
 )
 
 // Middleware represents the plural of middelware.
 type Middleware struct {
-	logger          usecase.Logger
+	logger          interfaces.Logger
 	adminRepository interfaces.AdminRepository
 	jwtRepository   interfaces.JWTRepository
 }
 
-func NewMiddleware(l usecase.Logger, ar interfaces.AdminRepository, jr interfaces.JWTRepository) *Middleware {
+func NewMiddleware(l interfaces.Logger, ar interfaces.AdminRepository, jr interfaces.JWTRepository) *Middleware {
 	return &Middleware{
 		logger:          l,
 		adminRepository: ar,
