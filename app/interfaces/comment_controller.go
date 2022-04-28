@@ -10,11 +10,11 @@ import (
 // A CommentController is a controller for a comment.
 type CommentController struct {
 	CommentInteractor usecase.CommentInteractor
-	Logger            Logger
+	Logger            usecase.Logger
 }
 
 // NewCommentController creates a CommentController.
-func NewCommentController(connMySQL *sql.DB, logger Logger) *CommentController {
+func NewCommentController(connMySQL *sql.DB, logger usecase.Logger) *CommentController {
 	return &CommentController{
 		CommentInteractor: usecase.CommentInteractor{
 			CommentRepository: &CommentRepository{

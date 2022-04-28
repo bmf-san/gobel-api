@@ -10,11 +10,11 @@ import (
 // A TagController is a controller for a post.
 type TagController struct {
 	TagInteractor usecase.TagInteractor
-	Logger        Logger
+	Logger        usecase.Logger
 }
 
 // NewTagController creates a TagController.
-func NewTagController(connMySQL *sql.DB, logger Logger) *TagController {
+func NewTagController(connMySQL *sql.DB, logger usecase.Logger) *TagController {
 	return &TagController{
 		TagInteractor: usecase.TagInteractor{
 			TagRepository: &TagRepository{

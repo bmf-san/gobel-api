@@ -10,11 +10,11 @@ import (
 // A CategoryController is a controller for a comment.
 type CategoryController struct {
 	CategoryInteractor usecase.CategoryInteractor
-	Logger             Logger
+	Logger             usecase.Logger
 }
 
 // NewCategoryController creates a CategoryController.
-func NewCategoryController(connMySQL *sql.DB, logger Logger) *CategoryController {
+func NewCategoryController(connMySQL *sql.DB, logger usecase.Logger) *CategoryController {
 	return &CategoryController{
 		CategoryInteractor: usecase.CategoryInteractor{
 			CategoryRepository: &CategoryRepository{
