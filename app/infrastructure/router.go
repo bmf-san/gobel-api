@@ -6,12 +6,13 @@ import (
 
 	"github.com/bmf-san/gobel-api/app/interfaces"
 	"github.com/bmf-san/gobel-api/app/middleware"
+	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/goblin"
 	"github.com/go-redis/redis/v7"
 )
 
 // Route sets the routing.
-func Route(connMySQL *sql.DB, connRedis *redis.Client, l interfaces.Logger) *goblin.Router {
+func Route(connMySQL *sql.DB, connRedis *redis.Client, l usecase.Logger) *goblin.Router {
 	ar := interfaces.AdminRepository{
 		ConnMySQL: connMySQL,
 		ConnRedis: connRedis,
