@@ -38,6 +38,7 @@ func (tr *TagRepository) FindAll(page int, limit int) (domain.Tags, error) {
 		FROM
 			tags
 		ORDER BY id
+		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 	if err != nil {

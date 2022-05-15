@@ -37,6 +37,7 @@ func (cr *CategoryRepository) FindAll(page int, limit int) (domain.Categories, e
 		FROM
 			categories
 		ORDER BY id
+		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 	if err != nil {
