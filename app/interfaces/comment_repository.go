@@ -38,6 +38,7 @@ func (cr *CommentRepository) FindAll(page int, limit int) (domain.Comments, erro
 		FROM
 			comments
 		ORDER BY id
+		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 	if err != nil {

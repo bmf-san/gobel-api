@@ -108,6 +108,7 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (domain.Posts, err
 		WHERE
 			status = "publish"
 		ORDER BY id
+		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 
@@ -282,6 +283,7 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (domain.Posts, err
 		AND comments.status = "publish"
 		ORDER BY
     		posts.id
+		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 
@@ -342,6 +344,7 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 			status = "publish"
 		AND category_name = ?
 		ORDER BY id
+		DESC
 		LIMIT ?, ?
 	`, name, page*limit-limit, limit)
 
@@ -517,6 +520,7 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 		AND view_posts.category_name = ?
 		ORDER BY
     		view_posts.id
+		DESC
 		LIMIT ?, ?
 	`, name, page*limit-limit, limit)
 
@@ -587,6 +591,7 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 			tags.name = ?
 		)
 	ORDER BY id
+	DESC
 	LIMIT ?, ?
 	`, name, page*limit-limit, limit)
 
@@ -828,6 +833,7 @@ func (pr *PostRepository) FindAll(page int, limit int) (domain.Posts, error) {
 		FROM
 			view_posts
 		ORDER BY id
+		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 
@@ -999,6 +1005,7 @@ func (pr *PostRepository) FindAll(page int, limit int) (domain.Posts, error) {
     		ON  posts.id = comments.post_id
 		ORDER BY
     		posts.id
+		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
 
