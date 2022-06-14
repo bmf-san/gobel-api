@@ -1054,8 +1054,8 @@ func (pr *PostRepository) FindAll(page int, limit int) (domain.Posts, error) {
 	return posts, nil
 }
 
-// FindByTitle returns the entity identified by the given title.
-func (pr *PostRepository) FindByTitle(title string) (domain.Post, error) {
+// FindPublishByTitle returns the entity identified by the given title.
+func (pr *PostRepository) FindPublishByTitle(title string) (domain.Post, error) {
 	var post domain.Post
 	row, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -1064,6 +1064,8 @@ func (pr *PostRepository) FindByTitle(title string) (domain.Post, error) {
 			view_posts
 		WHERE
 			title = ?
+		AND
+			status = "publish"
 	`, title)
 
 	defer func() {

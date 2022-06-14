@@ -128,7 +128,7 @@ func (ci *CommentInteractor) HandleStore(w http.ResponseWriter, r *http.Request)
 
 	title := goblin.GetParam(r.Context(), "title")
 
-	post, err := ci.PostRepository.FindByTitle(title)
+	post, err := ci.PostRepository.FindPublishByTitle(title)
 	if err != nil {
 		ci.Logger.Error(err.Error())
 		ci.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
