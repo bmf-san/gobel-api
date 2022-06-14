@@ -282,7 +282,7 @@ func (pi *PostInteractor) HandleIndexPrivate(w http.ResponseWriter, r *http.Requ
 func (pi *PostInteractor) HandleShow(w http.ResponseWriter, r *http.Request) {
 	title := goblin.GetParam(r.Context(), "title")
 
-	post, err := pi.PostRepository.FindByTitle(title)
+	post, err := pi.PostRepository.FindPublishByTitle(title)
 	if err != nil {
 		pi.Logger.Error(err.Error())
 		pi.JSONResponse.HTTPStatus(w, http.StatusInternalServerError, nil)
