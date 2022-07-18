@@ -7,7 +7,7 @@ help:
 
 .PHONY: docker-compose-build
 docker-compose-build: ## Build containers by docker-compose.
-ifeq ($(env), ci)
+ifeq ($(ENV), ci)
 	docker-compose -f docker-compose-ci.yml build
 else
 	docker-compose -f docker-compose-local.yml build
@@ -15,7 +15,7 @@ endif
 
 .PHONY: docker-compose-up
 docker-compose-up: ## Run containers by docker-compose.
-ifeq ($(env), ci)
+ifeq ($(ENV), ci)
 	docker-compose -f docker-compose-ci.yml up
 else
 	docker-compose -f docker-compose-local.yml up
@@ -23,7 +23,7 @@ endif
 
 .PHONY: docker-compose-up-d
 docker-compose-up-d: ## Run containers in the background by docker-compose.
-ifeq ($(env), ci)
+ifeq ($(ENV), ci)
 	docker-compose -f docker-compose-ci.yml up -d
 else
 	docker-compose -f docker-compose-local.yml up -d
@@ -31,7 +31,7 @@ endif
 
 .PHONY: docker-compose-pull
 docker-compose-pull: ## Pull images by docker-compose.
-ifeq ($(env), ci)
+ifeq ($(ENV), ci)
 	docker-compose -f docker-compose-ci.yml pull
 else
 	docker-compose -f docker-compose-local.yml pull
@@ -42,18 +42,54 @@ build-and-push: ## Build and push image to dockerhub.
 	docker build -f app/Dockerfile -t bmfsan/gobel-api ./app/
 	docker push bmfsan/gobel-api
 
-.PHONY: lint
-lint: ## Run golint.
-	docker exec -it gobel-api golint ./...
+.PHONY: tbls
+tbls: ## Run tbls for generationg database documents.
+	docker run --net gobel_link -it --rm -v $$(pwd)/doc:/doc -w /doc/ k1low/tbls:latest doc --force mysql://root:password@gobel-api-mysql:3306/gobel
+
+.PHONY: mod
+mod: ## Run go mod download.
+	cd app && go mod download
+
+.PHONY: install-go-cleanarch
+install-go-cleanarch: ## Install staticcheck.
+ifeq ($(shell command -v go-cleanarch 2> /dev/null),)
+	cd app && go install github.com/roblaszczak/go-cleanarch@latest
+endif
+
+.PHONY: install-staticcheck
+install-staticcheck: ## Install staticcheck.
+ifeq ($(shell command -v staticcheck 2> /dev/null),)
+	cd app && go install honnef.co/go/tools/cmd/staticcheck@latest
+endif
+
+.PHONY: go-cleanarch
+go-cleanarch: ## Run go-cleanarch.
+	cd app && go-cleanarch -application usecase
+
+.PHONY: staticcheck
+staticcheck: ## Run staticcheck.
+	cd app && staticcheck ./...
+
+.PHONY: gofmt
+gofmt: ## Run gofmt.
+	cd app && test -z "$(gofmt -s -l . | tee /dev/stderr)"
+
+.PHONY: vet
+vet: ## Run vet.
+	cd app && go vet -v ./...
 
 .PHONY: test
-test: ## Run tests.
-	docker exec -it gobel-api go test -v ./...
+test: ## Run unit tests.
+	cd app && go test -v -race ./...
 
-.PHONY: tbls
-tbls: ## Update database documents.
-	tbls doc -f
+.PHONY: test-cover
+test-cover: ## Run unit tests with cover options. ex. make test-cover OUT="c.out"
+	cd app && go test -v -race -cover -coverprofile=$(OUT) -covermode=atomic ./...
+
+.PHONY: test-api
+test-api: ## Run tests for api responses with using db.
+	cd app && go test -tags=intefration
 
 .PHONY: build
 build: ## Run go build
-	cd app && GOOS=linux GOARCH=amd64 go build -o app
+	cd app && go build

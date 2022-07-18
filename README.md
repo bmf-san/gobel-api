@@ -1,10 +1,9 @@
 # gobel-api
 [![GitHub license](https://img.shields.io/github/license/bmf-san/gobel-api)](https://github.com/bmf-san/gobel-api/blob/master/LICENSE)
 [![CircleCI](https://circleci.com/gh/bmf-san/gobel-api/tree/master.svg?style=svg)](https://circleci.com/gh/bmf-san/gobel-api/tree/master)
+[![codecov](https://codecov.io/gh/bmf-san/gobel-api/branch/master/graph/badge.svg?token=HMEQ7EAUED)](https://codecov.io/gh/bmf-san/gobel-api)
 
-Gobel is a headless cms built with golang.
-
-This is an api repository.
+The Gobel is a headless cms built with golang.
 
 # gobel
 - [gobel-api](https://github.com/bmf-san/gobel-api)
@@ -16,6 +15,9 @@ This is an api repository.
 
 # Dockerhub
 [bmfsan/gobel-api](https://hub.docker.com/r/bmfsan/gobel-api)
+
+# Features
+- Support Go 1.19 >= 1.17
 
 # Documentation
 - [Coding Rule](https://github.com/bmf-san/gobel-api/blob/master/doc/CodingRule.md)
@@ -42,24 +44,29 @@ This is an api repository.
 ## Run containers
 ```
 make docker-compose-up
-```
 
 or
 
-```
-make docker-compose-up-d
+make-docker-compose-up-d
 ```
 
-Then go to `gobel-api.local:80`
+Then go to `gobel-api.local`
+
+## Run tests
+|     command     |                            description                             |
+| --------------- | ------------------------------------------------------------------ |
+| make test       | Run unit tests                                                     |
+| make test-api   | Run tests for api responses with using db                          |
+| make test-cover | Run unit tests with cover options. ex. make test-cover OUT="c.out" |
 
 # Architecture
 gobel-api is based on Clean Architecture.
 
-| Layer                | Directory      |
-|----------------------|----------------|
+|        Layer         |   Directory    |
+| -------------------- | -------------- |
 | Frameworks & Drivers | infrastructure |
 | Interface            | interfaces     |
-| Usecase              | usecase        |
+| usecase              | usecase        |
 | Entities             | domain         |
 
 cf. [blog.cleancoder.com - The Clean Code Blog by Robert C. Martin (Uncle Bob)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
