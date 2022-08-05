@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 // A JWT represents the singular of jwt authentication.
@@ -75,7 +75,7 @@ func (j *JWT) GetVerifiedRefreshToken(bearerToken string) (*jwt.Token, error) {
 func (j *JWT) GetAccessUUID(verifiedToken *jwt.Token) (string, error) {
 	accessUUID, err := j.ExtractAccessUUID(verifiedToken)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	return accessUUID, nil
@@ -85,7 +85,7 @@ func (j *JWT) GetAccessUUID(verifiedToken *jwt.Token) (string, error) {
 func (j *JWT) GetRefreshUUID(verifiedToken *jwt.Token) (string, error) {
 	refreshUUID, err := j.ExtractRefreshUUID(verifiedToken)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	return refreshUUID, nil
@@ -115,8 +115,8 @@ func (j *JWT) VerifyToken(token string, secret string) (*jwt.Token, error) {
 		return nil, err
 	}
 
-	if _, ok := verifiedToken.Claims.(jwt.Claims); !ok && !verifiedToken.Valid {
-		return nil, errors.New("Invalid token")
+	if !verifiedToken.Valid {
+		return nil, errors.New("invalid token")
 	}
 
 	return verifiedToken, nil
@@ -128,12 +128,12 @@ func (j *JWT) ExtractAccessUUID(t *jwt.Token) (string, error) {
 	if ok && t.Valid {
 		accessUUID, ok := claims["access_uuid"].(string)
 		if !ok {
-			return "", errors.New("Type assertion failed")
+			return "", errors.New("type assertion failed")
 		}
 		return accessUUID, nil
 	}
 
-	return "", errors.New("Failed extract token data")
+	return "", errors.New("failed extract token data")
 }
 
 // ExtractRefreshUUID extract data from a verified token.
@@ -142,10 +142,10 @@ func (j *JWT) ExtractRefreshUUID(t *jwt.Token) (string, error) {
 	if ok && t.Valid {
 		refreshUUID, ok := claims["refresh_uuid"].(string)
 		if !ok {
-			return "", errors.New("Type assertion failed")
+			return "", errors.New("type assertion failed")
 		}
 		return refreshUUID, nil
 	}
 
-	return "", errors.New("Failed extract token data")
+	return "", errors.New("failed extract token data")
 }

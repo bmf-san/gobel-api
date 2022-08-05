@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/infrastructure"
+	"github.com/bmf-san/gobel-api/app/infrastructure/database"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -21,19 +22,20 @@ func main() {
 	location := time.FixedZone(os.Getenv("TIME_ZONE"), offset)
 
 	logger := infrastructure.NewLogger(threshold, location)
-	db := infrastructure.NewDB()
 
-	connMySQL, err := db.GetConnMySQL()
+	mc := database.NewMySQLConn()
+	connm, err := mc.Conn()
 	if err != nil {
 		logger.Error(err.Error())
 	}
 
-	connRedis, err := db.GetConnRedis()
+	rc := database.NewRedisConn()
+	connr, err := rc.Conn()
 	if err != nil {
 		logger.Error(err.Error())
 	}
 
-	r := infrastructure.Route(connMySQL, connRedis, logger)
+	r := infrastructure.Route(connm, connr, logger)
 
 	s := http.Server{
 		Addr:    ":" + os.Getenv("SERVER_PORT"),

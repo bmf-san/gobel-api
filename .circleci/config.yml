@@ -1,92 +1,140 @@
-references:
-    restore_git_cache: &restore_git_cache
-        restore_cache:
-            keys:
-                - v1-git-cache-{{ .Branch }}-{{ .Revision }}
-                - v1-git-cache-{{ .Branch }}-
-                - v1-git-cache-
-    save_git_cache: &save_git_cache
-        save_cache:
-            key: v1-git-cache-{{ .Branch }}-{{ .Revision }}
-            paths:
-                - ".git"
-    restore_docker_compose_cache: &restore_docker_compose_cache
-        restore_cache:
-            key: v1-docker-{{ .Branch }}-{{ checksum "docker-compose-ci.yml" }}
-    load_docker_image: &load_docker_image
-        run:
-            name: Load docker image
-            command: |
-                set +o pipefail
-                docker load -i ~/caches/images.tar | true
-    run_docker_compose: &run_docker_compose
-        run:
-            name: Run docker compose
-            command: |
-                set -x
-                make env=ci docker-compose-pull
-                make env=ci docker-compose-build
-                make env=ci docker-compose-up-d
-    save_docker_image: &save_docker_image
-        run:
-            name: Save docker image
-            command: |
-                mkdir -p ~/caches
-                docker save $(docker images -q) -o ~/caches/images.tar
-    save_docker_compose_cache: &save_docker_compose_cache
-        save_cache:
-            key: v1-docker-{{ .Branch }}-{{ checksum "docker-compose-ci.yml" }}
-            paths:
-                - ~/caches/images.tar
-
 version: 2.1
+
+orbs:
+  codecov: codecov/codecov@3.2.2
+
 jobs:
-    build:
-        working_directory: ~/workspace
-        machine: true
-        steps:
-            - *restore_git_cache
-            - checkout
-            - *save_git_cache
-            - *restore_docker_compose_cache
-            - *load_docker_image
-            - *run_docker_compose
-            - *save_docker_image
-            - *save_docker_compose_cache
-            - persist_to_workspace:
-                root: .
-                paths:
-                    - .
-    golint:
-        machine: true
-        steps:
-            - attach_workspace:
-                at: .
-            - *restore_docker_compose_cache
-            - *load_docker_image
-            - *run_docker_compose
-            - run:
-                name: Run golint
-                command: make lint
-    test:
-        machine: true
-        steps:
-            - attach_workspace:
-                at: .
-            - *restore_docker_compose_cache
-            - *load_docker_image
-            - *run_docker_compose
-            - run:
-                name: Run tests
-                command: make test
+  lint:
+    parameters:
+      version:
+        type: string
+      modules:
+        type: boolean
+        default: true
+    docker:
+      - image: "cimg/go:<< parameters.version >>"
+    working_directory: ~/go/src/github.com/bmf-san/gobel-api
+    environment:
+      GO111MODULE: "on"
+    steps:
+      - checkout
+      - run:
+          name: "Go version"
+          command: go version
+      - run:
+          name: "Install tools"
+          command: |
+            make install-go-cleanarch
+            if [[ << parameters.version >> = 1.18 ]]; then
+              make install-staticcheck
+            fi
+      - run:
+          name: "Run gofmt"
+          command: make gofmt
+      - run:
+          name: "Run vet"
+          command: make vet
+      - run:
+          name: "Run staticcheck"
+          command: >
+            if [[ << parameters.version >> = 1.18 ]]; then
+              make staticcheck
+            fi
+      - run:
+          name: "Run go-cleanarch"
+          command: make go-cleanarch
+  test-api:
+    parameters:
+      version:
+        type: string
+      modules:
+        type: boolean
+        default: true
+    docker:
+      - image: "cimg/go:<< parameters.version >>"
+      - image: "cimg/mysql:8.0"
+        environment:
+          MYSQL_ROOT_PASSWORD: rootpw
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: user
+          MYSQL_PASSWORD: passw0rd
+    steps:
+      - checkout
+      - run:
+          name: "Go version"
+          command: go version
+      - run:
+          name: "Wait for connecting to mysql"
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z 127.0.0.1 3306 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MySQL && exit 1
+      - run:
+          name: "Migrate schema"
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y default-mysql-client
+            mysql -h 127.0.0.1 -u user -ppassw0rd test_db < mysql/initdb.d/1_schema.sql
+      - run:
+          name: "Run test-api"
+          command: make test-api
+  test:
+    parameters:
+      version:
+        type: string
+      modules:
+        type: boolean
+        default: true
+    docker:
+      - image: "cimg/go:<< parameters.version >>"
+    working_directory: ~/go/src/github.com/bmf-san/gobel-api
+    environment:
+      GO111MODULE: "on"
+    steps:
+      - checkout
+      - run:
+          name: "Go version"
+          command: go version
+      - run:
+          name: "Fetch dependencies"
+          command: make mod
+      - run:
+          name: "Install tools"
+          command: >
+            if [[ << parameters.version >> = 1.18 ]]; then
+              make install-staticcheck
+            fi
+      - run:
+          name: "Run test"
+          command: make test
+      - run:
+          name: Build go
+          command: make build
+      - run:
+          name: Create a temporary directory for artifacts
+          command: mkdir -p /tmp/artifacts
+      - run:
+          name: Generate coverage
+          command: make test-cover OUT=<< parameters.version >>.out
+      - codecov/upload:
+          file: ./app/<< parameters.version >>.out
+
 workflows:
-    version: 2
-    build_and_test:
-        jobs:
-            - build
-            - golint:
-                requires:
-                    - build
-            - test:
-                requires:
-                    - build
+  tests:
+    jobs:
+      - lint:
+          matrix:
+            parameters:
+              version: ["1.19", "1.18", "1.17"]
+      - test:
+          matrix:
+            parameters:
+              version: ["1.19", "1.18", "1.17"]
+      - test-api:
+          matrix:
+            parameters:
+              version: ["1.19", "1.18", "1.17"]

@@ -4,33 +4,33 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/bmf-san/gobel-api/app/interfaces"
-	"github.com/bmf-san/gobel-api/app/middleware"
-	"github.com/bmf-san/gobel-api/app/usecase"
+	"github.com/bmf-san/gobel-api/app/domain"
+	"github.com/bmf-san/gobel-api/app/interfaces/controller"
+	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/goblin"
-	"github.com/go-redis/redis/v7"
+	"github.com/go-redis/redis/v9"
 )
 
 // Route sets the routing.
-func Route(connMySQL *sql.DB, connRedis *redis.Client, l usecase.Logger) *goblin.Router {
-	ar := interfaces.AdminRepository{
-		ConnMySQL: connMySQL,
-		ConnRedis: connRedis,
+func Route(connm *sql.DB, connr *redis.Client, l domain.Logger) *goblin.Router {
+	ar := repository.AdminRepository{
+		ConnMySQL: connm,
+		ConnRedis: connr,
 	}
-	jr := interfaces.JWTRepository{
-		ConnRedis: connRedis,
+	jr := repository.JWTRepository{
+		ConnRedis: connr,
 	}
 
-	mw := middleware.NewMiddleware(l, ar, jr)
+	mw := NewMiddleware(l, ar, jr)
 
 	defaultController := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	})
-	authController := interfaces.NewAuthController(connMySQL, connRedis, l)
-	postController := interfaces.NewPostController(connMySQL, connRedis, l)
-	commentController := interfaces.NewCommentController(connMySQL, l)
-	categoryController := interfaces.NewCategoryController(connMySQL, l)
-	tagController := interfaces.NewTagController(connMySQL, l)
+	authController := controller.NewAuthController(connm, connr, l)
+	postController := controller.NewPostController(connm, connr, l)
+	commentController := controller.NewCommentController(connm, l)
+	categoryController := controller.NewCategoryController(connm, l)
+	tagController := controller.NewTagController(connm, l)
 
 	r := goblin.NewRouter()
 
