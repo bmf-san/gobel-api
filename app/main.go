@@ -11,6 +11,7 @@ import (
 
 	"github.com/bmf-san/gobel-api/app/infrastructure"
 	"github.com/bmf-san/gobel-api/app/infrastructure/database"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const timeout time.Duration = 10 * time.Second
