@@ -10,6 +10,7 @@ require (
 
 require (
 	github.com/go-redis/redis/v9 v9.0.0-beta.1
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/google/uuid v1.3.0
 )
