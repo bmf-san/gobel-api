@@ -1,4 +1,4 @@
-FROM golang:1.17.1-alpine as builder
+FROM golang:1.19.0-alpine as builder
 
 WORKDIR /go/gobel-api/app
 
