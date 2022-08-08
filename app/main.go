@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime/debug"
 	"strconv"
 	"syscall"
 	"time"
@@ -22,6 +23,13 @@ func main() {
 	location := time.FixedZone(os.Getenv("TIME_ZONE"), offset)
 
 	logger := infrastructure.NewLogger(threshold, location)
+
+	defer func() {
+		if x := recover(); x != nil {
+			logger.Error(string(debug.Stack()))
+		}
+		os.Exit(1)
+	}()
 
 	mc := database.NewMySQLConn()
 	connm, err := mc.Conn()
