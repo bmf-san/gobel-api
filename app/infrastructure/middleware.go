@@ -102,7 +102,7 @@ func (mw *Middleware) Refresh(next http.Handler) http.Handler {
 }
 
 // CORSMain is a middleware for main requests.
-func (mw *Middleware) CORSMain(next http.Handler) http.Handler {
+func (mw *Middleware) CORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", os.Getenv("ALLOW_ORIGIN"))
 		w.Header().Set("Access-Control-Expose-Headers", "Content-Length, Pagination-Count, Pagination-Pagecount, Pagination-Page, Pagination-Limit")
