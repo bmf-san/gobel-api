@@ -7,16 +7,16 @@ import (
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecase/dto"
+	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
 )
 
-// A PostRepository is a repository for a post.
-type PostRepository struct {
+// A Post is a repository for a post.
+type Post struct {
 	ConnMySQL *sql.DB
 }
 
 // CountAllPublish count all publish entities.
-func (pr *PostRepository) CountAllPublish() (int, error) {
+func (pr *Post) CountAllPublish() (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -34,7 +34,7 @@ func (pr *PostRepository) CountAllPublish() (int, error) {
 }
 
 // CountAll count all entities.
-func (pr *PostRepository) CountAll() (int, error) {
+func (pr *Post) CountAll() (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -50,7 +50,7 @@ func (pr *PostRepository) CountAll() (int, error) {
 }
 
 // CountAllPublishByCategory count all publish entities by category.
-func (pr *PostRepository) CountAllPublishByCategory(name string) (int, error) {
+func (pr *Post) CountAllPublishByCategory(name string) (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -68,7 +68,7 @@ func (pr *PostRepository) CountAllPublishByCategory(name string) (int, error) {
 }
 
 // CountAllPublishByTag count all publish entities by Tag.
-func (pr *PostRepository) CountAllPublishByTag(name string) (int, error) {
+func (pr *Post) CountAllPublishByTag(name string) (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -98,7 +98,7 @@ func (pr *PostRepository) CountAllPublishByTag(name string) (int, error) {
 }
 
 // FindAllPublish returns all entities.
-func (pr *PostRepository) FindAllPublish(page int, limit int) (domain.Posts, error) {
+func (pr *Post) FindAllPublish(page int, limit int) (domain.Posts, error) {
 	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -333,7 +333,7 @@ func (pr *PostRepository) FindAllPublish(page int, limit int) (domain.Posts, err
 }
 
 // FindAllPublishByCategory returns all entities by category.
-func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name string) (domain.Posts, error) {
+func (pr *Post) FindAllPublishByCategory(page int, limit int, name string) (domain.Posts, error) {
 	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -569,7 +569,7 @@ func (pr *PostRepository) FindAllPublishByCategory(page int, limit int, name str
 }
 
 // FindAllPublishByTag returns all entities by tag.
-func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) (domain.Posts, error) {
+func (pr *Post) FindAllPublishByTag(page int, limit int, name string) (domain.Posts, error) {
 	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 	SELECT
@@ -825,7 +825,7 @@ func (pr *PostRepository) FindAllPublishByTag(page int, limit int, name string) 
 }
 
 // FindAll returns all entities.
-func (pr *PostRepository) FindAll(page int, limit int) (domain.Posts, error) {
+func (pr *Post) FindAll(page int, limit int) (domain.Posts, error) {
 	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -1055,7 +1055,7 @@ func (pr *PostRepository) FindAll(page int, limit int) (domain.Posts, error) {
 }
 
 // FindPublishByTitle returns the entity identified by the given title.
-func (pr *PostRepository) FindPublishByTitle(title string) (domain.Post, error) {
+func (pr *Post) FindPublishByTitle(title string) (domain.Post, error) {
 	var post domain.Post
 	row, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -1250,7 +1250,7 @@ func (pr *PostRepository) FindPublishByTitle(title string) (domain.Post, error) 
 }
 
 // FindByID returns the entity identified by the given id.
-func (pr *PostRepository) FindByID(id int) (domain.Post, error) {
+func (pr *Post) FindByID(id int) (domain.Post, error) {
 	var post domain.Post
 	row, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -1443,7 +1443,7 @@ func (pr *PostRepository) FindByID(id int) (domain.Post, error) {
 }
 
 // Save saves the given entity.
-func (pr *PostRepository) Save(req dto.RequestPost) (int, error) {
+func (pr *Post) Save(req request.StorePost) (int, error) {
 	tx, err := pr.ConnMySQL.Begin()
 	if err != nil {
 		return 0, err
@@ -1501,7 +1501,7 @@ func (pr *PostRepository) Save(req dto.RequestPost) (int, error) {
 }
 
 // SaveByID save the given entity identified by the given id.
-func (pr *PostRepository) SaveByID(req dto.RequestPost, id int) error {
+func (pr *Post) SaveByID(req request.UpdatePost) error {
 	tx, err := pr.ConnMySQL.Begin()
 	if err != nil {
 		return err
@@ -1520,7 +1520,7 @@ func (pr *PostRepository) SaveByID(req dto.RequestPost, id int) error {
 			status = ?,
 			updated_at = ?
 		WHERE id = ?
-	`, req.AdminID, req.CategoryID, req.Title, req.MDBody, req.HTMLBody, req.Status, now, id)
+	`, req.AdminID, req.CategoryID, req.Title, req.MDBody, req.HTMLBody, req.Status, now, req.ID)
 	if err != nil {
 		_ = tx.Rollback()
 		return err
@@ -1528,7 +1528,7 @@ func (pr *PostRepository) SaveByID(req dto.RequestPost, id int) error {
 
 	_, err = tx.Exec(`
 		DELETE FROM tag_post WHERE post_id = ?
-	`, id)
+	`, req.ID)
 	if err != nil {
 		_ = tx.Rollback()
 		return err
@@ -1540,7 +1540,7 @@ func (pr *PostRepository) SaveByID(req dto.RequestPost, id int) error {
 		vStrings = append(vStrings, "(?, ?, ?, ?)")
 
 		vArgs = append(vArgs, t.ID)
-		vArgs = append(vArgs, id)
+		vArgs = append(vArgs, req.ID)
 		vArgs = append(vArgs, now)
 		vArgs = append(vArgs, now)
 	}
@@ -1567,7 +1567,7 @@ func (pr *PostRepository) SaveByID(req dto.RequestPost, id int) error {
 }
 
 // DeleteByID deletes the entity identified by the given id.
-func (pr *PostRepository) DeleteByID(id int) (int, error) {
+func (pr *Post) DeleteByID(id int) (int, error) {
 	tx, err := pr.ConnMySQL.Begin()
 
 	row := pr.ConnMySQL.QueryRow(`

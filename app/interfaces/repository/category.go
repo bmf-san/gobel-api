@@ -5,16 +5,16 @@ import (
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecase/dto"
+	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
 )
 
-// A CategoryRepository is a repository for a comment.[]
-type CategoryRepository struct {
+// A Category is a repository for a comment.[]
+type Category struct {
 	ConnMySQL *sql.DB
 }
 
 // CountAll count all entities.
-func (cr *CategoryRepository) CountAll() (int, error) {
+func (cr *Category) CountAll() (int, error) {
 	row := cr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -30,7 +30,7 @@ func (cr *CategoryRepository) CountAll() (int, error) {
 }
 
 // FindAll returns all entities.
-func (cr *CategoryRepository) FindAll(page int, limit int) (domain.Categories, error) {
+func (cr *Category) FindAll(page int, limit int) (domain.Categories, error) {
 	rows, err := cr.ConnMySQL.Query(`
 		SELECT
 			*
@@ -83,7 +83,7 @@ func (cr *CategoryRepository) FindAll(page int, limit int) (domain.Categories, e
 }
 
 // FindByID returns the entity identified by the given id.
-func (cr *CategoryRepository) FindByID(id int) (domain.Category, error) {
+func (cr *Category) FindByID(id int) (domain.Category, error) {
 	var category domain.Category
 	row, err := cr.ConnMySQL.Query(`
 		SELECT
@@ -129,7 +129,7 @@ func (cr *CategoryRepository) FindByID(id int) (domain.Category, error) {
 }
 
 // FindByName returns the entity identified by the given id.
-func (cr *CategoryRepository) FindByName(name string) (domain.Category, error) {
+func (cr *Category) FindByName(name string) (domain.Category, error) {
 	var category domain.Category
 	row, err := cr.ConnMySQL.Query(`
 		SELECT
@@ -175,7 +175,7 @@ func (cr *CategoryRepository) FindByName(name string) (domain.Category, error) {
 }
 
 // Save saves the given entity.
-func (cr *CategoryRepository) Save(req dto.RequestCategory) (int, error) {
+func (cr *Category) Save(req request.StoreCategory) (int, error) {
 	tx, err := cr.ConnMySQL.Begin()
 	if err != nil {
 		return 0, err
@@ -207,7 +207,7 @@ func (cr *CategoryRepository) Save(req dto.RequestCategory) (int, error) {
 }
 
 // SaveByID save the given entity identified by the given id.
-func (cr *CategoryRepository) SaveByID(req dto.RequestCategory, id int) error {
+func (cr *Category) SaveByID(req request.UpdateCategory) error {
 	tx, err := cr.ConnMySQL.Begin()
 	if err != nil {
 		return err
@@ -221,7 +221,7 @@ func (cr *CategoryRepository) SaveByID(req dto.RequestCategory, id int) error {
 			name = ?,
 			updated_at = ?
 		WHERE id = ?
-	`, req.Name, now, id)
+	`, req.Name, now, req.ID)
 	if err != nil {
 		return err
 	}
@@ -234,7 +234,7 @@ func (cr *CategoryRepository) SaveByID(req dto.RequestCategory, id int) error {
 }
 
 // DeleteByID deletes the entity identified by the given id.
-func (cr *CategoryRepository) DeleteByID(id int) (int, error) {
+func (cr *Category) DeleteByID(id int) (int, error) {
 	tx, err := cr.ConnMySQL.Begin()
 
 	row := cr.ConnMySQL.QueryRow(`

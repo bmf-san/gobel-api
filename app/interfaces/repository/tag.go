@@ -5,16 +5,16 @@ import (
 	"time"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/usecase/dto"
+	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
 )
 
-// A TagRepository is a repository for a post.
-type TagRepository struct {
+// A Tag is a repository for a post.
+type Tag struct {
 	ConnMySQL *sql.DB
 }
 
 // CountAll count all entities.
-func (tr *TagRepository) CountAll() (int, error) {
+func (tr *Tag) CountAll() (int, error) {
 	row := tr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -30,7 +30,7 @@ func (tr *TagRepository) CountAll() (int, error) {
 }
 
 // FindAll returns all entities.
-func (tr *TagRepository) FindAll(page int, limit int) (domain.Tags, error) {
+func (tr *Tag) FindAll(page int, limit int) (domain.Tags, error) {
 	var tags domain.Tags
 	rows, err := tr.ConnMySQL.Query(`
 		SELECT
@@ -83,7 +83,7 @@ func (tr *TagRepository) FindAll(page int, limit int) (domain.Tags, error) {
 }
 
 // FindByID returns the entity identified by the given id.
-func (tr *TagRepository) FindByID(id int) (domain.Tag, error) {
+func (tr *Tag) FindByID(id int) (domain.Tag, error) {
 	var tag domain.Tag
 	row, err := tr.ConnMySQL.Query(`
 		SELECT
@@ -129,7 +129,7 @@ func (tr *TagRepository) FindByID(id int) (domain.Tag, error) {
 }
 
 // FindByName returns the entity identified by the given name.
-func (tr *TagRepository) FindByName(name string) (domain.Tag, error) {
+func (tr *Tag) FindByName(name string) (domain.Tag, error) {
 	var tag domain.Tag
 	row, err := tr.ConnMySQL.Query(`
 		SELECT
@@ -175,7 +175,7 @@ func (tr *TagRepository) FindByName(name string) (domain.Tag, error) {
 }
 
 // Save saves the given entity.
-func (tr *TagRepository) Save(req dto.RequestTag) (int, error) {
+func (tr *Tag) Save(req request.StoreTag) (int, error) {
 	tx, err := tr.ConnMySQL.Begin()
 	if err != nil {
 		return 0, err
@@ -208,7 +208,7 @@ func (tr *TagRepository) Save(req dto.RequestTag) (int, error) {
 }
 
 // SaveByID save the given entity identified by the given id.
-func (tr *TagRepository) SaveByID(req dto.RequestTag, id int) error {
+func (tr *Tag) SaveByID(req request.UpdateTag) error {
 	tx, err := tr.ConnMySQL.Begin()
 	if err != nil {
 		return err
@@ -222,7 +222,7 @@ func (tr *TagRepository) SaveByID(req dto.RequestTag, id int) error {
 			name = ?,
 			updated_at = ?
 		WHERE id = ?
-	`, req.Name, now, id)
+	`, req.Name, now, req.ID)
 	if err != nil {
 		_ = tx.Rollback()
 		return err
@@ -236,7 +236,7 @@ func (tr *TagRepository) SaveByID(req dto.RequestTag, id int) error {
 }
 
 // DeleteByID deletes the entity identified by the given id.
-func (tr *TagRepository) DeleteByID(id int) (int, error) {
+func (tr *Tag) DeleteByID(id int) (int, error) {
 	tx, err := tr.ConnMySQL.Begin()
 
 	row := tr.ConnMySQL.QueryRow(`

@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/bmf-san/gobel-api/app/domain"
-	"github.com/bmf-san/gobel-api/app/interfaces/dto"
+	"github.com/bmf-san/gobel-api/app/interfaces/controller"
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 )
 
@@ -13,48 +13,48 @@ import (
 type Middleware struct {
 	logger          domain.Logger
 	adminRepository repository.AdminRepository
-	jwtRepository   repository.JWTRepository
+	JWT             repository.JWT
 }
 
-func NewMiddleware(l domain.Logger, ar repository.AdminRepository, jr repository.JWTRepository) *Middleware {
+// NewLogger creates a Middleware.
+func NewMiddleware(l domain.Logger, ar repository.AdminRepository, jr repository.JWT) *Middleware {
 	return &Middleware{
 		logger:          l,
 		adminRepository: ar,
-		jwtRepository:   jr,
+		JWT:             jr,
 	}
 }
 
 // Auth is a middleware for authentication.
 func (mw *Middleware) Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var jr dto.JSONResponse
 		var j domain.JWT
 
 		verifiedToken, err := j.GetVerifiedAccessToken(r.Header.Get("Authorization"))
 		if err != nil {
 			mw.logger.Error(err.Error())
-			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		accessUUID, err := j.GetAccessUUID(verifiedToken)
 		if err != nil {
 			mw.logger.Error(err.Error())
-			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
-		adminID, err := mw.jwtRepository.FindIDByAccessUUID(accessUUID)
+		adminID, err := mw.JWT.FindIDByAccessUUID(accessUUID)
 		if err != nil {
 			mw.logger.Error(err.Error())
-			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		_, err = mw.adminRepository.FindByID(adminID)
 		if err != nil {
 			mw.logger.Error(err.Error())
-			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
@@ -65,35 +65,34 @@ func (mw *Middleware) Auth(next http.Handler) http.Handler {
 // Refresh is a middleware for refreshing a access token by refresh token.
 func (mw *Middleware) Refresh(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var jr dto.JSONResponse
 		var j domain.JWT
 
 		verifiedToken, err := j.GetVerifiedRefreshToken(r.Header.Get("Authorization"))
 
 		if err != nil {
 			mw.logger.Error(err.Error())
-			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		refreshUUID, err := j.GetRefreshUUID(verifiedToken)
 		if err != nil {
 			mw.logger.Error(err.Error())
-			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
-		adminID, err := mw.jwtRepository.FindIDByRefreshUUID(refreshUUID)
+		adminID, err := mw.JWT.FindIDByRefreshUUID(refreshUUID)
 		if err != nil {
 			mw.logger.Error(err.Error())
-			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		_, err = mw.adminRepository.FindByID(adminID)
 		if err != nil {
 			mw.logger.Error(err.Error())
-			jr.HTTPStatus(w, http.StatusUnauthorized, nil)
+			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 

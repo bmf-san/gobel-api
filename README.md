@@ -17,7 +17,7 @@ The Gobel is a headless cms built with golang.
 [bmfsan/gobel-api](https://hub.docker.com/r/bmfsan/gobel-api)
 
 # Features
-- Support Go 1.19 >= 1.17
+- Support Go 1.20 >= 1.18
 
 # Documentation
 - [Coding Rule](https://github.com/bmf-san/gobel-api/blob/master/doc/CodingRule.md)
