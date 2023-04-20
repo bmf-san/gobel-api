@@ -9,8 +9,8 @@ RUN apk update && \
     apk add --no-cache libc-dev gcc git openssh openssl bash
 
 ENV CGO_ENABLED=0
-ENV GOOS=${TARGETARCH}
-ENV GOARCH=arm64
+ENV GOOS=linux
+ENV GOARCH=${TARGETARCH}
 
 RUN go build -o app
 
