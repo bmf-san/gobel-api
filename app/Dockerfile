@@ -9,12 +9,12 @@ RUN apk update && \
     apk add --no-cache libc-dev gcc git openssh openssl bash
 
 ENV CGO_ENABLED=0
-ENV GOOS=linux
-ENV GOARCH=amd64
+ENV GOOS=${TARGETARCH}
+ENV GOARCH=arm64
 
 RUN go build -o app
 
-FROM --platform=linux/amd64 alpine
+FROM --platform=$BUILDPLATFORM  alpine
 
 COPY --from=builder /go/gobel-api/app ./
 
