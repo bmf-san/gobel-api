@@ -49,6 +49,25 @@ func (pr *Post) CountAll() (int, error) {
 	return count, nil
 }
 
+// CountAllPublishByKeyword count all publish entities by keyword.
+func (pr *Post) CountAllPublishByKeyword(keyword string) (int, error) {
+	row := pr.ConnMySQL.QueryRow(`
+		SELECT
+			count(*)
+		FROM
+			view_posts
+		WHERE MATCH (title, md_body)
+		AGAINST (? IN BOOLEAN MODE)
+		AND
+			status = "publish"
+	`, keyword)
+	var count int
+	if err := row.Scan(&count); err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 // CountAllPublishByCategory count all publish entities by category.
 func (pr *Post) CountAllPublishByCategory(name string) (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
@@ -58,6 +77,8 @@ func (pr *Post) CountAllPublishByCategory(name string) (int, error) {
 			view_posts
 		WHERE
 			category_name = ?
+		AND
+			status = "publish"
 	`, name)
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -88,6 +109,8 @@ func (pr *Post) CountAllPublishByTag(name string) (int, error) {
 			WHERE
 				tags.name = ?
 			)
+		AND
+			status = "publish"
 	`, name)
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -111,6 +134,243 @@ func (pr *Post) FindAllPublish(page int, limit int) (domain.Posts, error) {
 		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
+
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var (
+			postID            int
+			adminID           int
+			categoryID        int
+			postTitle         string
+			postMDBody        string
+			postHTMLBody      string
+			postStatus        string
+			postCreatedAt     time.Time
+			postUpdatedAt     time.Time
+			adminName         string
+			adminEmail        string
+			adminPassword     string
+			adminCreatedAt    time.Time
+			adminUpdatedAt    time.Time
+			categoryName      string
+			categoryCreatedAt time.Time
+			categoryUpdatedAt time.Time
+		)
+		if err = rows.Scan(
+			&postID,
+			&adminID,
+			&categoryID,
+			&postTitle,
+			&postMDBody,
+			&postHTMLBody,
+			&postStatus,
+			&postCreatedAt,
+			&postUpdatedAt,
+			&adminName,
+			&adminEmail,
+			&adminPassword,
+			&adminCreatedAt,
+			&adminUpdatedAt,
+			&categoryName,
+			&categoryCreatedAt,
+			&categoryUpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		post := domain.Post{
+			ID: postID,
+			Admin: domain.Admin{
+				ID:        adminID,
+				Name:      adminName,
+				Email:     adminEmail,
+				Password:  adminPassword,
+				CreatedAt: adminCreatedAt,
+				UpdatedAt: adminUpdatedAt,
+			},
+			Category: domain.Category{
+				ID:        categoryID,
+				Name:      categoryName,
+				CreatedAt: categoryCreatedAt,
+				UpdatedAt: categoryUpdatedAt,
+			},
+			Title:     postTitle,
+			MDBody:    postMDBody,
+			HTMLBody:  postHTMLBody,
+			Status:    postStatus,
+			CreatedAt: postCreatedAt,
+			UpdatedAt: postUpdatedAt,
+		}
+		posts = append(posts, post)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	postIDs := []int{}
+	for _, p := range posts {
+		postIDs = append(postIDs, p.ID)
+	}
+
+	queryTag := `
+		SELECT
+			tag_post.post_id AS tag_post_post_id,
+			tags.id AS tag_id,
+			tags.name AS tag_name,
+			tags.created_at AS tag_created_at,
+			tags.updated_at AS tag_updated_at
+		FROM
+			tags
+		LEFT JOIN
+			tag_post
+		ON
+			tags.id = tag_post.tag_id
+		WHERE
+			tag_post.post_id
+		IN
+			(%s)
+	`
+
+	var stmt string
+	if len(postIDs) == 0 {
+		stmt = fmt.Sprintf(queryTag, `""`)
+	} else {
+		stmt = fmt.Sprintf(queryTag, strings.Trim(strings.Replace(fmt.Sprint(postIDs), " ", ",", -1), "[]"))
+	}
+
+	rows, err = pr.ConnMySQL.Query(stmt)
+
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var (
+			tagPostPostID int
+			tagID         int
+			tagName       string
+			tagCreatedAt  time.Time
+			tagUpdatedAt  time.Time
+		)
+		if err = rows.Scan(&tagPostPostID, &tagID, &tagName, &tagCreatedAt, &tagUpdatedAt); err != nil {
+			return nil, err
+		}
+
+		for p := range posts {
+			if posts[p].ID == tagPostPostID {
+				posts[p].Tags = append(posts[p].Tags, domain.Tag{
+					ID:        tagID,
+					Name:      tagName,
+					CreatedAt: tagCreatedAt,
+					UpdatedAt: tagUpdatedAt,
+				})
+			}
+
+		}
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	rows, err = pr.ConnMySQL.Query(`
+		SELECT
+    		comments.id,
+    		comments.post_id,
+    		comments.body,
+    		comments.status,
+    		comments.created_at,
+    		comments.updated_at
+		FROM
+    		comments
+    		JOIN
+        		posts
+    		ON  posts.id = comments.post_id
+		WHERE
+    		posts.status = "publish"
+		AND comments.status = "publish"
+		ORDER BY
+    		posts.id
+		DESC
+		LIMIT ?, ?
+	`, page*limit-limit, limit)
+
+	defer func() {
+		if rerr := rows.Close(); rerr != nil {
+			err = rerr
+		}
+	}()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var (
+			commentID        int
+			commentPostID    int
+			commentBody      string
+			commentStatus    string
+			commentCreatedAt time.Time
+			commentUpdatedAt time.Time
+		)
+		if err = rows.Scan(&commentID, &commentPostID, &commentBody, &commentStatus, &commentCreatedAt, &commentUpdatedAt); err != nil {
+			return nil, err
+		}
+
+		for p := range posts {
+			if posts[p].ID == commentPostID {
+				posts[p].Comments = append(posts[p].Comments, domain.Comment{
+					ID:        commentID,
+					PostID:    commentPostID,
+					Body:      commentBody,
+					Status:    commentStatus,
+					CreatedAt: commentCreatedAt,
+					UpdatedAt: commentUpdatedAt,
+				})
+			}
+
+		}
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
+// FindAllPublishByKeyword returns all entities by keyword.
+func (pr *Post) FindAllPublishByKeyword(page int, limit int, keyword string) (domain.Posts, error) {
+	var posts domain.Posts
+	rows, err := pr.ConnMySQL.Query(`
+		SELECT
+			*
+		FROM
+			view_posts
+		WHERE MATCH (title, md_body)
+		AGAINST (? IN BOOLEAN MODE)
+		AND
+			status = "publish"
+		ORDER BY id
+		DESC
+		LIMIT ?, ?
+	`, keyword, page*limit-limit, limit)
 
 	defer func() {
 		if rerr := rows.Close(); rerr != nil {

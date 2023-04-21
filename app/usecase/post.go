@@ -9,6 +9,7 @@ import (
 // A Post represents a Post.
 type Post interface {
 	Index(request.IndexPost) (domain.Posts, interactor.Pagination, *interactor.HTTPError)
+	IndexByKeyword(request.IndexPostByKeyword) (domain.Posts, interactor.Pagination, *interactor.HTTPError)
 	IndexByCategory(request.IndexPostByName) (domain.Posts, interactor.Pagination, *interactor.HTTPError)
 	IndexByTag(request.IndexPostByName) (domain.Posts, interactor.Pagination, *interactor.HTTPError)
 	IndexPrivate(request.IndexPost) (domain.Posts, interactor.Pagination, *interactor.HTTPError)

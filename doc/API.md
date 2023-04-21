@@ -31,7 +31,7 @@
       - [Response](#response)
         - [Header](#header-1)
         - [Body](#body-1)
-    - [Get publish posts by search words](#get-publish-posts-by-search-words)
+    - [Get publish posts by search keywords](#get-publish-posts-by-search-keywords)
       - [Endpoint](#endpoint-2)
       - [Query Parameters](#query-parameters-1)
       - [Requests](#requests-1)
@@ -498,7 +498,7 @@ Public API is open api that does not required authentication.
 | Method |        Endpoint         |                       Description                       |
 | :----- | :---------------------- | :------------------------------------------------------ |
 | POST   | /signin                 | Get an access token and a refresh token by credentials. |
-| GET    | /posts/search           | Get publish posts by search words.                      |
+| GET    | /posts/search           | Get publish posts by search keywords.                   |
 | GET    | /posts                  | Get all publish posts.                                  |
 | GET    | /posts/categories/:name | Get all publish posts by cagtegory.                     |
 | GET    | /posts/tags/:name       | Get all publish posts by tag.                           |
@@ -652,16 +652,16 @@ N/A
 ]
 ```
 
-### Get publish posts by search words
+### Get publish posts by search keywords
 #### Endpoint
 `GET /posts/search`
 
 #### Query Parameters
-|  Name   |  Type   | Required |        Description         |
-| :------ | :------ | :------- | :------------------------- |
-| keyword | string  | require  | Words for searching posts. |
-| page    | integer | optional | A page number of posts.    |
-| limit   | integer | optional | A limit number of posts.   |
+|  Name   |  Type   | Required |          Description          |
+| :------ | :------ | :------- | :---------------------------- |
+| keyword | string  | require  | Keywords for searching posts. |
+| page    | integer | optional | A page number of posts.       |
+| limit   | integer | optional | A limit number of posts.      |
 
 #### Requests
 ##### Header

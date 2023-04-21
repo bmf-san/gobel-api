@@ -31,6 +31,22 @@ func (pi *PostInteractor) Index(req request.IndexPost) (domain.Posts, Pagination
 	return posts, pagination, nil
 }
 
+// IndexByKeyword returns a listing of the resource.
+func (pi *PostInteractor) IndexByKeyword(req request.IndexPostByKeyword) (domain.Posts, Pagination, *HTTPError) {
+	var ps domain.Posts
+	var pn Pagination
+	count, err := pi.Post.CountAllPublishByKeyword(req.Keyword)
+	if err != nil {
+		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	posts, err := pi.Post.FindAllPublishByKeyword(req.Page, req.Limit, req.Keyword)
+	if err != nil {
+		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	pagination := pn.NewPagination(count, req.Page, req.Limit)
+	return posts, pagination, nil
+}
+
 // IndexByCategory returns a listing of the resource.
 func (pi *PostInteractor) IndexByCategory(req request.IndexPostByName) (domain.Posts, Pagination, *HTTPError) {
 	var ps domain.Posts
