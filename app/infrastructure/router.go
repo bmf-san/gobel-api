@@ -48,6 +48,7 @@ func Route(connm *sql.DB, connr *redis.Client, l domain.Logger) *goblin.Router {
 
 	r.UseGlobal(mw.CORS)
 	r.Methods(http.MethodGet).Handler(`/posts`, postController.Index())
+	r.Methods(http.MethodGet).Handler(`/posts/search`, postController.IndexByKeyword())
 	r.Methods(http.MethodGet).Handler(`/posts/categories/:name`, postController.IndexByCategory())
 	r.Methods(http.MethodGet).Handler(`/posts/tags/:name`, postController.IndexByTag())
 	r.Methods(http.MethodGet).Handler(`/posts/:title`, postController.Show())

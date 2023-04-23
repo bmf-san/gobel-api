@@ -67,6 +67,32 @@ func (pc *PostController) Index() http.Handler {
 	})
 }
 
+// IndexByKeyword displays a listing of the resource.
+func (pc *PostController) IndexByKeyword() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var req request.IndexPostByKeyword
+		req.Keyword = r.URL.Query().Get("keyword")
+		req.Page, _ = strconv.Atoi(r.URL.Query().Get("page"))
+		req.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
+		ps, pn, herr := pc.PostInteractor.IndexByKeyword(req)
+		if herr != nil {
+			pc.Logger.Error(herr.Error())
+			JSONResponse(w, herr.Code, []byte(herr.Message))
+		}
+		ips := response.MakeResponseIndexPost(ps)
+		res, err := json.Marshal(ips)
+		if err != nil {
+			pc.Logger.Error(err.Error())
+			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
+		}
+		w.Header().Set("Pagination-Count", pn.Count)
+		w.Header().Set("Pagination-Pagecount", pn.PageCount)
+		w.Header().Set("Pagination-Page", pn.Page)
+		w.Header().Set("Pagination-Limit", pn.Limit)
+		JSONResponse(w, http.StatusOK, res)
+	})
+}
+
 // IndexByCategory displays a listing of the resource.
 func (pc *PostController) IndexByCategory() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

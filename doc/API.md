@@ -31,263 +31,272 @@
       - [Response](#response)
         - [Header](#header-1)
         - [Body](#body-1)
-    - [Get all publish posts by category](#get-all-publish-posts-by-category)
+    - [Get publish posts by search keywords](#get-publish-posts-by-search-keywords)
       - [Endpoint](#endpoint-2)
-      - [Path Parameters](#path-parameters)
-      - [Request](#request)
+      - [Query Parameters](#query-parameters-1)
+      - [Requests](#requests-1)
         - [Header](#header-2)
         - [Body](#body-2)
       - [Response](#response-1)
         - [Header](#header-3)
         - [Body](#body-3)
-    - [Get all publish posts by tag](#get-all-publish-posts-by-tag)
+    - [Get all publish posts by category](#get-all-publish-posts-by-category)
       - [Endpoint](#endpoint-3)
-      - [Path Parameters](#path-parameters-1)
-      - [Request](#request-1)
+      - [Path Parameters](#path-parameters)
+      - [Request](#request)
         - [Header](#header-4)
         - [Body](#body-4)
       - [Response](#response-2)
         - [Header](#header-5)
         - [Body](#body-5)
-    - [Get the specified post by title](#get-the-specified-post-by-title)
+    - [Get all publish posts by tag](#get-all-publish-posts-by-tag)
       - [Endpoint](#endpoint-4)
-      - [Path Parameters](#path-parameters-2)
-      - [Request](#request-2)
+      - [Path Parameters](#path-parameters-1)
+      - [Request](#request-1)
         - [Header](#header-6)
         - [Body](#body-6)
       - [Response](#response-3)
         - [Header](#header-7)
         - [Body](#body-7)
-    - [Store a newly comment](#store-a-newly-comment)
+    - [Get the specified post by title](#get-the-specified-post-by-title)
       - [Endpoint](#endpoint-5)
-      - [Path Parameters](#path-parameters-3)
-      - [Request](#request-3)
+      - [Path Parameters](#path-parameters-2)
+      - [Request](#request-2)
         - [Header](#header-8)
         - [Body](#body-8)
       - [Response](#response-4)
         - [Header](#header-9)
         - [Body](#body-9)
-    - [Get all categories](#get-all-categories)
+    - [Store a newly comment](#store-a-newly-comment)
       - [Endpoint](#endpoint-6)
-      - [Query Parameters](#query-parameters-1)
-      - [Request](#request-4)
+      - [Path Parameters](#path-parameters-3)
+      - [Request](#request-3)
         - [Header](#header-10)
         - [Body](#body-10)
       - [Response](#response-5)
         - [Header](#header-11)
         - [Body](#body-11)
-    - [Get the specified category by name](#get-the-specified-category-by-name)
+    - [Get all categories](#get-all-categories)
       - [Endpoint](#endpoint-7)
-      - [Path Parameters](#path-parameters-4)
-      - [Request](#request-5)
+      - [Query Parameters](#query-parameters-2)
+      - [Request](#request-4)
         - [Header](#header-12)
         - [Body](#body-12)
-      - [Responsej](#responsej)
+      - [Response](#response-6)
         - [Header](#header-13)
         - [Body](#body-13)
-    - [Get all tags](#get-all-tags)
+    - [Get the specified category by name](#get-the-specified-category-by-name)
       - [Endpoint](#endpoint-8)
-      - [Query Parameters](#query-parameters-2)
-      - [Request bodies](#request-bodies-1)
+      - [Path Parameters](#path-parameters-4)
+      - [Request](#request-5)
         - [Header](#header-14)
         - [Body](#body-14)
-      - [Response](#response-6)
+      - [Responsej](#responsej)
         - [Header](#header-15)
         - [Body](#body-15)
-    - [Get the specified tag by name](#get-the-specified-tag-by-name)
+    - [Get all tags](#get-all-tags)
       - [Endpoint](#endpoint-9)
-      - [Path Parameters](#path-parameters-5)
-      - [Request](#request-6)
+      - [Query Parameters](#query-parameters-3)
+      - [Request bodies](#request-bodies-1)
         - [Header](#header-16)
         - [Body](#body-16)
       - [Response](#response-7)
         - [Header](#header-17)
         - [Body](#body-17)
-- [Private API](#private-api)
-  - [Authentication](#authentication-1)
-    - [Disable an access token](#disable-an-access-token)
+    - [Get the specified tag by name](#get-the-specified-tag-by-name)
       - [Endpoint](#endpoint-10)
-      - [Request](#request-7)
+      - [Path Parameters](#path-parameters-5)
+      - [Request](#request-6)
         - [Header](#header-18)
         - [Body](#body-18)
       - [Response](#response-8)
         - [Header](#header-19)
         - [Body](#body-19)
-    - [Refresh an acess token and refresh token](#refresh-an-acess-token-and-refresh-token)
+- [Private API](#private-api)
+  - [Authentication](#authentication-1)
+    - [Disable an access token](#disable-an-access-token)
       - [Endpoint](#endpoint-11)
-      - [Request](#request-8)
+      - [Request](#request-7)
         - [Header](#header-20)
         - [Body](#body-20)
       - [Response](#response-9)
         - [Header](#header-21)
         - [Body](#body-21)
-    - [Get the specified admin by access token](#get-the-specified-admin-by-access-token)
+    - [Refresh an acess token and refresh token](#refresh-an-acess-token-and-refresh-token)
       - [Endpoint](#endpoint-12)
-      - [Request](#request-9)
+      - [Request](#request-8)
         - [Header](#header-22)
         - [Body](#body-22)
       - [Response](#response-10)
         - [Header](#header-23)
         - [Body](#body-23)
-    - [Get all posts](#get-all-posts)
+    - [Get the specified admin by access token](#get-the-specified-admin-by-access-token)
       - [Endpoint](#endpoint-13)
-      - [Query Parameters](#query-parameters-3)
-      - [Request](#request-10)
+      - [Request](#request-9)
         - [Header](#header-24)
         - [Body](#body-24)
       - [Response](#response-11)
         - [Header](#header-25)
         - [Body](#body-25)
-    - [Get the specified post by id](#get-the-specified-post-by-id)
+    - [Get all posts](#get-all-posts)
       - [Endpoint](#endpoint-14)
-      - [Path Parameters](#path-parameters-6)
-      - [Request](#request-11)
+      - [Query Parameters](#query-parameters-4)
+      - [Request](#request-10)
         - [Header](#header-26)
         - [Body](#body-26)
       - [Response](#response-12)
         - [Header](#header-27)
         - [Body](#body-27)
-    - [Store a newly post](#store-a-newly-post)
+    - [Get the specified post by id](#get-the-specified-post-by-id)
       - [Endpoint](#endpoint-15)
-      - [Request](#request-12)
+      - [Path Parameters](#path-parameters-6)
+      - [Request](#request-11)
         - [Header](#header-28)
         - [Body](#body-28)
       - [Response](#response-13)
         - [Header](#header-29)
         - [Body](#body-29)
-    - [Update the specified post](#update-the-specified-post)
+    - [Store a newly post](#store-a-newly-post)
       - [Endpoint](#endpoint-16)
-      - [Query Parameters](#query-parameters-4)
-      - [Request](#request-13)
+      - [Request](#request-12)
         - [Header](#header-30)
         - [Body](#body-30)
       - [Response](#response-14)
         - [Header](#header-31)
         - [Body](#body-31)
-    - [Remove the specified post](#remove-the-specified-post)
+    - [Update the specified post](#update-the-specified-post)
       - [Endpoint](#endpoint-17)
       - [Query Parameters](#query-parameters-5)
-      - [Request](#request-14)
+      - [Request](#request-13)
         - [Header](#header-32)
         - [Body](#body-32)
       - [Response](#response-15)
         - [Header](#header-33)
         - [Body](#body-33)
-    - [Get all comments](#get-all-comments)
+    - [Remove the specified post](#remove-the-specified-post)
       - [Endpoint](#endpoint-18)
       - [Query Parameters](#query-parameters-6)
-      - [Request](#request-15)
+      - [Request](#request-14)
         - [Header](#header-34)
         - [Body](#body-34)
       - [Response](#response-16)
         - [Header](#header-35)
         - [Body](#body-35)
-    - [Get the specified comment by id](#get-the-specified-comment-by-id)
+    - [Get all comments](#get-all-comments)
       - [Endpoint](#endpoint-19)
-      - [Path Parameters](#path-parameters-7)
-      - [Request](#request-16)
+      - [Query Parameters](#query-parameters-7)
+      - [Request](#request-15)
         - [Header](#header-36)
         - [Body](#body-36)
       - [Response](#response-17)
         - [Header](#header-37)
         - [Body](#body-37)
-    - [Update the specified comment status](#update-the-specified-comment-status)
+    - [Get the specified comment by id](#get-the-specified-comment-by-id)
       - [Endpoint](#endpoint-20)
-      - [Query Parameters](#query-parameters-7)
-      - [Request](#request-17)
+      - [Path Parameters](#path-parameters-7)
+      - [Request](#request-16)
         - [Header](#header-38)
         - [Body](#body-38)
       - [Response](#response-18)
         - [Header](#header-39)
         - [Body](#body-39)
-    - [Get all categories](#get-all-categories-1)
+    - [Update the specified comment status](#update-the-specified-comment-status)
       - [Endpoint](#endpoint-21)
       - [Query Parameters](#query-parameters-8)
-      - [Request](#request-18)
+      - [Request](#request-17)
         - [Header](#header-40)
         - [Body](#body-40)
       - [Response](#response-19)
         - [Header](#header-41)
         - [Body](#body-41)
-    - [Get the specified category by id](#get-the-specified-category-by-id)
+    - [Get all categories](#get-all-categories-1)
       - [Endpoint](#endpoint-22)
-      - [Path Parameters](#path-parameters-8)
-      - [Request](#request-19)
+      - [Query Parameters](#query-parameters-9)
+      - [Request](#request-18)
         - [Header](#header-42)
         - [Body](#body-42)
       - [Response](#response-20)
         - [Header](#header-43)
         - [Body](#body-43)
-    - [Get all tags](#get-all-tags-1)
+    - [Get the specified category by id](#get-the-specified-category-by-id)
       - [Endpoint](#endpoint-23)
-      - [Query Parameters](#query-parameters-9)
-      - [Response](#response-21)
+      - [Path Parameters](#path-parameters-8)
+      - [Request](#request-19)
         - [Header](#header-44)
         - [Body](#body-44)
-      - [Request](#request-20)
+      - [Response](#response-21)
         - [Header](#header-45)
         - [Body](#body-45)
-    - [Get the specified tag by id](#get-the-specified-tag-by-id)
+    - [Get all tags](#get-all-tags-1)
       - [Endpoint](#endpoint-24)
-      - [Path Parameters](#path-parameters-9)
-      - [Request](#request-21)
+      - [Query Parameters](#query-parameters-10)
+      - [Response](#response-22)
         - [Header](#header-46)
         - [Body](#body-46)
-      - [Request](#request-22)
+      - [Request](#request-20)
         - [Header](#header-47)
         - [Body](#body-47)
-    - [Store a newly category](#store-a-newly-category)
+    - [Get the specified tag by id](#get-the-specified-tag-by-id)
       - [Endpoint](#endpoint-25)
-      - [Request](#request-23)
+      - [Path Parameters](#path-parameters-9)
+      - [Request](#request-21)
         - [Header](#header-48)
         - [Body](#body-48)
-      - [Response](#response-22)
+      - [Request](#request-22)
         - [Header](#header-49)
         - [Body](#body-49)
-    - [Update the specified category](#update-the-specified-category)
+    - [Store a newly category](#store-a-newly-category)
       - [Endpoint](#endpoint-26)
-      - [Query Parameters](#query-parameters-10)
-      - [Request](#request-24)
+      - [Request](#request-23)
         - [Header](#header-50)
         - [Body](#body-50)
       - [Response](#response-23)
         - [Header](#header-51)
         - [Body](#body-51)
-    - [Remove the specified category](#remove-the-specified-category)
+    - [Update the specified category](#update-the-specified-category)
       - [Endpoint](#endpoint-27)
       - [Query Parameters](#query-parameters-11)
-      - [Request](#request-25)
+      - [Request](#request-24)
         - [Header](#header-52)
         - [Body](#body-52)
       - [Response](#response-24)
         - [Header](#header-53)
         - [Body](#body-53)
-    - [Store a newly tag](#store-a-newly-tag)
+    - [Remove the specified category](#remove-the-specified-category)
       - [Endpoint](#endpoint-28)
-      - [Request](#request-26)
+      - [Query Parameters](#query-parameters-12)
+      - [Request](#request-25)
         - [Header](#header-54)
         - [Body](#body-54)
       - [Response](#response-25)
         - [Header](#header-55)
         - [Body](#body-55)
-    - [Update the specified tag](#update-the-specified-tag)
+    - [Store a newly tag](#store-a-newly-tag)
       - [Endpoint](#endpoint-29)
-      - [Query Parameters](#query-parameters-12)
-      - [Request](#request-27)
+      - [Request](#request-26)
         - [Header](#header-56)
         - [Body](#body-56)
       - [Response](#response-26)
         - [Header](#header-57)
         - [Body](#body-57)
-    - [Remove the specified tag](#remove-the-specified-tag)
+    - [Update the specified tag](#update-the-specified-tag)
       - [Endpoint](#endpoint-30)
       - [Query Parameters](#query-parameters-13)
-      - [Request](#request-28)
+      - [Request](#request-27)
         - [Header](#header-58)
         - [Body](#body-58)
       - [Response](#response-27)
         - [Header](#header-59)
         - [Body](#body-59)
+    - [Remove the specified tag](#remove-the-specified-tag)
+      - [Endpoint](#endpoint-31)
+      - [Query Parameters](#query-parameters-14)
+      - [Request](#request-28)
+        - [Header](#header-60)
+        - [Body](#body-60)
+      - [Response](#response-28)
+        - [Header](#header-61)
+        - [Body](#body-61)
 
 ## Root Endpoint
 `API_DOMAIN/api`
@@ -489,6 +498,7 @@ Public API is open api that does not required authentication.
 | Method |        Endpoint         |                       Description                       |
 | :----- | :---------------------- | :------------------------------------------------------ |
 | POST   | /signin                 | Get an access token and a refresh token by credentials. |
+| GET    | /posts/search           | Get publish posts by search keywords.                   |
 | GET    | /posts                  | Get all publish posts.                                  |
 | GET    | /posts/categories/:name | Get all publish posts by cagtegory.                     |
 | GET    | /posts/tags/:name       | Get all publish posts by tag.                           |
@@ -539,6 +549,128 @@ Public API is open api that does not required authentication.
 | Pagination-PageCount | A count of page            | 10      |
 | Pagination-Page      | A current page number      | 5       |
 | Pagination-Limit     | A limit of number per page | 10      |
+
+##### Body
+N/A
+
+#### Response
+##### Header
+|         Name         |        Description         | Example |
+| :------------------- | :------------------------- | :------ |
+| Pagination-Count     | A count of records         | 100     |
+| Pagination-PageCount | A count of page            | 10      |
+| Pagination-Page      | A current page number      | 5       |
+| Pagination-Limit     | A limit of number per page | 10      |
+
+##### Body
+```json
+[
+    {
+        "id":1,
+        "admin":{
+            "id":1,
+            "name":"1admin"
+        },
+        "category":{
+            "id":1,
+            "name":"1category"
+        },
+        "tags":[
+            {
+                "id":1,
+                "name":"1tag"
+            },
+            {
+                "id":2,
+                "name":"2tag"
+            }
+        ],
+        "title":"1title",
+        "md_body":"#md-body",
+        "html_body":"<html><body>html_body</body></html>",
+        "status":"publish",
+        "comments":null,
+        "created_at":"2020-09-28T15:10:18Z",
+        "updated_at":"2020-09-28T15:10:18Z"
+    },
+    {
+        "id":2,
+        "admin":{
+            "id":1,
+            "name":"1admin"
+        },
+        "category":{
+            "id":1,
+            "name":"1category"
+        },
+        "tags":[
+            {
+                "id":1,
+                "name":"1tag"
+            },
+            {
+                "id":2,
+                "name":"2tag"
+            }
+        ],
+        "title": "2title",
+        "md_body":"#md-body",
+        "html_body":"<html><body>html_body</body></html>",
+        "status":"publish",
+        "comments":null,
+        "created_at":"2020-09-28T15:10:21Z",
+        "updated_at":"2020-09-28T15:10:21Z"
+    },
+    {
+        "id":3,
+        "admin":{
+            "id":1,
+            "name":"1admin"
+        },
+        "category":{
+            "id":1,
+            "name":"1category"
+        },
+        "tags":[
+            {
+                "id":1,
+                "name":"1tag"
+            },
+            {
+                "id":2,
+                "name":"2tag"
+            }
+        ],
+        "title":"3title",
+        "md_body":"#md-body",
+        "html_body":"<html><body>html_body</body></html>",
+        "status":"publish",
+        "comments":null,
+        "created_at":"2020-09-28T15:10:24Z",
+        "updated_at":"2020-09-28T15:10:24Z"
+    }
+]
+```
+
+### Get publish posts by search keywords
+#### Endpoint
+`GET /posts/search`
+
+#### Query Parameters
+|  Name   |  Type   | Required |          Description          |
+| :------ | :------ | :------- | :---------------------------- |
+| keyword | string  | require  | Keywords for searching posts. |
+| page    | integer | optional | A page number of posts.       |
+| limit   | integer | optional | A limit number of posts.      |
+
+#### Requests
+##### Header
+|         Name         |        Description         | Example |               |
+| :------------------- | :------------------------- | :------ | ------------- |
+| Pagination-Count     | A count of records         | 100     |               |
+| Pagination-PageCount | A count of page            | 10      |               |
+| Pagination-Page      | A current page number      | 5       |               |
+| Pagination-Limit     | A limit of number per page | 10      | - [API](#api) |
 
 ##### Body
 N/A

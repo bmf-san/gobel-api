@@ -6,6 +6,13 @@ type IndexPost struct {
 	Limit int `json:"limit"`
 }
 
+// A IndexPostByKeyword represents the singular of IndexPostByKeyword.
+type IndexPostByKeyword struct {
+	Keyword string `json:"keyword"`
+	Page    int    `json:"page"`
+	Limit   int    `json:"limit"`
+}
+
 // A IndexPostByName represents the singular of IndexPostByName.
 type IndexPostByName struct {
 	Name  string `json:"name"`
