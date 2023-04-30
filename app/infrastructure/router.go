@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"database/sql"
 	"net/http"
+	"net/http/pprof"
 	"os"
 
 	"github.com/bmf-san/gobel-api/app/domain"
@@ -47,6 +48,18 @@ func Route(connm *sql.DB, connr *redis.Client, l domain.Logger) *goblin.Router {
 	}))
 
 	r.UseGlobal(mw.CORS)
+
+	r.Methods(http.MethodGet).Handler("/debug/pprof/", http.HandlerFunc(pprof.Index))
+	r.Methods(http.MethodGet).Handler("/debug/pprof/cmdline", http.HandlerFunc(pprof.Cmdline))
+	r.Methods(http.MethodGet).Handler("/debug/pprof/profile", http.HandlerFunc(pprof.Profile))
+	r.Methods(http.MethodGet).Handler("/debug/pprof/symbol", http.HandlerFunc(pprof.Symbol))
+	r.Methods(http.MethodGet).Handler("/debug/pprof/trace", http.HandlerFunc(pprof.Trace))
+	r.Methods(http.MethodGet).Handler("/debug/pprof/goroutine", pprof.Handler("goroutine"))
+	r.Methods(http.MethodGet).Handler("/debug/pprof/heap", pprof.Handler("heap"))
+	r.Methods(http.MethodGet).Handler("/debug/pprof/mutex", pprof.Handler("mutex"))
+	r.Methods(http.MethodGet).Handler("/debug/pprof/threadcreate", pprof.Handler("threadcreate"))
+	r.Methods(http.MethodGet).Handler("/debug/pprof/block", pprof.Handler("block"))
+
 	r.Methods(http.MethodGet).Handler(`/posts`, postController.Index())
 	r.Methods(http.MethodGet).Handler(`/posts/search`, postController.IndexByKeyword())
 	r.Methods(http.MethodGet).Handler(`/posts/categories/:name`, postController.IndexByCategory())
