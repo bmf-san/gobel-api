@@ -129,9 +129,7 @@ CREATE VIEW `view_posts` AS
     ON
         categories.id = posts.category_id;
 
-ALTER TABLE posts ADD INDEX index_posts_status(status);
 ALTER TABLE posts ADD INDEX index_posts_category_id(category_id);
-ALTER TABLE comments ADD INDEX index_comments_status(status);
 ALTER TABLE tag_post ADD INDEX index_tag_post_tag_id(tag_id);
 ALTER TABLE tag_post ADD INDEX index_tag_post_post_id(post_id);
 ALTER TABLE posts ADD FULLTEXT INDEX index_title_md_body (title, md_body) WITH PARSER ngram;
