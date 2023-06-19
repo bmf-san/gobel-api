@@ -1706,6 +1706,7 @@ func (pr *Post) FindByID(id int) (domain.Post, error) {
 func (pr *Post) Save(req request.StorePost) (int, error) {
 	tx, err := pr.ConnMySQL.Begin()
 	if err != nil {
+		_ = tx.Rollback()
 		return 0, err
 	}
 
@@ -1750,6 +1751,7 @@ func (pr *Post) Save(req request.StorePost) (int, error) {
 
 	_, err = tx.Exec(stmt, vArgs...)
 	if err != nil {
+		_ = tx.Rollback()
 		return 0, err
 	}
 
@@ -1764,6 +1766,7 @@ func (pr *Post) Save(req request.StorePost) (int, error) {
 func (pr *Post) SaveByID(req request.UpdatePost) error {
 	tx, err := pr.ConnMySQL.Begin()
 	if err != nil {
+		_ = tx.Rollback()
 		return err
 	}
 
@@ -1816,6 +1819,7 @@ func (pr *Post) SaveByID(req request.UpdatePost) error {
 
 	_, err = tx.Exec(stmt, vArgs...)
 	if err != nil {
+		_ = tx.Rollback()
 		return err
 	}
 
@@ -1840,12 +1844,14 @@ func (pr *Post) DeleteByID(id int) (int, error) {
 	`, id)
 
 	if err != nil {
+		_ = tx.Rollback()
 		return 0, err
 	}
 
 	var count int
 	err = row.Scan(&count)
 	if err != nil {
+		_ = tx.Rollback()
 		return 0, err
 	}
 

@@ -190,6 +190,7 @@ func (cr *Category) Save(req request.StoreCategory) (int, error) {
 			(?, ?, ?)
 	`, req.Name, now, now)
 	if err != nil {
+		_ = tx.Rollback()
 		return 0, err
 	}
 
@@ -253,6 +254,7 @@ func (cr *Category) DeleteByID(id int) (int, error) {
 	var count int
 	err = row.Scan(&count)
 	if err != nil {
+		_ = tx.Rollback()
 		return 0, nil
 	}
 

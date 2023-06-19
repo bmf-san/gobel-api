@@ -178,6 +178,7 @@ func (tr *Tag) FindByName(name string) (domain.Tag, error) {
 func (tr *Tag) Save(req request.StoreTag) (int, error) {
 	tx, err := tr.ConnMySQL.Begin()
 	if err != nil {
+		_ = tx.Rollback()
 		return 0, err
 	}
 
@@ -211,6 +212,7 @@ func (tr *Tag) Save(req request.StoreTag) (int, error) {
 func (tr *Tag) SaveByID(req request.UpdateTag) error {
 	tx, err := tr.ConnMySQL.Begin()
 	if err != nil {
+		_ = tx.Rollback()
 		return err
 	}
 
@@ -249,6 +251,7 @@ func (tr *Tag) DeleteByID(id int) (int, error) {
 	`, id)
 
 	if err != nil {
+		_ = tx.Rollback()
 		return 0, err
 	}
 
