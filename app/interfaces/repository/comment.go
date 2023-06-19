@@ -145,6 +145,7 @@ func (cr *Comment) FindByID(id int) (domain.Comment, error) {
 func (cr *Comment) Save(req request.StoreComment) (int, error) {
 	tx, err := cr.ConnMySQL.Begin()
 	if err != nil {
+		_ = tx.Rollback()
 		return 0, err
 	}
 
@@ -178,6 +179,7 @@ func (cr *Comment) Save(req request.StoreComment) (int, error) {
 func (cr *Comment) SaveStatusByID(req request.UpdateCommentStatus) error {
 	tx, err := cr.ConnMySQL.Begin()
 	if err != nil {
+		_ = tx.Rollback()
 		return err
 	}
 
