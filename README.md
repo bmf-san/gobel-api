@@ -24,7 +24,7 @@ The Gobel is a headless cms built with golang.
 - [Database](https://github.com/bmf-san/gobel-api/blob/master/doc/database/README.md)
 - [API](https://github.com/bmf-san/gobel-api/blob/master/doc/API.md)
 - [Specification](https://github.com/bmf-san/gobel-api/blob/master/doc/Specification.md)
-- [Talend API Tester](https://github.com/bmf-san/gobel-api/blob/master/doc/talend_api_tester.json)
+- [Talend API Tester](https://github.com/bmf-san/gobel-api/blob/master/doc/gobel-api.json)
 
 # Get started
 ## Edit an env file
