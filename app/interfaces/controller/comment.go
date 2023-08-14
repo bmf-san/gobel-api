@@ -54,10 +54,7 @@ func (cc *CommentController) IndexPrivate() http.Handler {
 			cc.Logger.Error(err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
-		w.Header().Set("Pagination-Count", pn.Count)
-		w.Header().Set("Pagination-Pagecount", pn.PageCount)
-		w.Header().Set("Pagination-Page", pn.Page)
-		w.Header().Set("Pagination-Limit", pn.Limit)
+		SetPaginationHeader(w, pn)
 		JSONResponse(w, http.StatusOK, res)
 	})
 }
