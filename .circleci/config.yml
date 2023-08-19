@@ -24,10 +24,7 @@ jobs:
       - run:
           name: "Install tools"
           command: |
-            make install-go-cleanarch
-            if [[ << parameters.version >> = 1.18 ]]; then
-              make install-staticcheck
-            fi
+            make install-tools
       - run:
           name: "Run gofmt"
           command: make gofmt
@@ -36,52 +33,10 @@ jobs:
           command: make vet
       - run:
           name: "Run staticcheck"
-          command: >
-            if [[ << parameters.version >> = 1.18 ]]; then
-              make staticcheck
-            fi
+          command: make staticcheck
       - run:
           name: "Run go-cleanarch"
           command: make go-cleanarch
-  test-api:
-    parameters:
-      version:
-        type: string
-      modules:
-        type: boolean
-        default: true
-    docker:
-      - image: "cimg/go:<< parameters.version >>"
-      - image: "cimg/mysql:8.0"
-        environment:
-          MYSQL_ROOT_PASSWORD: rootpw
-          MYSQL_DATABASE: test_db
-          MYSQL_USER: user
-          MYSQL_PASSWORD: passw0rd
-    steps:
-      - checkout
-      - run:
-          name: "Go version"
-          command: go version
-      - run:
-          name: "Wait for connecting to mysql"
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z 127.0.0.1 3306 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for MySQL && exit 1
-      - run:
-          name: "Migrate schema"
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y default-mysql-client
-            mysql -h 127.0.0.1 -u user -ppassw0rd test_db < mysql/initdb.d/1_schema.sql
-      - run:
-          name: "Run test-api"
-          command: make test-api
   test:
     parameters:
       version:
@@ -104,10 +59,7 @@ jobs:
           command: make mod
       - run:
           name: "Install tools"
-          command: >
-            if [[ << parameters.version >> = 1.18 ]]; then
-              make install-staticcheck
-            fi
+          command: make install-tools
       - run:
           name: "Run test"
           command: make test
@@ -129,12 +81,8 @@ workflows:
       - lint:
           matrix:
             parameters:
-              version: ["1.20", "1.19"]
+              version: ["1.21", "1.20"]
       - test:
           matrix:
             parameters:
-              version: ["1.20", "1.19"]
-      - test-api:
-          matrix:
-            parameters:
-              version: ["1.20", "1.19"]
+              version: ["1.21", "1.20"]

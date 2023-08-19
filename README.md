@@ -56,7 +56,6 @@ Then go to `gobel-api.local`
 |     command     |                            description                             |
 | --------------- | ------------------------------------------------------------------ |
 | make test       | Run unit tests                                                     |
-| make test-api   | Run tests for api responses with using db                          |
 | make test-cover | Run unit tests with cover options. ex. make test-cover OUT="c.out" |
 
 # Architecture
