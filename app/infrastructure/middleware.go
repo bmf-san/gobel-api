@@ -33,7 +33,7 @@ func (mw *Middleware) Recovery(next http.Handler) http.Handler {
 			if err := recover(); err != nil {
 				switch e := err.(type) {
 				case string:
-					mw.logger.Error("[panic]" + e)
+					mw.logger.Error("[panic] " + e)
 				case runtime.Error:
 					mw.logger.Error("[panic] " + e.Error())
 				case error:
