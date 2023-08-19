@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"net/http"
 	"os"
+	"runtime"
 
 	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces/controller"
@@ -23,6 +24,28 @@ func NewMiddleware(l domain.Logger, ar repository.AdminRepository, jr repository
 		adminRepository: ar,
 		JWT:             jr,
 	}
+}
+
+// Recovery is a middleware for recovering from panic.
+func (mw *Middleware) Recovery(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				switch e := err.(type) {
+				case string:
+					mw.logger.Error("[panic]" + e)
+				case runtime.Error:
+					mw.logger.Error("[panic] " + e.Error())
+				case error:
+					mw.logger.Error("[panic] " + e.Error())
+				default:
+					mw.logger.Error("[panic] " + e.(string))
+				}
+				controller.JSONResponse(w, http.StatusInternalServerError, nil)
+			}
+		}()
+		next.ServeHTTP(w, r)
+	})
 }
 
 // Auth is a middleware for authentication.
