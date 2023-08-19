@@ -38,6 +38,9 @@ tbls: ## Run tbls for generationg database documents.
 mod: ## Run go mod download.
 	cd app && go mod download
 
+.PHONY: install-tools
+install-tools: install-go-cleanarch install-staticcheck ## Install tools.
+
 .PHONY: install-go-cleanarch
 install-go-cleanarch: ## Install staticcheck.
 ifeq ($(shell command -v go-cleanarch 2> /dev/null),)
@@ -73,10 +76,6 @@ test: ## Run unit tests.
 .PHONY: test-cover
 test-cover: ## Run unit tests with cover options. ex. make test-cover OUT="c.out"
 	cd app && go test -v -race -cover -coverprofile=$(OUT) -covermode=atomic ./...
-
-.PHONY: test-api
-test-api: ## Run tests for api responses with using db.
-	cd app && go test -tags=integration
 
 .PHONY: build
 build: ## Run go build
