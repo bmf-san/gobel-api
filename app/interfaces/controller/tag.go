@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bmf-san/gobel-api/app/domain"
+	"log/slog"
+
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
@@ -19,11 +20,11 @@ import (
 // A TagController is a controller for a post.
 type TagController struct {
 	TagInteractor usecase.Tag
-	Logger        domain.Logger
+	Logger        *slog.Logger
 }
 
 // NewTagController creates a TagController.
-func NewTagController(connMySQL *sql.DB, logger domain.Logger) *TagController {
+func NewTagController(connMySQL *sql.DB, logger *slog.Logger) *TagController {
 	return &TagController{
 		TagInteractor: &interactor.TagInteractor{
 			Tag: &repository.Tag{

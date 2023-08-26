@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bmf-san/gobel-api/app/domain"
+	"log/slog"
+
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
@@ -19,11 +20,11 @@ import (
 // A CategoryController is a controller for a comment.
 type CategoryController struct {
 	CategoryInteractor usecase.Category
-	Logger             domain.Logger
+	Logger             *slog.Logger
 }
 
 // NewCategoryController creates a CategoryController.
-func NewCategoryController(connMySQL *sql.DB, logger domain.Logger) *CategoryController {
+func NewCategoryController(connMySQL *sql.DB, logger *slog.Logger) *CategoryController {
 	return &CategoryController{
 		CategoryInteractor: &interactor.CategoryInteractor{
 			Category: &repository.Category{

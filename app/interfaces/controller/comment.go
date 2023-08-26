@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bmf-san/gobel-api/app/domain"
+	"log/slog"
+
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
@@ -19,11 +20,11 @@ import (
 // A CommentController is a controller for a comment.
 type CommentController struct {
 	CommentInteractor usecase.Comment
-	Logger            domain.Logger
+	Logger            *slog.Logger
 }
 
 // NewCommentController creates a CommentController.
-func NewCommentController(connMySQL *sql.DB, logger domain.Logger) *CommentController {
+func NewCommentController(connMySQL *sql.DB, logger *slog.Logger) *CommentController {
 	return &CommentController{
 		CommentInteractor: &interactor.CommentInteractor{
 			Comment: &repository.Comment{
