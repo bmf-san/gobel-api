@@ -18,11 +18,8 @@ import (
 const timeout time.Duration = 10 * time.Second
 
 func main() {
-	threshold, _ := strconv.Atoi(os.Getenv("LOG_THRESHOLD"))
-	offset, _ := strconv.Atoi(os.Getenv("LOG_TIME_ZONE_OFFSET"))
-	location := time.FixedZone(os.Getenv("TIME_ZONE"), offset)
-
-	logger := infrastructure.NewLogger(threshold, location)
+	level, _ := strconv.Atoi(os.Getenv("LOG_LEVEL"))
+	logger := infrastructure.NewLogger(level)
 
 	defer func() {
 		if x := recover(); x != nil {
@@ -49,6 +46,8 @@ func main() {
 		Addr:    ":" + os.Getenv("SERVER_PORT"),
 		Handler: r,
 	}
+
+	logger.Info("Start server")
 
 	go func() {
 		if err := s.ListenAndServe(); err != http.ErrServerClosed {

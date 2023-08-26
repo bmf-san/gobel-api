@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/bmf-san/gobel-api/app/domain"
+	"log/slog"
+
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
@@ -20,11 +21,11 @@ import (
 // A PostController is a controller for a post.
 type PostController struct {
 	PostInteractor usecase.Post
-	Logger         domain.Logger
+	Logger         *slog.Logger
 }
 
 // NewPostController creates a PostController.
-func NewPostController(connMySQL *sql.DB, connRedis *redis.Client, logger domain.Logger) *PostController {
+func NewPostController(connMySQL *sql.DB, connRedis *redis.Client, logger *slog.Logger) *PostController {
 	return &PostController{
 		PostInteractor: &interactor.PostInteractor{
 			AdminRepository: &repository.AdminRepository{

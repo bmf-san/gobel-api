@@ -2,11 +2,11 @@ package infrastructure
 
 import (
 	"database/sql"
+	"log/slog"
 	"net/http"
 	"net/http/pprof"
 	"os"
 
-	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces/controller"
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/goblin"
@@ -14,7 +14,7 @@ import (
 )
 
 // Route sets the routing.
-func Route(connm *sql.DB, connr *redis.Client, l domain.Logger) *goblin.Router {
+func Route(connm *sql.DB, connr *redis.Client, l *slog.Logger) *goblin.Router {
 	ar := repository.AdminRepository{
 		ConnMySQL: connm,
 		ConnRedis: connr,

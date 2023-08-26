@@ -6,7 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/bmf-san/gobel-api/app/domain"
+	"log/slog"
+
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
@@ -18,11 +19,11 @@ import (
 // An AuthController is a controller for an authentication.
 type AuthController struct {
 	AuthInteractor usecase.Auth
-	Logger         domain.Logger
+	Logger         *slog.Logger
 }
 
 // NewAuthController creates an AuthController.
-func NewAuthController(connMySQL *sql.DB, connRedis *redis.Client, logger domain.Logger) *AuthController {
+func NewAuthController(connMySQL *sql.DB, connRedis *redis.Client, logger *slog.Logger) *AuthController {
 	return &AuthController{
 		AuthInteractor: &interactor.AuthInteractor{
 			AdminRepository: &repository.AdminRepository{

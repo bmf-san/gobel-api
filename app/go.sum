@@ -1,7 +1,5 @@
 github.com/bmf-san/goblin v0.0.0-20230202025516-4793d4844d3f h1:9zv+ydZDJuioOV9taKWq/LgdGziBYilo4asfjbjW5oE=
 github.com/bmf-san/goblin v0.0.0-20230202025516-4793d4844d3f/go.mod h1:RovWvwcoNNx7Idk/FanQtQjRSWIjZobNusVK8P3Semo=
-github.com/bmf-san/golem v0.0.0-20210221133857-7ecb33f0ca76 h1:eZRVFcQ82z1uPDYQzI71M5zXwpjvrD3tLy+uc0txC6E=
-github.com/bmf-san/golem v0.0.0-20210221133857-7ecb33f0ca76/go.mod h1:v2YJqaEietOXsYUQVOJeBNIxAGrn4GCeWbfpVzAndRE=
 github.com/cespare/xxhash/v2 v2.2.0 h1:DC2CZ1Ep5Y4k3ZQ899DldepgrayRUGE6BBZ/cd9Cj44=
 github.com/cespare/xxhash/v2 v2.2.0/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=

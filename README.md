@@ -17,7 +17,7 @@ The Gobel is a headless cms built with golang.
 [bmfsan/gobel-api](https://hub.docker.com/r/bmfsan/gobel-api)
 
 # Features
-- Support Go 1.20 >= 1.18
+- Support Go 1.21
 
 # Documentation
 - [Coding Rule](https://github.com/bmf-san/gobel-api/blob/master/doc/CodingRule.md)
@@ -65,21 +65,32 @@ gobel-api is based on Clean Architecture.
 | -------------------- | -------------- |
 | Frameworks & Drivers | infrastructure |
 | Interface            | interfaces     |
-| usecase              | usecase        |
+| Usecase              | usecase        |
 | Entities             | domain         |
 
-cf. [blog.cleancoder.com - The Clean Code Blog by Robert C. Martin (Uncle Bob)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+cf. [bmf-tech.com - Golangでクリーンアーキテクチャに入門する](https://bmf-tech.com/posts/Golang%E3%81%A7%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%A2%E3%83%BC%E3%82%AD%E3%83%86%E3%82%AF%E3%83%81%E3%83%A3%E3%81%AB%E5%85%A5%E9%96%80%E3%81%99%E3%82%8B)
 
-# Contributing
-We welcome your issue or pull request from everyone.
-Please make sure to read the [CONTRIBUTING.md](https://github.com/bmf-san/gobel-api/.github/CONTRIBUTING.md).
+# Contribution
+Issues and Pull Requests are always welcome.
+
+We would be happy to receive your contributions.
+
+Please review the following documents before making a contribution.
+
+[CODE_OF_CONDUCT](https://github.com/bmf-san/gobel-api/blob/master/.github/CODE_OF_CONDUCT.md)
+[CONTRIBUTING](https://github.com/bmf-san/gobel-api/blob/master/.github/CONTRIBUTING.md)
 
 # License
-This project is licensed under the terms of the MIT license.
+Based on the MIT License.
 
-# Author
-bmf - Software engineer.
+[LICENSE](https://github.com/bmf-san/gobel-api/blob/master/LICENSE)
 
-- [github - bmf-san/bmf-san](https://github.com/bmf-san/bmf-san)
-- [twitter - @bmf-san](https://twitter.com/bmf_san)
-- [blog - bmf-tech](http://bmf-tech.com/)
+## Author
+[bmf-san](https://github.com/bmf-san)
+
+- Email
+  - bmf.infomation@gmail.com
+- Blog
+  - [bmf-tech.com](http://bmf-tech.com)
+- Twitter
+  - [bmf-san](https://twitter.com/bmf-san)

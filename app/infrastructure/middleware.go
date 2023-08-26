@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"log/slog"
 	"net/http"
 	"os"
 	"runtime"
@@ -12,13 +13,13 @@ import (
 
 // Middleware represents the plural of middelware.
 type Middleware struct {
-	logger          domain.Logger
+	logger          *slog.Logger
 	adminRepository repository.AdminRepository
 	JWT             repository.JWT
 }
 
 // NewLogger creates a Middleware.
-func NewMiddleware(l domain.Logger, ar repository.AdminRepository, jr repository.JWT) *Middleware {
+func NewMiddleware(l *slog.Logger, ar repository.AdminRepository, jr repository.JWT) *Middleware {
 	return &Middleware{
 		logger:          l,
 		adminRepository: ar,

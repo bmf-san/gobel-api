@@ -81,8 +81,8 @@ workflows:
       - lint:
           matrix:
             parameters:
-              version: ["1.21", "1.20"]
+              version: ["1.21"]
       - test:
           matrix:
             parameters:
-              version: ["1.21", "1.20"]
+              version: ["1.21"]
