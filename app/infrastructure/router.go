@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"log/slog"
 	"net/http"
-	"net/http/pprof"
 	"os"
 
 	"github.com/bmf-san/gobel-api/app/interfaces/controller"
@@ -49,16 +48,17 @@ func Route(connm *sql.DB, connr *redis.Client, l *slog.Logger) *goblin.Router {
 
 	r.UseGlobal(mw.CORS)
 
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/", http.HandlerFunc(pprof.Index))
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/cmdline", http.HandlerFunc(pprof.Cmdline))
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/profile", http.HandlerFunc(pprof.Profile))
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/symbol", http.HandlerFunc(pprof.Symbol))
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/trace", http.HandlerFunc(pprof.Trace))
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/goroutine", pprof.Handler("goroutine"))
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/heap", pprof.Handler("heap"))
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/mutex", pprof.Handler("mutex"))
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/threadcreate", pprof.Handler("threadcreate"))
-	r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/block", pprof.Handler("block"))
+	// TODO: use debug flag.
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/", http.HandlerFunc(pprof.Index))
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/cmdline", http.HandlerFunc(pprof.Cmdline))
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/profile", http.HandlerFunc(pprof.Profile))
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/symbol", http.HandlerFunc(pprof.Symbol))
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/trace", http.HandlerFunc(pprof.Trace))
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/goroutine", pprof.Handler("goroutine"))
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/heap", pprof.Handler("heap"))
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/mutex", pprof.Handler("mutex"))
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/threadcreate", pprof.Handler("threadcreate"))
+	// r.Methods(http.MethodGet).Use(mw.Recovery).Handler("/debug/pprof/block", pprof.Handler("block"))
 
 	r.Methods(http.MethodGet).Use(mw.Recovery).Handler(`/posts`, postController.Index())
 	r.Methods(http.MethodGet).Use(mw.Recovery).Handler(`/posts/search`, postController.IndexByKeyword())
