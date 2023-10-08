@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"log/slog"
-
+	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
@@ -20,11 +19,11 @@ import (
 // A CommentController is a controller for a comment.
 type CommentController struct {
 	CommentInteractor usecase.Comment
-	Logger            *slog.Logger
+	Logger            domain.Logger
 }
 
 // NewCommentController creates a CommentController.
-func NewCommentController(connMySQL *sql.DB, logger *slog.Logger) *CommentController {
+func NewCommentController(connMySQL *sql.DB, logger domain.Logger) *CommentController {
 	return &CommentController{
 		CommentInteractor: &interactor.CommentInteractor{
 			Comment: &repository.Comment{
@@ -46,13 +45,13 @@ func (cc *CommentController) IndexPrivate() http.Handler {
 		req.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
 		c, pn, herr := cc.CommentInteractor.IndexPrivate(req)
 		if herr != nil {
-			cc.Logger.Error(herr.Error())
+			cc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		ics := response.MakeResponseIndexCommentPrivate(c)
 		res, err := json.Marshal(ics)
 		if err != nil {
-			cc.Logger.Error(err.Error())
+			cc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		SetPaginationHeader(w, pn)
@@ -66,13 +65,13 @@ func (cc *CommentController) ShowPrivate() http.Handler {
 		var req request.ShowCommentByID
 		id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 		if err != nil {
-			cc.Logger.Error(err.Error())
+			cc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		req.ID = id
 		c, herr := cc.CommentInteractor.ShowPrivate(req)
 		if herr != nil {
-			cc.Logger.Error(herr.Error())
+			cc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		res, err := json.Marshal(response.ShowCommentPrivate{
@@ -84,7 +83,7 @@ func (cc *CommentController) ShowPrivate() http.Handler {
 			UpdatedAt: c.UpdatedAt,
 		})
 		if err != nil {
-			cc.Logger.Error(err.Error())
+			cc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -96,18 +95,18 @@ func (cc *CommentController) Store() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			cc.Logger.Error(err.Error())
+			cc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		var req request.StoreComment
 		err = json.Unmarshal(body, &req)
 		if err != nil {
-			cc.Logger.Error(err.Error())
+			cc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		c, herr := cc.CommentInteractor.Store(req)
 		if herr != nil {
-			cc.Logger.Error(herr.Error())
+			cc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(herr.Error()))
 		}
 		res, err := json.Marshal(response.StoreAndUpdateComment{
@@ -119,7 +118,7 @@ func (cc *CommentController) Store() http.Handler {
 			UpdatedAt: c.UpdatedAt,
 		})
 		if err != nil {
-			cc.Logger.Error(err.Error())
+			cc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -131,18 +130,18 @@ func (cc *CommentController) UpdateStatusPrivate() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			cc.Logger.Error(err.Error())
+			cc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		var req request.UpdateCommentStatus
 		err = json.Unmarshal(body, &req)
 		if err != nil {
-			cc.Logger.Error(err.Error())
+			cc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		c, herr := cc.CommentInteractor.UpdateStatusPrivate(req)
 		if herr != nil {
-			cc.Logger.Error(herr.Error())
+			cc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(herr.Error()))
 		}
 		res, err := json.Marshal(response.StoreAndUpdateComment{
@@ -154,7 +153,7 @@ func (cc *CommentController) UpdateStatusPrivate() http.Handler {
 			UpdatedAt: c.UpdatedAt,
 		})
 		if err != nil {
-			cc.Logger.Error(err.Error())
+			cc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)

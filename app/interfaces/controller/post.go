@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"log/slog"
-
+	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
@@ -21,11 +20,11 @@ import (
 // A PostController is a controller for a post.
 type PostController struct {
 	PostInteractor usecase.Post
-	Logger         *slog.Logger
+	Logger         domain.Logger
 }
 
 // NewPostController creates a PostController.
-func NewPostController(connMySQL *sql.DB, connRedis *redis.Client, logger *slog.Logger) *PostController {
+func NewPostController(connMySQL *sql.DB, connRedis *redis.Client, logger domain.Logger) *PostController {
 	return &PostController{
 		PostInteractor: &interactor.PostInteractor{
 			AdminRepository: &repository.AdminRepository{
@@ -51,13 +50,13 @@ func (pc *PostController) Index() http.Handler {
 		req.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
 		ps, pn, herr := pc.PostInteractor.Index(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		ips := response.MakeResponseIndexPost(ps)
 		res, err := json.Marshal(ips)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		SetPaginationHeader(w, pn)
@@ -74,13 +73,13 @@ func (pc *PostController) IndexByKeyword() http.Handler {
 		req.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
 		ps, pn, herr := pc.PostInteractor.IndexByKeyword(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		ips := response.MakeResponseIndexPost(ps)
 		res, err := json.Marshal(ips)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		SetPaginationHeader(w, pn)
@@ -97,13 +96,13 @@ func (pc *PostController) IndexByCategory() http.Handler {
 		req.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
 		ps, pn, herr := pc.PostInteractor.IndexByCategory(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		ips := response.MakeResponseIndexPost(ps)
 		res, err := json.Marshal(ips)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		SetPaginationHeader(w, pn)
@@ -120,13 +119,13 @@ func (pc *PostController) IndexByTag() http.Handler {
 		req.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
 		ps, pn, herr := pc.PostInteractor.IndexByTag(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		ips := response.MakeResponseIndexPost(ps)
 		res, err := json.Marshal(ips)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		SetPaginationHeader(w, pn)
@@ -142,13 +141,13 @@ func (pc *PostController) IndexPrivate() http.Handler {
 		req.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
 		ps, pn, herr := pc.PostInteractor.IndexPrivate(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		ips := response.MakeResponseIndexPost(ps)
 		res, err := json.Marshal(ips)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		SetPaginationHeader(w, pn)
@@ -163,13 +162,13 @@ func (pc *PostController) Show() http.Handler {
 		req.Title = goblin.GetParam(r.Context(), "title")
 		p, herr := pc.PostInteractor.Show(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		rp := response.MakeResponseShowPost(p)
 		res, err := json.Marshal(rp)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -182,19 +181,19 @@ func (pc *PostController) ShowPrivate() http.Handler {
 		var req request.ShowPostByID
 		id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		req.ID = id
 		p, herr := pc.PostInteractor.ShowPrivate(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		rp := response.MakeResponseShowPostPrivate(p)
 		res, err := json.Marshal(rp)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -206,25 +205,25 @@ func (pc *PostController) StorePrivate() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		var req request.StorePost
 		err = json.Unmarshal(body, &req)
 		req.Token = r.Header.Get("Authorization")
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		p, herr := pc.PostInteractor.StorePrivate(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(herr.Error()))
 		}
 		rp := response.MakeResponseStoreAndUpdatePostPrivate(p)
 		res, err := json.Marshal(rp)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -236,31 +235,31 @@ func (pc *PostController) UpdatePrivate() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		var req request.UpdatePost
 		err = json.Unmarshal(body, &req)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		req.Token = r.Header.Get("Authorization")
 		pid, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		req.ID = pid
 		p, herr := pc.PostInteractor.UpdatePrivate(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(herr.Error()))
 		}
 		rp := response.MakeResponseStoreAndUpdatePostPrivate(p)
 		res, err := json.Marshal(rp)
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -272,21 +271,21 @@ func (pc *PostController) DestroyPrivate() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		var req request.DestroyPostByID
 		req.ID = id
 		herr := pc.PostInteractor.DestroyPrivate(req)
 		if herr != nil {
-			pc.Logger.Error(herr.Error())
+			pc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		res, err := json.Marshal(response.DestroyPostPrivate{
 			Message: "ok",
 		})
 		if err != nil {
-			pc.Logger.Error(err.Error())
+			pc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)

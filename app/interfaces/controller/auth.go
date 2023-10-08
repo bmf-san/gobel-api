@@ -6,8 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"log/slog"
-
+	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
@@ -19,11 +18,11 @@ import (
 // An AuthController is a controller for an authentication.
 type AuthController struct {
 	AuthInteractor usecase.Auth
-	Logger         *slog.Logger
+	Logger         domain.Logger
 }
 
 // NewAuthController creates an AuthController.
-func NewAuthController(connMySQL *sql.DB, connRedis *redis.Client, logger *slog.Logger) *AuthController {
+func NewAuthController(connMySQL *sql.DB, connRedis *redis.Client, logger domain.Logger) *AuthController {
 	return &AuthController{
 		AuthInteractor: &interactor.AuthInteractor{
 			AdminRepository: &repository.AdminRepository{
@@ -43,18 +42,18 @@ func (ac *AuthController) SignIn() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			ac.Logger.Error(err.Error())
+			ac.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		var req request.SignIn
 		err = json.Unmarshal(body, &req)
 		if err != nil {
-			ac.Logger.Error(err.Error())
+			ac.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		j, herr := ac.AuthInteractor.SignIn(req)
 		if herr != nil {
-			ac.Logger.Error(herr.Error())
+			ac.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		res, err := json.Marshal(response.SignIn{
@@ -62,7 +61,7 @@ func (ac *AuthController) SignIn() http.Handler {
 			RefreshToken: j.RefreshToken,
 		})
 		if err != nil {
-			ac.Logger.Error(err.Error())
+			ac.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -77,14 +76,14 @@ func (ac *AuthController) SignOut() http.Handler {
 		req.Token = t
 		herr := ac.AuthInteractor.SignOut(req)
 		if herr != nil {
-			ac.Logger.Error(herr.Error())
+			ac.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		res, err := json.Marshal(response.SignOut{
 			Message: "ok",
 		})
 		if err != nil {
-			ac.Logger.Error(err.Error())
+			ac.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -99,7 +98,7 @@ func (ac *AuthController) Refresh() http.Handler {
 		req.Token = t
 		j, herr := ac.AuthInteractor.Refresh(req)
 		if herr != nil {
-			ac.Logger.Error(herr.Error())
+			ac.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		res, err := json.Marshal(response.Refresh{
@@ -107,7 +106,7 @@ func (ac *AuthController) Refresh() http.Handler {
 			RefreshToken: j.RefreshToken,
 		})
 		if err != nil {
-			ac.Logger.Error(err.Error())
+			ac.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -122,7 +121,7 @@ func (ac *AuthController) ShowUserInfo() http.Handler {
 		req.Token = t
 		a, herr := ac.AuthInteractor.ShowUserInfo(req)
 		if herr != nil {
-			ac.Logger.Error(herr.Error())
+			ac.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		res, err := json.Marshal(response.ShowUserInfo{
@@ -130,7 +129,7 @@ func (ac *AuthController) ShowUserInfo() http.Handler {
 			Name: a.Name,
 		})
 		if err != nil {
-			ac.Logger.Error(err.Error())
+			ac.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
