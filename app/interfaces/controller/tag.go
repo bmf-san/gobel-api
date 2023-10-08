@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"log/slog"
-
+	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces/repository"
 	"github.com/bmf-san/gobel-api/app/usecase"
 	"github.com/bmf-san/gobel-api/app/usecase/dto/request"
@@ -20,11 +19,11 @@ import (
 // A TagController is a controller for a post.
 type TagController struct {
 	TagInteractor usecase.Tag
-	Logger        *slog.Logger
+	Logger        domain.Logger
 }
 
 // NewTagController creates a TagController.
-func NewTagController(connMySQL *sql.DB, logger *slog.Logger) *TagController {
+func NewTagController(connMySQL *sql.DB, logger domain.Logger) *TagController {
 	return &TagController{
 		TagInteractor: &interactor.TagInteractor{
 			Tag: &repository.Tag{
@@ -43,13 +42,13 @@ func (tc *TagController) Index() http.Handler {
 		req.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
 		cs, pn, herr := tc.TagInteractor.Index(req)
 		if herr != nil {
-			tc.Logger.Error(herr.Error())
+			tc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		ics := response.MakeResponseIndexTag(cs)
 		res, err := json.Marshal(ics)
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		SetPaginationHeader(w, pn)
@@ -65,13 +64,13 @@ func (tc *TagController) IndexPrivate() http.Handler {
 		req.Limit, _ = strconv.Atoi(r.URL.Query().Get("limit"))
 		cs, pn, herr := tc.TagInteractor.IndexPrivate(req)
 		if herr != nil {
-			tc.Logger.Error(herr.Error())
+			tc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		ics := response.MakeResponseIndexTagPrivate(cs)
 		res, err := json.Marshal(ics)
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		SetPaginationHeader(w, pn)
@@ -86,7 +85,7 @@ func (tc *TagController) Show() http.Handler {
 		req.Name = goblin.GetParam(r.Context(), "name")
 		c, herr := tc.TagInteractor.Show(req)
 		if herr != nil {
-			tc.Logger.Error(herr.Error())
+			tc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		res, err := json.Marshal(response.ShowTagPrivate{
@@ -96,7 +95,7 @@ func (tc *TagController) Show() http.Handler {
 			UpdatedAt: c.UpdatedAt,
 		})
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -109,13 +108,13 @@ func (tc *TagController) ShowPrivate() http.Handler {
 		var req request.ShowTagByID
 		id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		req.ID = id
 		c, herr := tc.TagInteractor.ShowPrivate(req)
 		if herr != nil {
-			tc.Logger.Error(herr.Error())
+			tc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		res, err := json.Marshal(response.ShowTagPrivate{
@@ -125,7 +124,7 @@ func (tc *TagController) ShowPrivate() http.Handler {
 			UpdatedAt: c.UpdatedAt,
 		})
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -137,18 +136,18 @@ func (tc *TagController) StorePrivate() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		var req request.StoreTag
 		err = json.Unmarshal(body, &req)
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		c, herr := tc.TagInteractor.StorePrivate(req)
 		if herr != nil {
-			tc.Logger.Error(herr.Error())
+			tc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(herr.Error()))
 		}
 		res, err := json.Marshal(response.StoreTagPrivate{
@@ -158,7 +157,7 @@ func (tc *TagController) StorePrivate() http.Handler {
 			UpdatedAt: c.UpdatedAt,
 		})
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -170,24 +169,24 @@ func (tc *TagController) UpdatePrivate() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		var req request.UpdateTag
 		err = json.Unmarshal(body, &req)
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		req.ID = id
 		c, herr := tc.TagInteractor.UpdatePrivate(req)
 		if herr != nil {
-			tc.Logger.Error(herr.Error())
+			tc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(herr.Error()))
 		}
 		res, err := json.Marshal(response.StoreTagPrivate{
@@ -197,7 +196,7 @@ func (tc *TagController) UpdatePrivate() http.Handler {
 			UpdatedAt: c.UpdatedAt,
 		})
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)
@@ -209,21 +208,21 @@ func (tc *TagController) DestroyPrivate() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(goblin.GetParam(r.Context(), "id"))
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		var req request.DestroyTagByID
 		req.ID = id
 		herr := tc.TagInteractor.DestroyPrivate(req)
 		if herr != nil {
-			tc.Logger.Error(herr.Error())
+			tc.Logger.ErrorContext(r.Context(), herr.Error())
 			JSONResponse(w, herr.Code, []byte(herr.Message))
 		}
 		res, err := json.Marshal(response.DestroyPostPrivate{
 			Message: "ok",
 		})
 		if err != nil {
-			tc.Logger.Error(err.Error())
+			tc.Logger.ErrorContext(r.Context(), err.Error())
 			JSONResponse(w, http.StatusInternalServerError, []byte(err.Error()))
 		}
 		JSONResponse(w, http.StatusOK, res)

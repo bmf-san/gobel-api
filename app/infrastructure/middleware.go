@@ -8,23 +8,33 @@ import (
 
 	"github.com/bmf-san/gobel-api/app/domain"
 	"github.com/bmf-san/gobel-api/app/interfaces/controller"
-	"github.com/bmf-san/gobel-api/app/interfaces/repository"
+	"github.com/bmf-san/gobel-api/app/usecase/repository"
 )
 
 // Middleware represents the plural of middelware.
 type Middleware struct {
-	logger          *slog.Logger
+	logger          domain.Logger
 	adminRepository repository.AdminRepository
 	JWT             repository.JWT
 }
 
 // NewLogger creates a Middleware.
-func NewMiddleware(l *slog.Logger, ar repository.AdminRepository, jr repository.JWT) *Middleware {
+func NewMiddleware(l *Logger, ar repository.AdminRepository, jr repository.JWT) *Middleware {
 	return &Middleware{
 		logger:          l,
 		adminRepository: ar,
 		JWT:             jr,
 	}
+}
+
+// Log is a middleware for logging. It logs the access log. It also adds a trace id to the context.
+func (mw *Middleware) Log(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := mw.logger.WithTraceID(r.Context())
+
+		mw.logger.InfoContext(ctx, "access log", slog.String("http_method", r.Method), slog.String("path", r.URL.Path), slog.String("remote_addr", r.RemoteAddr), slog.String("user_agent", r.UserAgent()))
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
 
 // Recovery is a middleware for recovering from panic.
@@ -34,13 +44,13 @@ func (mw *Middleware) Recovery(next http.Handler) http.Handler {
 			if err := recover(); err != nil {
 				switch e := err.(type) {
 				case string:
-					mw.logger.Error("[panic] " + e)
+					mw.logger.ErrorContext(r.Context(), "[panic] "+e)
 				case runtime.Error:
-					mw.logger.Error("[panic] " + e.Error())
+					mw.logger.ErrorContext(r.Context(), "[panic] "+e.Error())
 				case error:
-					mw.logger.Error("[panic] " + e.Error())
+					mw.logger.ErrorContext(r.Context(), "[panic] "+e.Error())
 				default:
-					mw.logger.Error("[panic] " + e.(string))
+					mw.logger.ErrorContext(r.Context(), "[panic] "+e.(string))
 				}
 				controller.JSONResponse(w, http.StatusInternalServerError, nil)
 			}
@@ -56,28 +66,28 @@ func (mw *Middleware) Auth(next http.Handler) http.Handler {
 
 		verifiedToken, err := j.GetVerifiedAccessToken(r.Header.Get("Authorization"))
 		if err != nil {
-			mw.logger.Error(err.Error())
+			mw.logger.ErrorContext(r.Context(), err.Error())
 			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		accessUUID, err := j.GetAccessUUID(verifiedToken)
 		if err != nil {
-			mw.logger.Error(err.Error())
+			mw.logger.ErrorContext(r.Context(), err.Error())
 			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		adminID, err := mw.JWT.FindIDByAccessUUID(accessUUID)
 		if err != nil {
-			mw.logger.Error(err.Error())
+			mw.logger.ErrorContext(r.Context(), err.Error())
 			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		_, err = mw.adminRepository.FindByID(adminID)
 		if err != nil {
-			mw.logger.Error(err.Error())
+			mw.logger.ErrorContext(r.Context(), err.Error())
 			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
@@ -94,28 +104,28 @@ func (mw *Middleware) Refresh(next http.Handler) http.Handler {
 		verifiedToken, err := j.GetVerifiedRefreshToken(r.Header.Get("Authorization"))
 
 		if err != nil {
-			mw.logger.Error(err.Error())
+			mw.logger.ErrorContext(r.Context(), err.Error())
 			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		refreshUUID, err := j.GetRefreshUUID(verifiedToken)
 		if err != nil {
-			mw.logger.Error(err.Error())
+			mw.logger.ErrorContext(r.Context(), err.Error())
 			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		adminID, err := mw.JWT.FindIDByRefreshUUID(refreshUUID)
 		if err != nil {
-			mw.logger.Error(err.Error())
+			mw.logger.ErrorContext(r.Context(), err.Error())
 			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
 
 		_, err = mw.adminRepository.FindByID(adminID)
 		if err != nil {
-			mw.logger.Error(err.Error())
+			mw.logger.ErrorContext(r.Context(), err.Error())
 			controller.JSONResponse(w, http.StatusUnauthorized, nil)
 			return
 		}
