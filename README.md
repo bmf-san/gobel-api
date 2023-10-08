@@ -6,6 +6,7 @@
 The Gobel is a headless cms built with golang.
 
 # gobel
+- [bmf-tech-client](https://github.com/bmf-san/bmf-tech-client)
 - [gobel-api](https://github.com/bmf-san/gobel-api)
 - [gobel-admin-client-example](https://github.com/bmf-san/gobel-admin-client-example)
 - [gobel-client-example](https://github.com/bmf-san/gobel-client-example)
