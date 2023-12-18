@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/bmf-san/goblin v0.0.0-20230202025516-4793d4844d3f
-	golang.org/x/crypto v0.7.0
+	golang.org/x/crypto v0.17.0
 )
 
 require (
