@@ -15,7 +15,6 @@ CREATE TABLE `comments` (
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `post_id` (`post_id`),
-  KEY `index_comments_status` (`status`),
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 ```
@@ -44,7 +43,6 @@ CREATE TABLE `comments` (
 
 | Name | Definition |
 | ---- | ---------- |
-| index_comments_status | KEY index_comments_status (status) USING BTREE |
 | post_id | KEY post_id (post_id) USING BTREE |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 
