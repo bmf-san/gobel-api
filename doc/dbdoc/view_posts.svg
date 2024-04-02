@@ -14,9 +14,9 @@
 <title>view_posts</title>
 <polygon fill="#efefef" stroke="transparent" points="46,-555.5 46,-590.5 256,-590.5 256,-555.5 46,-555.5"/>
 <polygon fill="none" stroke="#000000" points="46,-555.5 46,-590.5 256,-590.5 256,-555.5 46,-555.5"/>
-<text text-anchor="start" x="82.7672" y="-568.3" font-family="Arial Bold" font-size="18.00" fill="#000000">view_posts</text>
-<text text-anchor="start" x="171.7826" y="-568.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="175.6732" y="-568.3" font-family="Arial" font-size="14.00" fill="#666666">[VIEW]</text>
+<text text-anchor="start" x="67.6101" y="-568.3" font-family="Arial Bold" font-size="18.00" fill="#000000">view_posts</text>
+<text text-anchor="start" x="156.6255" y="-568.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="190.8303" y="-568.3" font-family="Arial" font-size="14.00" fill="#666666">[VIEW]</text>
 <polygon fill="none" stroke="#000000" points="46,-525.5 46,-555.5 256,-555.5 256,-525.5 46,-525.5"/>
 <text text-anchor="start" x="53" y="-536.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
 <text text-anchor="start" x="67.7798" y="-536.9" font-family="Arial" font-size="14.00" fill="#666666">[int unsigned]</text>

@@ -5,9 +5,6 @@
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
 | [admins](admins.md) | 6 |  | BASE TABLE |
-| [archived_comments](archived_comments.md) | 6 |  | BASE TABLE |
-| [archived_posts](archived_posts.md) | 9 |  | BASE TABLE |
-| [archived_tag_post](archived_tag_post.md) | 5 |  | BASE TABLE |
 | [categories](categories.md) | 4 |  | BASE TABLE |
 | [comments](comments.md) | 6 |  | BASE TABLE |
 | [posts](posts.md) | 9 |  | BASE TABLE |

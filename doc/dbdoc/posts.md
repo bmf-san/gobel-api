@@ -18,11 +18,11 @@ CREATE TABLE `posts` (
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `admin_id` (`admin_id`),
-  KEY `index_posts_status` (`status`),
   KEY `index_posts_category_id` (`category_id`),
+  FULLTEXT KEY `index_title_md_body` (`title`,`md_body`) /*!50100 WITH PARSER `ngram` */ ,
   CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`),
   CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 ```
 
 </details>
@@ -55,7 +55,7 @@ CREATE TABLE `posts` (
 | ---- | ---------- |
 | admin_id | KEY admin_id (admin_id) USING BTREE |
 | index_posts_category_id | KEY index_posts_category_id (category_id) USING BTREE |
-| index_posts_status | KEY index_posts_status (status) USING BTREE |
+| index_title_md_body | KEY index_title_md_body (title, md_body) USING FULLTEXT |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 
 ## Relations

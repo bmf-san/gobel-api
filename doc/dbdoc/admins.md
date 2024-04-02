@@ -16,7 +16,7 @@ CREATE TABLE `admins` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb3
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 ```
 
 </details>
@@ -25,7 +25,7 @@ CREATE TABLE `admins` (
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
-| id | int unsigned |  | false | auto_increment | [archived_posts](archived_posts.md) [posts](posts.md) |  |  |
+| id | int unsigned |  | false | auto_increment | [posts](posts.md) |  |  |
 | name | varchar(255) |  | false |  |  |  |  |
 | email | varchar(255) |  | false |  |  |  |  |
 | password | varchar(255) |  | false |  |  |  |  |

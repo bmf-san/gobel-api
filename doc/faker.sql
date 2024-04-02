@@ -12,9 +12,7 @@ VALUES (1), (2), (3), (4), (5), (6), (7), (8), (9), (10);
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE admins;
 TRUNCATE posts;
-TRUNCATE archived_posts;
 TRUNCATE comments;
-TRUNCATE archived_comments;
 TRUNCATE categories;
 TRUNCATE tags;
 TRUNCATE tag_post;
@@ -56,32 +54,7 @@ FROM
   tests AS t3,
   (SELECT @rownum := 0) AS v;
 
-INSERT INTO archived_posts(admin_id, category_id, title, md_body, html_body)
-SELECT
-  (@rownum := @rownum + 1),
-  @rownum,
-  CONCAT(@rownum, 'title'),
-  CONCAT(@rownum, 'md_body'),
-  CONCAT(@rownum, 'html_body')
-FROM
-  /* create 1000 rows */
-  tests AS t1,
-  tests AS t2,
-  tests AS t3,
-  (SELECT @rownum := 0) AS v;
-
 INSERT INTO comments(post_id, body)
-SELECT
-  (@rownum := @rownum + 1),
-  CONCAT(@rownum, 'body')
-FROM
-  /* create 1000 rows */
-  tests AS t1,
-  tests AS t2,
-  tests AS t3,
-  (SELECT @rownum := 0) AS v;
-
-INSERT INTO archived_comments(archived_post_id, body)
 SELECT
   (@rownum := @rownum + 1),
   CONCAT(@rownum, 'body')

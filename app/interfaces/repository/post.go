@@ -1856,51 +1856,6 @@ func (pr *Post) DeleteByID(id int) (int, error) {
 	}
 
 	_, err = tx.Exec(`
-		INSERT INTO
-			archived_posts
-		SELECT
-			*
-		FROM
-			posts
-		WHERE
-			id = ?
-	`, id)
-	if err != nil {
-		_ = tx.Rollback()
-		return 0, nil
-	}
-
-	_, err = tx.Exec(`
-		INSERT INTO
-			archived_tag_post
-		SELECT
-			*
-		FROM
-			tag_post
-		WHERE
-			post_id = ?
-	`, id)
-	if err != nil {
-		_ = tx.Rollback()
-		return 0, err
-	}
-
-	_, err = tx.Exec(`
-		INSERT INTO
-			archived_comments
-		SELECT
-			*
-		FROM
-			comments
-		WHERE
-			post_id = ?
-	`, id)
-	if err != nil {
-		_ = tx.Rollback()
-		return 0, err
-	}
-
-	_, err = tx.Exec(`
 		DELETE FROM tag_post WHERE post_id = ?
 	`, id)
 	if err != nil {
