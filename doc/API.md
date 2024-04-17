@@ -22,7 +22,7 @@
       - [Request bodies](#request-bodies)
       - [Response bodies](#response-bodies)
   - [Post](#post-2)
-    - [Get all publish posts](#get-all-publish-posts)
+    - [Get all public posts](#get-all-public-posts)
       - [Endpoint](#endpoint-1)
       - [Query Parameters](#query-parameters)
       - [Requests](#requests)
@@ -31,7 +31,7 @@
       - [Response](#response)
         - [Header](#header-1)
         - [Body](#body-1)
-    - [Get publish posts by search keywords](#get-publish-posts-by-search-keywords)
+    - [Get public posts by search keywords](#get-public-posts-by-search-keywords)
       - [Endpoint](#endpoint-2)
       - [Query Parameters](#query-parameters-1)
       - [Requests](#requests-1)
@@ -40,7 +40,7 @@
       - [Response](#response-1)
         - [Header](#header-3)
         - [Body](#body-3)
-    - [Get all publish posts by category](#get-all-publish-posts-by-category)
+    - [Get all public posts by category](#get-all-public-posts-by-category)
       - [Endpoint](#endpoint-3)
       - [Path Parameters](#path-parameters)
       - [Request](#request)
@@ -49,7 +49,7 @@
       - [Response](#response-2)
         - [Header](#header-5)
         - [Body](#body-5)
-    - [Get all publish posts by tag](#get-all-publish-posts-by-tag)
+    - [Get all public posts by tag](#get-all-public-posts-by-tag)
       - [Endpoint](#endpoint-4)
       - [Path Parameters](#path-parameters-1)
       - [Request](#request-1)
@@ -498,10 +498,10 @@ Public API is open api that does not required authentication.
 | Method |        Endpoint         |                       Description                       |
 | :----- | :---------------------- | :------------------------------------------------------ |
 | POST   | /signin                 | Get an access token and a refresh token by credentials. |
-| GET    | /posts/search           | Get publish posts by search keywords.                   |
-| GET    | /posts                  | Get all publish posts.                                  |
-| GET    | /posts/categories/:name | Get all publish posts by cagtegory.                     |
-| GET    | /posts/tags/:name       | Get all publish posts by tag.                           |
+| GET    | /posts/search           | Get public posts by search keywords.                   |
+| GET    | /posts                  | Get all public posts.                                  |
+| GET    | /posts/categories/:name | Get all public posts by cagtegory.                     |
+| GET    | /posts/tags/:name       | Get all public posts by tag.                           |
 | GET    | /posts/:title           | Get the specified post by title.                        |
 | POST   | /posts/:title/comments  | Store a newly comment.                                  |
 | GET    | /categories             | Get all categories.                                     |
@@ -531,7 +531,7 @@ Public API is open api that does not required authentication.
 ```
 
 ## Post
-### Get all publish posts
+### Get all public posts
 #### Endpoint
 `GET /posts`
 
@@ -588,7 +588,7 @@ N/A
         "title":"1title",
         "md_body":"#md-body",
         "html_body":"<html><body>html_body</body></html>",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:18Z",
         "updated_at":"2020-09-28T15:10:18Z"
@@ -616,7 +616,7 @@ N/A
         "title": "2title",
         "md_body":"#md-body",
         "html_body":"<html><body>html_body</body></html>",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:21Z",
         "updated_at":"2020-09-28T15:10:21Z"
@@ -644,7 +644,7 @@ N/A
         "title":"3title",
         "md_body":"#md-body",
         "html_body":"<html><body>html_body</body></html>",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:24Z",
         "updated_at":"2020-09-28T15:10:24Z"
@@ -652,7 +652,7 @@ N/A
 ]
 ```
 
-### Get publish posts by search keywords
+### Get public posts by search keywords
 #### Endpoint
 `GET /posts/search`
 
@@ -710,7 +710,7 @@ N/A
         "title":"1title",
         "md_body":"#md-body",
         "html_body":"<html><body>html_body</body></html>",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:18Z",
         "updated_at":"2020-09-28T15:10:18Z"
@@ -738,7 +738,7 @@ N/A
         "title": "2title",
         "md_body":"#md-body",
         "html_body":"<html><body>html_body</body></html>",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:21Z",
         "updated_at":"2020-09-28T15:10:21Z"
@@ -766,7 +766,7 @@ N/A
         "title":"3title",
         "md_body":"#md-body",
         "html_body":"<html><body>html_body</body></html>",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:24Z",
         "updated_at":"2020-09-28T15:10:24Z"
@@ -774,7 +774,7 @@ N/A
 ]
 ```
 
-### Get all publish posts by category
+### Get all public posts by category
 #### Endpoint
 `GET /posts/categories/:name`
 
@@ -812,7 +812,7 @@ N/A
 ]
 ```
 
-### Get all publish posts by tag
+### Get all public posts by tag
 #### Endpoint
 `GET /posts/tags/:name`
 
@@ -858,7 +858,7 @@ N/A
         "title":"1title",
         "md_body":"#md-body",
         "html_body":"\u003chtml\u003e\u003cbody\u003ehtml_body\u003c/body\u003e\u003c/html\u003e",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:18Z",
         "updated_at":"2020-09-28T15:10:18Z"
@@ -886,7 +886,7 @@ N/A
         "title":"2title",
         "md_body":"#md-body",
         "html_body":"\u003chtml\u003e\u003cbody\u003ehtml_body\u003c/body\u003e\u003c/html\u003e",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:24Z",
         "updated_at":"2020-09-28T15:10:24Z"
@@ -914,7 +914,7 @@ N/A
         "title":"3title",
         "md_body":"#md-body",
         "html_body":"\u003ch1 id=\"ge\"\u003ege\u003c/h1\u003e\n",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:27Z",
         "updated_at":"2020-09-28T15:10:27Z"
@@ -942,7 +942,7 @@ N/A
         "title":"4title",
         "md_body":"#md-body",
         "html_body":"\u003chtml\u003e\u003cbody\u003ehtml_body\u003c/body\u003e\u003c/html\u003e",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-09-28T15:10:30Z",
         "updated_at":"2020-09-28T15:10:30Z"
@@ -995,7 +995,7 @@ N/A
     "title":"1title",
     "md_body":"#md-body",
     "html_body":"\u003chtml\u003e\u003cbody\u003ehtml_body\u003c/body\u003e\u003c/html\u003e",
-    "status":"publish",
+    "status":"public",
     "comments":null,
     "created_at":"2020-09-28T15:18:16Z",
     "updated_at":"2020-09-28T15:18:16Z"
@@ -1393,7 +1393,7 @@ N/A
         "title":"2title",
         "md_body":"2md_body",
         "html_body":"2html_body",
-        "status":"publish",
+        "status":"public",
         "comments":null,
         "created_at":"2020-10-04T16:30:46Z",
         "updated_at":"2020-10-04T16:30:46Z"
@@ -1480,7 +1480,7 @@ N/A
     "title":"1title",
     "md_body":"#md-body",
     "html_body":"\u003chtml\u003e\u003cbody\u003ehtml_body\u003c/body\u003e\u003c/html\u003e",
-    "status":"publish",
+    "status":"public",
     "comments":null,
     "created_at":"2020-09-28T15:18:16Z",
     "updated_at":"2020-09-28T15:18:16Z"
@@ -1514,7 +1514,7 @@ N/A
 	"body": "foo-bar-body",
 	"md_body": "#md-body",
 	"html_body": "<html><body>html_body</body></html>",
-	"status": "draft|publish"
+	"status": "draft|public"
 }
 ```
 
@@ -1592,7 +1592,7 @@ N/A
 	"body": "foo-bar-body",
 	"md_body": "#md-body",
 	"html_body": "<html><body>html_body</body></html>",
-	"status": "draft|publish"
+	"status": "draft|public"
 }
 ```
 

@@ -15,15 +15,15 @@ type Post struct {
 	ConnMySQL *sql.DB
 }
 
-// CountAllPublish count all publish entities.
-func (pr *Post) CountAllPublish() (int, error) {
+// CountAllPublic count all public entities.
+func (pr *Post) CountAllPublic() (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
 		FROM
 			view_posts
 		WHERE
-			status = "publish"
+			status = "public"
 	`)
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -49,8 +49,8 @@ func (pr *Post) CountAll() (int, error) {
 	return count, nil
 }
 
-// CountAllPublishByKeyword count all publish entities by keyword.
-func (pr *Post) CountAllPublishByKeyword(keyword string) (int, error) {
+// CountAllPublicByKeyword count all public entities by keyword.
+func (pr *Post) CountAllPublicByKeyword(keyword string) (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -59,7 +59,7 @@ func (pr *Post) CountAllPublishByKeyword(keyword string) (int, error) {
 		WHERE MATCH (title, md_body)
 		AGAINST (? IN BOOLEAN MODE)
 		AND
-			status = "publish"
+			status = "public"
 	`, keyword)
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -68,8 +68,8 @@ func (pr *Post) CountAllPublishByKeyword(keyword string) (int, error) {
 	return count, nil
 }
 
-// CountAllPublishByCategory count all publish entities by category.
-func (pr *Post) CountAllPublishByCategory(name string) (int, error) {
+// CountAllPublicByCategory count all public entities by category.
+func (pr *Post) CountAllPublicByCategory(name string) (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -78,7 +78,7 @@ func (pr *Post) CountAllPublishByCategory(name string) (int, error) {
 		WHERE
 			category_name = ?
 		AND
-			status = "publish"
+			status = "public"
 	`, name)
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -88,8 +88,8 @@ func (pr *Post) CountAllPublishByCategory(name string) (int, error) {
 	return count, nil
 }
 
-// CountAllPublishByTag count all publish entities by Tag.
-func (pr *Post) CountAllPublishByTag(name string) (int, error) {
+// CountAllPublicByTag count all public entities by Tag.
+func (pr *Post) CountAllPublicByTag(name string) (int, error) {
 	row := pr.ConnMySQL.QueryRow(`
 		SELECT
 			count(*)
@@ -110,7 +110,7 @@ func (pr *Post) CountAllPublishByTag(name string) (int, error) {
 				tags.name = ?
 			)
 		AND
-			status = "publish"
+			status = "public"
 	`, name)
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -120,8 +120,8 @@ func (pr *Post) CountAllPublishByTag(name string) (int, error) {
 	return count, nil
 }
 
-// FindAllPublish returns all entities.
-func (pr *Post) FindAllPublish(page int, limit int) (domain.Posts, error) {
+// FindAllPublic returns all entities.
+func (pr *Post) FindAllPublic(page int, limit int) (domain.Posts, error) {
 	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -129,7 +129,7 @@ func (pr *Post) FindAllPublish(page int, limit int) (domain.Posts, error) {
 		FROM
 			view_posts
 		WHERE
-			status = "publish"
+			status = "public"
 		ORDER BY id
 		DESC
 		LIMIT ?, ?
@@ -302,8 +302,8 @@ func (pr *Post) FindAllPublish(page int, limit int) (domain.Posts, error) {
         		posts
     		ON  posts.id = comments.post_id
 		WHERE
-    		posts.status = "publish"
-		AND comments.status = "publish"
+    		posts.status = "public"
+		AND comments.status = "public"
 		ORDER BY
     		posts.id
 		DESC
@@ -355,8 +355,8 @@ func (pr *Post) FindAllPublish(page int, limit int) (domain.Posts, error) {
 	return posts, nil
 }
 
-// FindAllPublishByKeyword returns all entities by keyword.
-func (pr *Post) FindAllPublishByKeyword(page int, limit int, keyword string) (domain.Posts, error) {
+// FindAllPublicByKeyword returns all entities by keyword.
+func (pr *Post) FindAllPublicByKeyword(page int, limit int, keyword string) (domain.Posts, error) {
 	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -366,7 +366,7 @@ func (pr *Post) FindAllPublishByKeyword(page int, limit int, keyword string) (do
 		WHERE MATCH (title, md_body)
 		AGAINST (? IN BOOLEAN MODE)
 		AND
-			status = "publish"
+			status = "public"
 		ORDER BY id
 		DESC
 		LIMIT ?, ?
@@ -539,8 +539,8 @@ func (pr *Post) FindAllPublishByKeyword(page int, limit int, keyword string) (do
         		posts
     		ON  posts.id = comments.post_id
 		WHERE
-    		posts.status = "publish"
-		AND comments.status = "publish"
+    		posts.status = "public"
+		AND comments.status = "public"
 		ORDER BY
     		posts.id
 		DESC
@@ -592,8 +592,8 @@ func (pr *Post) FindAllPublishByKeyword(page int, limit int, keyword string) (do
 	return posts, nil
 }
 
-// FindAllPublishByCategory returns all entities by category.
-func (pr *Post) FindAllPublishByCategory(page int, limit int, name string) (domain.Posts, error) {
+// FindAllPublicByCategory returns all entities by category.
+func (pr *Post) FindAllPublicByCategory(page int, limit int, name string) (domain.Posts, error) {
 	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -601,7 +601,7 @@ func (pr *Post) FindAllPublishByCategory(page int, limit int, name string) (doma
 		FROM
 			view_posts
 		WHERE
-			status = "publish"
+			status = "public"
 		AND category_name = ?
 		ORDER BY id
 		DESC
@@ -775,8 +775,8 @@ func (pr *Post) FindAllPublishByCategory(page int, limit int, name string) (doma
         		view_posts
     		ON  view_posts.id = comments.post_id
 		WHERE
-    		view_posts.status = "publish"
-		AND comments.status = "publish"
+    		view_posts.status = "public"
+		AND comments.status = "public"
 		AND view_posts.category_name = ?
 		ORDER BY
     		view_posts.id
@@ -828,8 +828,8 @@ func (pr *Post) FindAllPublishByCategory(page int, limit int, name string) (doma
 	return posts, nil
 }
 
-// FindAllPublishByTag returns all entities by tag.
-func (pr *Post) FindAllPublishByTag(page int, limit int, name string) (domain.Posts, error) {
+// FindAllPublicByTag returns all entities by tag.
+func (pr *Post) FindAllPublicByTag(page int, limit int, name string) (domain.Posts, error) {
 	var posts domain.Posts
 	rows, err := pr.ConnMySQL.Query(`
 	SELECT
@@ -1032,8 +1032,8 @@ func (pr *Post) FindAllPublishByTag(page int, limit int, name string) (domain.Po
 				WHERE
 					tags.name = ?
 			)
-		AND posts.status = "publish"
-		AND comments.status = "publish"
+		AND posts.status = "public"
+		AND comments.status = "public"
 		ORDER BY
 			posts.id
 		LIMIT ?, ?
@@ -1314,8 +1314,8 @@ func (pr *Post) FindAll(page int, limit int) (domain.Posts, error) {
 	return posts, nil
 }
 
-// FindPublishByTitle returns the entity identified by the given title.
-func (pr *Post) FindPublishByTitle(title string) (domain.Post, error) {
+// FindPublicByTitle returns the entity identified by the given title.
+func (pr *Post) FindPublicByTitle(title string) (domain.Post, error) {
 	var post domain.Post
 	row, err := pr.ConnMySQL.Query(`
 		SELECT
@@ -1325,7 +1325,7 @@ func (pr *Post) FindPublishByTitle(title string) (domain.Post, error) {
 		WHERE
 			title = ?
 		AND
-			status = "publish"
+			status = "public"
 	`, title)
 
 	defer func() {
@@ -1462,7 +1462,7 @@ func (pr *Post) FindPublishByTitle(title string) (domain.Post, error) {
 		FROM
 			comments
 		WHERE
-			status = "publish"
+			status = "public"
 		AND
 			post_id = ?
 	`, p.ID)
@@ -1655,7 +1655,7 @@ func (pr *Post) FindByID(id int) (domain.Post, error) {
 		FROM
 			comments
 		WHERE
-			status = "publish"
+			status = "public"
 		AND
 			post_id = ?
 	`, p.ID)
