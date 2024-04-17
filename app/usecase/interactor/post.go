@@ -19,11 +19,11 @@ type PostInteractor struct {
 func (pi *PostInteractor) Index(req request.IndexPost) (domain.Posts, Pagination, *HTTPError) {
 	var ps domain.Posts
 	var pn Pagination
-	count, err := pi.Post.CountAllPublish()
+	count, err := pi.Post.CountAllPublic()
 	if err != nil {
 		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	posts, err := pi.Post.FindAllPublish(req.Page, req.Limit)
+	posts, err := pi.Post.FindAllPublic(req.Page, req.Limit)
 	if err != nil {
 		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -35,11 +35,11 @@ func (pi *PostInteractor) Index(req request.IndexPost) (domain.Posts, Pagination
 func (pi *PostInteractor) IndexByKeyword(req request.IndexPostByKeyword) (domain.Posts, Pagination, *HTTPError) {
 	var ps domain.Posts
 	var pn Pagination
-	count, err := pi.Post.CountAllPublishByKeyword(req.Keyword)
+	count, err := pi.Post.CountAllPublicByKeyword(req.Keyword)
 	if err != nil {
 		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	posts, err := pi.Post.FindAllPublishByKeyword(req.Page, req.Limit, req.Keyword)
+	posts, err := pi.Post.FindAllPublicByKeyword(req.Page, req.Limit, req.Keyword)
 	if err != nil {
 		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -51,11 +51,11 @@ func (pi *PostInteractor) IndexByKeyword(req request.IndexPostByKeyword) (domain
 func (pi *PostInteractor) IndexByCategory(req request.IndexPostByName) (domain.Posts, Pagination, *HTTPError) {
 	var ps domain.Posts
 	var pn Pagination
-	count, err := pi.Post.CountAllPublishByCategory(req.Name)
+	count, err := pi.Post.CountAllPublicByCategory(req.Name)
 	if err != nil {
 		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	posts, err := pi.Post.FindAllPublishByCategory(req.Page, req.Limit, req.Name)
+	posts, err := pi.Post.FindAllPublicByCategory(req.Page, req.Limit, req.Name)
 	if err != nil {
 		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -67,11 +67,11 @@ func (pi *PostInteractor) IndexByCategory(req request.IndexPostByName) (domain.P
 func (pi *PostInteractor) IndexByTag(req request.IndexPostByName) (domain.Posts, Pagination, *HTTPError) {
 	var ps domain.Posts
 	var pn Pagination
-	count, err := pi.Post.CountAllPublishByTag(req.Name)
+	count, err := pi.Post.CountAllPublicByTag(req.Name)
 	if err != nil {
 		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	posts, err := pi.Post.FindAllPublishByTag(req.Page, req.Limit, req.Name)
+	posts, err := pi.Post.FindAllPublicByTag(req.Page, req.Limit, req.Name)
 	if err != nil {
 		return ps, pn, NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -98,7 +98,7 @@ func (pi *PostInteractor) IndexPrivate(req request.IndexPost) (domain.Posts, Pag
 // Show display the specified resource.
 func (pi *PostInteractor) Show(req request.ShowPostByTitle) (domain.Post, *HTTPError) {
 	var p domain.Post
-	post, err := pi.Post.FindPublishByTitle(req.Title)
+	post, err := pi.Post.FindPublicByTitle(req.Title)
 	if err != nil {
 		return p, NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

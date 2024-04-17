@@ -1,7 +1,7 @@
 # Specification
 ## Post
 - Can draft articles
-- Can publish articles
+- Can public articles
 - Can archive articles
 
 ## Comment
