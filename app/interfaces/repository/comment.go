@@ -37,7 +37,7 @@ func (cr *Comment) FindAll(page int, limit int) (domain.Comments, error) {
 			*
 		FROM
 			comments
-		ORDER BY id
+		ORDER BY created_at
 		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
