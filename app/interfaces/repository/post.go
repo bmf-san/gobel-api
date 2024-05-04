@@ -130,7 +130,7 @@ func (pr *Post) FindAllPublic(page int, limit int) (domain.Posts, error) {
 			view_posts
 		WHERE
 			status = "public"
-		ORDER BY id
+		ORDER BY created_at
 		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
@@ -367,7 +367,7 @@ func (pr *Post) FindAllPublicByKeyword(page int, limit int, keyword string) (dom
 		AGAINST (? IN BOOLEAN MODE)
 		AND
 			status = "public"
-		ORDER BY id
+		ORDER BY created_at
 		DESC
 		LIMIT ?, ?
 	`, keyword, page*limit-limit, limit)
@@ -603,7 +603,7 @@ func (pr *Post) FindAllPublicByCategory(page int, limit int, name string) (domai
 		WHERE
 			status = "public"
 		AND category_name = ?
-		ORDER BY id
+		ORDER BY created_at
 		DESC
 		LIMIT ?, ?
 	`, name, page*limit-limit, limit)
@@ -850,7 +850,7 @@ func (pr *Post) FindAllPublicByTag(page int, limit int, name string) (domain.Pos
 		WHERE
 			tags.name = ?
 		)
-	ORDER BY id
+	ORDER BY created_at
 	DESC
 	LIMIT ?, ?
 	`, name, page*limit-limit, limit)
@@ -1092,7 +1092,7 @@ func (pr *Post) FindAll(page int, limit int) (domain.Posts, error) {
 			*
 		FROM
 			view_posts
-		ORDER BY id
+		ORDER BY created_at
 		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)

@@ -36,7 +36,7 @@ func (cr *Category) FindAll(page int, limit int) (domain.Categories, error) {
 			*
 		FROM
 			categories
-		ORDER BY id
+		ORDER BY created_at
 		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)

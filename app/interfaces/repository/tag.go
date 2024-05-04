@@ -37,7 +37,7 @@ func (tr *Tag) FindAll(page int, limit int) (domain.Tags, error) {
 			*
 		FROM
 			tags
-		ORDER BY id
+		ORDER BY created_at
 		DESC
 		LIMIT ?, ?
 	`, page*limit-limit, limit)
