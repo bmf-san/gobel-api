@@ -39,7 +39,7 @@ The Gobel is a headless cms built with golang.
 ## Create a network
 `docker network create --driver bridge gobel_link`
 
-## Creaa certificates
+## Create certificates
 `make create-certs`
 
 ## Build containers
