@@ -16,6 +16,10 @@
 /redis-insight/data
 !/redis-insight/data/.gitkeep
 
+# gondola
+/gondola/certificates
+!/gondola/certificates/.gitkeep
+
 # editor
 .vscode/
 launch.json

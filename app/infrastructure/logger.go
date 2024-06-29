@@ -5,8 +5,6 @@ import (
 	"os"
 
 	"log/slog"
-
-	"github.com/google/uuid"
 )
 
 // Logger represents the singular of logger.
@@ -26,9 +24,8 @@ func NewLogger(level int) *Logger {
 }
 
 // WithTraceID returns a context with a trace id.
-func (l *Logger) WithTraceID(ctx context.Context) context.Context {
-	uuid, _ := uuid.NewRandom()
-	return context.WithValue(ctx, ctxTraceIDKey, uuid.String())
+func (l *Logger) WithTraceID(ctx context.Context, tid string) context.Context {
+	return context.WithValue(ctx, ctxTraceIDKey, tid)
 }
 
 func (l *Logger) Error(msg string, args ...any) {

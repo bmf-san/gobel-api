@@ -1,0 +1,3 @@
+FROM bmfsan/gondola:latest-arm
+
+COPY ./config.yaml .

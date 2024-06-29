@@ -4,7 +4,7 @@ import "context"
 
 // A Logger is a logger interface.
 type Logger interface {
-	WithTraceID(context.Context) context.Context
+	WithTraceID(context.Context, string) context.Context
 	Error(string, ...any)
 	ErrorContext(context.Context, string, ...any)
 	Info(string, ...any)
