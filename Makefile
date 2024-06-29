@@ -5,6 +5,10 @@ help:
 
 .DEFAULT_GOAL := help
 
+.PHONY: create-create
+create-create: ## Create containers by docker-compose.
+	cd gondola/certificates && go run /usr/local/go/src/crypto/tls/generate_cert.go --rsa-bits=2048 --host=localhost
+
 .PHONY: docker-compose-build
 docker-compose-build: ## Build containers by docker-compose.
 	docker-compose -f docker-compose-local.yml build

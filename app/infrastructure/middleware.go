@@ -30,7 +30,8 @@ func NewMiddleware(l *Logger, ar repository.AdminRepository, jr repository.JWT) 
 // Log is a middleware for logging. It logs the access log. It also adds a trace id to the context.
 func (mw *Middleware) Log(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := mw.logger.WithTraceID(r.Context())
+		tid := r.Header.Get("X-Trace-ID")
+		ctx := mw.logger.WithTraceID(r.Context(), tid)
 
 		mw.logger.InfoContext(ctx, "access log", slog.String("http_method", r.Method), slog.String("path", r.URL.Path), slog.String("remote_addr", r.RemoteAddr), slog.String("user_agent", r.UserAgent()))
 		next.ServeHTTP(w, r.WithContext(ctx))

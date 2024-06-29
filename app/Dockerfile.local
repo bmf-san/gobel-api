@@ -5,7 +5,7 @@ WORKDIR /go/gobel-api/app
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache libc-dev gcc git openssh openssl bash && \
-    go install github.com/cosmtrek/air@latest && \
+    go install github.com/air-verse/air@latest && \
     go install golang.org/x/lint/golint@latest
 
 CMD air -c .air.toml

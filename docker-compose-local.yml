@@ -34,19 +34,22 @@ services:
       - seccomp:unconfined
     networks:
       - gobel_link
-  nginx:
-    container_name: "gobel-api-nginx"
+  gondola:
+    container_name: "gobel-api-gondola"
     build:
-        context: "./nginx"
+        context: "./gondola"
         dockerfile: "Dockerfile.local"
         args:
           PLATFORM: "${PLATFORM}"
     ports:
-      - "80:80"
+        - "80:80"
+        - "443:443"
+    volumes:
+        - ./gondola/certificates:/certificates
     networks:
-      - gobel_link
+        - gobel_link
     depends_on:
-      - app
+        - app
   redis:
     container_name: "gobel-api-redis"
     env_file: ".env"
